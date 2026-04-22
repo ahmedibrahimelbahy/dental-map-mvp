@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:my.dentolize.com)",
+      "WebFetch(domain:dentolize.com)",
+      "WebFetch(domain:www.vezeeta.com)",
+      "Bash(gh auth *)",
+      "Bash(vercel whoami *)",
+      "Bash(git config *)",
+      "Bash(git init *)",
+      "Bash(git branch *)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
+    ]
+  }
+}
