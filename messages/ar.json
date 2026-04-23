@@ -58,6 +58,19 @@
     "footerTagline": "محرك حجز الأسنان، متصل مباشرة بأجندة العيادة.",
     "footerRights": "جميع الحقوق محفوظة."
   },
+  "MapPreview": {
+    "liveLabel": "مباشر · القاهرة",
+    "cornerLabel": "القاهرة الكبرى",
+    "heliopolis": "مصر الجديدة",
+    "nasrCity": "مدينة نصر",
+    "zamalek": "الزمالك",
+    "mohandessin": "المهندسين",
+    "maadi": "المعادي",
+    "october": "٦ أكتوبر",
+    "sampleDentistName": "د. سارة حسن",
+    "sampleSpecialty": "تقويم",
+    "sampleFee": "٣٠٠ ج.م"
+  },
   "Auth": {
     "signInTitle": "أهلاً بعودتك.",
     "signInSubtitle": "أدخل بياناتك للوصول إلى حجوزاتك.",

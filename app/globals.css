@@ -248,3 +248,27 @@
     text-decoration-color: #1ea58f;
   }
 }
+
+@keyframes mapPulse {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.5;
+  }
+  70% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(0.75);
+    opacity: 0;
+  }
+}
+
+@keyframes mapSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

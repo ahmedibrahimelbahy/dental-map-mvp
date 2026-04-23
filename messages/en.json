@@ -58,6 +58,19 @@
     "footerTagline": "The dentist booking engine, wired to the clinic.",
     "footerRights": "All rights reserved."
   },
+  "MapPreview": {
+    "liveLabel": "Live · Cairo",
+    "cornerLabel": "Greater Cairo",
+    "heliopolis": "Heliopolis",
+    "nasrCity": "Nasr City",
+    "zamalek": "Zamalek",
+    "mohandessin": "Mohandessin",
+    "maadi": "Maadi",
+    "october": "6th of Oct.",
+    "sampleDentistName": "Dr. Sara Hassan",
+    "sampleSpecialty": "Orthodontics",
+    "sampleFee": "300 EGP"
+  },
   "Auth": {
     "signInTitle": "Welcome back.",
     "signInSubtitle": "Enter your details to access your bookings.",
