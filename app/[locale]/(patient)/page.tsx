@@ -1,6 +1,5 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CairoMapPreview } from "@/components/cairo-map-preview";
 import {
   Search,
   MapPin,
@@ -42,20 +41,20 @@ export default async function HomePage({
     <>
       {/* ═══ HERO ═══ */}
       <section className="hero-wash">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-16 lg:pt-20 pb-14 md:pb-24 grid lg:grid-cols-[1.15fr_1fr] gap-10 xl:gap-14 items-start">
-          <div className="animate-rise">
+        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-14 md:pb-24">
+          <div className="max-w-[860px] animate-rise">
             <span className="chip mb-6">
               <span className="chip-dot"></span>
               {t("heroEyebrow")}
             </span>
 
-            <h1 className="display-h1 text-[40px] md:text-[64px] lg:text-[72px] xl:text-[80px] text-ink-900">
+            <h1 className="display-h1 text-[44px] md:text-[72px] lg:text-[84px] text-ink-900">
               {t("heroTitle")}
               <br />
               <span className="text-teal-500">{t("heroTitleAccent")}</span>
             </h1>
 
-            <p className="mt-5 md:mt-7 text-[16px] md:text-[18px] leading-[1.6] text-ink-500 max-w-[58ch]">
+            <p className="mt-6 md:mt-8 text-[17px] md:text-[19px] leading-[1.6] text-ink-500 max-w-[62ch]">
               {t("heroSubtitle")}
             </p>
 
@@ -146,14 +145,6 @@ export default async function HomePage({
                 {t("trustBilingual")}
               </li>
             </ul>
-          </div>
-
-          {/* Map preview — desktop only, brand moment */}
-          <div
-            className="hidden lg:block animate-rise lg:mt-2"
-            style={{ animationDelay: "0.15s" }}
-          >
-            <CairoMapPreview locale={locale} />
           </div>
         </div>
       </section>
