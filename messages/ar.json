@@ -1,0 +1,62 @@
+{
+  "Brand": {
+    "name": "دنتال ماب",
+    "tagline": "محرك حجز الأسنان، متصل مباشرة بأجندة العيادة."
+  },
+  "Nav": {
+    "search": "ابحث عن طبيب",
+    "specialties": "التخصصات",
+    "areas": "المناطق",
+    "forClinics": "للعيادات",
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "account": "حسابي",
+    "signOut": "تسجيل الخروج"
+  },
+  "Home": {
+    "heroEyebrow": "مصر · تجربة القاهرة الكبرى",
+    "heroTitle": "احجز مع دكتور الأسنان",
+    "heroTitleItalic": "اللي بتختاره فعلاً",
+    "heroTitleRest": "— في ثوانٍ.",
+    "heroSubtitle": "ابحث بين أطباء أسنان موثوقين في القاهرة. شوف مواعيدهم المتاحة فعلاً. احجز فوراً. الميعاد اللي بتختاره بيدخل مباشرة في أجندة العيادة.",
+    "heroCta": "ابحث عن طبيب",
+    "heroCtaSecondary": "كيف يعمل؟",
+    "searchPlaceholderSpecialty": "التخصص (مثلاً: تقويم)",
+    "searchPlaceholderArea": "المنطقة (مثلاً: مدينة نصر)",
+    "searchSubmit": "بحث",
+    "trustTitle": "صُمم لمرضى سئموا المكالمات اللي ما ترد.",
+    "trustOne": "تقييمات موثقة فقط",
+    "trustOneBody": "لن يستطيع أحد تقييم طبيب لم يحجز عنده فعلاً. لا توجد نجوم مزيفة.",
+    "trustTwo": "مواعيد حقيقية",
+    "trustTwoBody": "كل ميعاد تراه محسوب من أجندة الطبيب نفسها. لا \"هنرجع نكلمك.\"",
+    "trustThree": "عربي أولاً، وإنجليزي اختياري",
+    "trustThreeBody": "تصفح بالعربي أو الإنجليزي — نفس الحجز، نفس الأطباء الموثوقين.",
+    "specialtiesTitle": "كل تخصصات الأسنان",
+    "specialtyAdult": "أسنان الكبار",
+    "specialtyPediatric": "أسنان الأطفال",
+    "specialtyOrtho": "تقويم",
+    "specialtyCosmetic": "تجميل",
+    "specialtyEndo": "علاج جذور",
+    "specialtyImplants": "زراعة",
+    "specialtySurgery": "جراحة فم",
+    "footerRights": "جميع الحقوق محفوظة."
+  },
+  "Auth": {
+    "signInTitle": "أهلاً بعودتك.",
+    "signInSubtitle": "أدخل بياناتك للوصول إلى حجوزاتك.",
+    "signUpTitle": "أنشئ حسابك.",
+    "signUpSubtitle": "دقيقة واحدة. ستحتاجه للحجز.",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة السر",
+    "fullName": "الاسم الكامل",
+    "phone": "رقم الموبايل",
+    "phoneHint": "تستخدمه العيادة للتواصل معك — مطلوب.",
+    "submitSignIn": "تسجيل الدخول",
+    "submitSignUp": "إنشاء الحساب",
+    "haveAccount": "عندك حساب بالفعل؟",
+    "noAccount": "لسه ماعندكش حساب؟",
+    "linkSignIn": "تسجيل الدخول",
+    "linkSignUp": "إنشاء حساب",
+    "or": "أو"
+  }
+}

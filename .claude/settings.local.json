@@ -11,7 +11,12 @@
       "Bash(git init *)",
       "Bash(git branch *)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(gh repo *)",
+      "Bash(python -c \"import sys,json; teams=json.load\\(sys.stdin\\).get\\('teams',[]\\); [print\\(t['id'],t['slug']\\) for t in teams]\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); u=d.get\\('user',d\\); print\\(u.get\\('id','-'\\), u.get\\('username','-'\\), u.get\\('defaultTeamId','-'\\)\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('id','ERROR: '+str\\(d\\)\\)\\)\")",
+      "Bash(vercel --prod --yes)"
     ]
   }
 }

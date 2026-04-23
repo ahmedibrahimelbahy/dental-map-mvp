@@ -1,0 +1,62 @@
+{
+  "Brand": {
+    "name": "Dental Map",
+    "tagline": "The dentist booking engine, wired to the clinic."
+  },
+  "Nav": {
+    "search": "Find a dentist",
+    "specialties": "Specialties",
+    "areas": "Areas",
+    "forClinics": "For clinics",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "account": "My account",
+    "signOut": "Sign out"
+  },
+  "Home": {
+    "heroEyebrow": "Egypt · Greater Cairo pilot",
+    "heroTitle": "Book the dentist",
+    "heroTitleItalic": "you actually want",
+    "heroTitleRest": "— in real time.",
+    "heroSubtitle": "Search verified dentists across Cairo. See real open slots. Book instantly. The slot you pick is the slot that lands in the clinic's own calendar.",
+    "heroCta": "Find a dentist",
+    "heroCtaSecondary": "How it works",
+    "searchPlaceholderSpecialty": "Specialty (e.g. orthodontics)",
+    "searchPlaceholderArea": "Area (e.g. Nasr City)",
+    "searchSubmit": "Search",
+    "trustTitle": "Built for patients who've been burned by phone tag.",
+    "trustOne": "Verified reviews only",
+    "trustOneBody": "You can only review a dentist you actually booked and visited. No fake stars.",
+    "trustTwo": "Real-time availability",
+    "trustTwoBody": "Every slot shown is computed from the dentist's live calendar. No \"we'll call you back.\"",
+    "trustThree": "Bilingual, Arabic-first",
+    "trustThreeBody": "Browse in Arabic or English — the same booking, the same verified dentists.",
+    "specialtiesTitle": "Every kind of dentistry",
+    "specialtyAdult": "Adult dentistry",
+    "specialtyPediatric": "Pediatric",
+    "specialtyOrtho": "Orthodontics",
+    "specialtyCosmetic": "Cosmetic",
+    "specialtyEndo": "Endodontics",
+    "specialtyImplants": "Implants",
+    "specialtySurgery": "Oral surgery",
+    "footerRights": "All rights reserved."
+  },
+  "Auth": {
+    "signInTitle": "Welcome back.",
+    "signInSubtitle": "Enter your details to access your bookings.",
+    "signUpTitle": "Create your account.",
+    "signUpSubtitle": "It takes a minute. You'll need it to book.",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "phone": "Phone number",
+    "phoneHint": "Used by the clinic to reach you — required.",
+    "submitSignIn": "Sign in",
+    "submitSignUp": "Create account",
+    "haveAccount": "Already have an account?",
+    "noAccount": "No account yet?",
+    "linkSignIn": "Sign in",
+    "linkSignUp": "Sign up",
+    "or": "or"
+  }
+}
