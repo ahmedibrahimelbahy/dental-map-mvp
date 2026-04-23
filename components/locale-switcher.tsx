@@ -1,9 +1,9 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/routing";
+import { usePathname, useRouter, routing } from "@/i18n/routing";
 import { useTransition } from "react";
-import { routing } from "@/i18n/routing";
+import { Globe } from "lucide-react";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -25,9 +25,12 @@ export function LocaleSwitcher() {
       onClick={switchTo}
       disabled={isPending}
       aria-label={`Switch language to ${other === "ar" ? "Arabic" : "English"}`}
-      className="small-caps text-[11px] text-spruce-700 hover:text-copper-500 transition-colors disabled:opacity-50"
+      className="btn-ghost !text-ink-600 !px-2 md:!px-3"
     >
-      {other === "ar" ? "العربية" : "English"}
+      <Globe className="w-[15px] h-[15px]" aria-hidden />
+      <span className="text-[13px] font-semibold">
+        {other === "ar" ? "العربية" : "English"}
+      </span>
     </button>
   );
 }

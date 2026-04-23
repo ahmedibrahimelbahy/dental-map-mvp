@@ -10,3 +10,14 @@ out/
 temporary screenshots/
 .DS_Store
 Thumbs.db
+
+# Local dev artifacts
+.playwright-mcp/
+*.png
+*.jpg
+!public/**/*.png
+!public/**/*.jpg
+!public/**/*.jpeg
+!logo/**/*.jpeg
+!logo/**/*.jpg
+!logo/**/*.png

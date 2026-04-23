@@ -2,20 +2,25 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Fraunces, Manrope, JetBrains_Mono } from "next/font/google";
+import { Manrope, Plus_Jakarta_Sans, Cairo, JetBrains_Mono } from "next/font/google";
 import { routing, type Locale } from "@/i18n/routing";
 import "../globals.css";
-
-const fraunces = Fraunces({
-  subsets: ["latin"],
-  variable: "--font-fraunces",
-  display: "swap",
-  axes: ["opsz", "SOFT"],
-});
 
 const manrope = Manrope({
   subsets: ["latin"],
   variable: "--font-manrope",
+  display: "swap",
+});
+
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  variable: "--font-cairo",
   display: "swap",
 });
 
@@ -39,6 +44,7 @@ export async function generateMetadata({
   return {
     title: { default: t("name"), template: `%s · ${t("name")}` },
     description: t("tagline"),
+    icons: { icon: "/dental-map-logo.jpg" },
   };
 }
 
@@ -59,7 +65,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dir}
-      className={`${fraunces.variable} ${manrope.variable} ${jetbrains.variable}`}
+      className={`${manrope.variable} ${jakarta.variable} ${cairo.variable} ${jetbrains.variable}`}
     >
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>

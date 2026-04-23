@@ -1,10 +1,10 @@
 {
   "Brand": {
     "name": "دنتال ماب",
-    "tagline": "محرك حجز الأسنان، متصل مباشرة بأجندة العيادة."
+    "tagline": "محرك حجز الأسنان في مصر — مواعيد حقيقية، تقييمات موثقة."
   },
   "Nav": {
-    "search": "ابحث عن طبيب",
+    "search": "دور على طبيب",
     "specialties": "التخصصات",
     "areas": "المناطق",
     "forClinics": "للعيادات",
@@ -14,24 +14,26 @@
     "signOut": "تسجيل الخروج"
   },
   "Home": {
-    "heroEyebrow": "مصر · تجربة القاهرة الكبرى",
-    "heroTitle": "احجز مع دكتور الأسنان",
-    "heroTitleItalic": "اللي بتختاره فعلاً",
-    "heroTitleRest": "— في ثوانٍ.",
-    "heroSubtitle": "ابحث بين أطباء أسنان موثوقين في القاهرة. شوف مواعيدهم المتاحة فعلاً. احجز فوراً. الميعاد اللي بتختاره بيدخل مباشرة في أجندة العيادة.",
-    "heroCta": "ابحث عن طبيب",
-    "heroCtaSecondary": "كيف يعمل؟",
-    "searchPlaceholderSpecialty": "التخصص (مثلاً: تقويم)",
-    "searchPlaceholderArea": "المنطقة (مثلاً: مدينة نصر)",
-    "searchSubmit": "بحث",
-    "trustTitle": "صُمم لمرضى سئموا المكالمات اللي ما ترد.",
-    "trustOne": "تقييمات موثقة فقط",
-    "trustOneBody": "لن يستطيع أحد تقييم طبيب لم يحجز عنده فعلاً. لا توجد نجوم مزيفة.",
-    "trustTwo": "مواعيد حقيقية",
-    "trustTwoBody": "كل ميعاد تراه محسوب من أجندة الطبيب نفسها. لا \"هنرجع نكلمك.\"",
-    "trustThree": "عربي أولاً، وإنجليزي اختياري",
-    "trustThreeBody": "تصفح بالعربي أو الإنجليزي — نفس الحجز، نفس الأطباء الموثوقين.",
+    "heroEyebrow": "القاهرة الكبرى · تجربة أولى",
+    "heroTitle": "عناية أسنان أحسن،",
+    "heroTitleAccent": "من غير مكالمات ما ترد.",
+    "heroSubtitle": "ابحث بين أطباء أسنان موثوقين في القاهرة. شوف مواعيدهم الفعلية. احجز فوراً — الميعاد اللي تختاره بيظهر مباشرة في أجندة العيادة.",
+    "searchSpecialtyLabel": "التخصص",
+    "searchSpecialtyPlaceholder": "كل التخصصات",
+    "searchAreaLabel": "المنطقة",
+    "searchAreaPlaceholder": "كل المناطق",
+    "searchDateLabel": "التاريخ",
+    "searchDateAny": "أي يوم",
+    "searchDateToday": "اليوم",
+    "searchDateTomorrow": "بكرة",
+    "searchDateThisWeek": "هذا الأسبوع",
+    "searchSubmit": "ابحث عن طبيب",
+    "trustBookings": "حجز فوري",
+    "trustReviews": "تقييمات موثقة فقط",
+    "trustBilingual": "عربي وإنجليزي",
+
     "specialtiesTitle": "كل تخصصات الأسنان",
+    "specialtiesSubtitle": "اختار حسب احتياج أسنانك فعلاً.",
     "specialtyAdult": "أسنان الكبار",
     "specialtyPediatric": "أسنان الأطفال",
     "specialtyOrtho": "تقويم",
@@ -39,6 +41,21 @@
     "specialtyEndo": "علاج جذور",
     "specialtyImplants": "زراعة",
     "specialtySurgery": "جراحة فم",
+
+    "howItWorksTitle": "كيف يعمل؟",
+    "howItWorksSubtitle": "ثلاث خطوات. بدون مكالمات. بدون لخبطة.",
+    "howStep1Title": "ابحث",
+    "howStep1Body": "فلتر بالتخصص، المنطقة، السعر، التأمين، أو اسم الطبيب.",
+    "howStep2Title": "اختار ميعاد حقيقي",
+    "howStep2Body": "كل ميعاد محسوب لحظياً من أجندة الطبيب نفسها.",
+    "howStep3Title": "روح زور",
+    "howStep3Body": "الحجز يدخل في جدول العيادة. وتجيلك تنبيهات بالبريد والرسائل.",
+
+    "forClinicsTitle": "عندك عيادة أسنان؟",
+    "forClinicsBody": "احصل على مرضى بجودة دنتال ماب. بنتكامل مع أجندة Dentolize اللي بتستخدمها فعلاً — بدون إعادة إدخال.",
+    "forClinicsCta": "انضم للتجربة",
+
+    "footerTagline": "محرك حجز الأسنان، متصل مباشرة بأجندة العيادة.",
     "footerRights": "جميع الحقوق محفوظة."
   },
   "Auth": {
@@ -56,7 +73,6 @@
     "haveAccount": "عندك حساب بالفعل؟",
     "noAccount": "لسه ماعندكش حساب؟",
     "linkSignIn": "تسجيل الدخول",
-    "linkSignUp": "إنشاء حساب",
-    "or": "أو"
+    "linkSignUp": "إنشاء حساب"
   }
 }

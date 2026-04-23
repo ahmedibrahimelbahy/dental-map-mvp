@@ -1,7 +1,7 @@
 {
   "Brand": {
     "name": "Dental Map",
-    "tagline": "The dentist booking engine, wired to the clinic."
+    "tagline": "Egypt's booking engine for dentists — live availability, verified reviews."
   },
   "Nav": {
     "search": "Find a dentist",
@@ -14,24 +14,26 @@
     "signOut": "Sign out"
   },
   "Home": {
-    "heroEyebrow": "Egypt · Greater Cairo pilot",
-    "heroTitle": "Book the dentist",
-    "heroTitleItalic": "you actually want",
-    "heroTitleRest": "— in real time.",
-    "heroSubtitle": "Search verified dentists across Cairo. See real open slots. Book instantly. The slot you pick is the slot that lands in the clinic's own calendar.",
-    "heroCta": "Find a dentist",
-    "heroCtaSecondary": "How it works",
-    "searchPlaceholderSpecialty": "Specialty (e.g. orthodontics)",
-    "searchPlaceholderArea": "Area (e.g. Nasr City)",
-    "searchSubmit": "Search",
-    "trustTitle": "Built for patients who've been burned by phone tag.",
-    "trustOne": "Verified reviews only",
-    "trustOneBody": "You can only review a dentist you actually booked and visited. No fake stars.",
-    "trustTwo": "Real-time availability",
-    "trustTwoBody": "Every slot shown is computed from the dentist's live calendar. No \"we'll call you back.\"",
-    "trustThree": "Bilingual, Arabic-first",
-    "trustThreeBody": "Browse in Arabic or English — the same booking, the same verified dentists.",
+    "heroEyebrow": "Greater Cairo · pilot",
+    "heroTitle": "Better dental care,",
+    "heroTitleAccent": "without the phone tag.",
+    "heroSubtitle": "Search 50+ verified dentists across Cairo. See real open slots. Book instantly — the slot you pick lands in the clinic's own calendar.",
+    "searchSpecialtyLabel": "Specialty",
+    "searchSpecialtyPlaceholder": "Any specialty",
+    "searchAreaLabel": "Area",
+    "searchAreaPlaceholder": "Any area",
+    "searchDateLabel": "When",
+    "searchDateAny": "Any day",
+    "searchDateToday": "Today",
+    "searchDateTomorrow": "Tomorrow",
+    "searchDateThisWeek": "This week",
+    "searchSubmit": "Find a dentist",
+    "trustBookings": "Instant booking",
+    "trustReviews": "Verified reviews only",
+    "trustBilingual": "Arabic & English",
+
     "specialtiesTitle": "Every kind of dentistry",
+    "specialtiesSubtitle": "Browse by what your teeth actually need.",
     "specialtyAdult": "Adult dentistry",
     "specialtyPediatric": "Pediatric",
     "specialtyOrtho": "Orthodontics",
@@ -39,6 +41,21 @@
     "specialtyEndo": "Endodontics",
     "specialtyImplants": "Implants",
     "specialtySurgery": "Oral surgery",
+
+    "howItWorksTitle": "How it works",
+    "howItWorksSubtitle": "Three steps. No calls. No confusion.",
+    "howStep1Title": "Search",
+    "howStep1Body": "Filter by specialty, area, fee, insurance, or specific dentist.",
+    "howStep2Title": "Pick a real slot",
+    "howStep2Body": "Every slot is computed live from the dentist's own calendar.",
+    "howStep3Title": "Visit",
+    "howStep3Body": "Booking lands in the clinic's schedule. You get email + SMS reminders.",
+
+    "forClinicsTitle": "Are you a dental clinic?",
+    "forClinicsBody": "Get Dental Map-quality patients. We plug into the Dentolize calendar you already use — no double entry.",
+    "forClinicsCta": "Join the pilot",
+
+    "footerTagline": "The dentist booking engine, wired to the clinic.",
     "footerRights": "All rights reserved."
   },
   "Auth": {
@@ -56,7 +73,6 @@
     "haveAccount": "Already have an account?",
     "noAccount": "No account yet?",
     "linkSignIn": "Sign in",
-    "linkSignUp": "Sign up",
-    "or": "or"
+    "linkSignUp": "Sign up"
   }
 }
