@@ -1,20 +1,33 @@
 #!/usr/bin/env node
 /**
- * One-shot: promote a user to dentist_admin and seed a test clinic + dentist
- * + the joins so they can use the dashboard end-to-end.
+ * One-shot: create (or find) an auth user, promote them to dentist_admin,
+ * and seed a test clinic + dentist + the joins so they can use the dashboard
+ * end-to-end. Bypasses email confirmation so it works despite Supabase's
+ * built-in-SMTP rate limit during pilot.
  *
  * Usage:
- *   node --env-file=.env.local scripts/bootstrap-dentist.mjs <email>
+ *   node --env-file=.env.local scripts/bootstrap-dentist.mjs <email> [password] [fullName] [phone]
+ *
+ * Defaults:
+ *   password = "Pilot!Passw0rd"
+ *   fullName = "Pilot Admin"
+ *   phone    = "+201000000000"
  *
  * Idempotent: safe to re-run.
  */
 import { createClient } from "@supabase/supabase-js";
 
-const email = process.argv[2];
-if (!email) {
-  console.error("Usage: node scripts/bootstrap-dentist.mjs <email>");
+const [, , emailArg, passArg, nameArg, phoneArg] = process.argv;
+if (!emailArg) {
+  console.error(
+    "Usage: node scripts/bootstrap-dentist.mjs <email> [password] [fullName] [phone]"
+  );
   process.exit(1);
 }
+const email = emailArg;
+const password = passArg || "Pilot!Passw0rd";
+const fullName = nameArg || "Pilot Admin";
+const phone = phoneArg || "+201000000000";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -28,20 +41,45 @@ const supa = createClient(url, serviceKey, {
 });
 
 async function main() {
-  // 1. Find the user by email (paginate if you have many)
+  // 1. Find or create the auth user (email_confirm:true bypasses the SMTP rate limit)
   const { data: list, error: listErr } = await supa.auth.admin.listUsers({
     page: 1,
     perPage: 200,
   });
   if (listErr) throw listErr;
-  const user = list.users.find(
+  let user = list.users.find(
     (u) => (u.email ?? "").toLowerCase() === email.toLowerCase()
   );
+
   if (!user) {
-    console.error(`No auth user with email ${email}. Sign up at /en/signup first.`);
-    process.exit(1);
+    const { data: created, error: createErr } = await supa.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: { full_name: fullName, phone },
+    });
+    if (createErr) throw createErr;
+    user = created.user;
+    console.log(`✓ Created auth user ${user.id}  (${email})`);
+    console.log(`   password = ${password}  ← use this to sign in`);
+  } else {
+    console.log(`✓ Found auth user  ${user.id}  (${email})`);
   }
-  console.log(`✓ Found auth user  ${user.id}  (${user.email})`);
+
+  // Ensure profile row exists (the trigger creates it, but for admin-created users
+  // without trigger-set metadata we upsert just in case).
+  await supa
+    .from("profiles")
+    .upsert(
+      {
+        id: user.id,
+        email,
+        full_name: fullName,
+        phone,
+        role: "patient",
+      },
+      { onConflict: "id", ignoreDuplicates: true }
+    );
 
   // 2. Promote profile to dentist_admin
   const { error: roleErr } = await supa
