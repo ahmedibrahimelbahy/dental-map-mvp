@@ -13,7 +13,8 @@ type SendInput = {
 
 export async function sendEmail(input: SendInput): Promise<void> {
   const key = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM ?? "Dental Map <bookings@dentalmap.eg>";
+  // Fall back to Resend's shared sender until dentalmap.eg is verified in Resend
+  const from = process.env.RESEND_FROM ?? "Dental Map <onboarding@resend.dev>";
 
   if (!key) {
     console.log("[email] RESEND_API_KEY missing — skipping send to:", input.to);

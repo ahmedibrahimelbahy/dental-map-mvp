@@ -70,12 +70,14 @@ export async function createBookingAction(
     .maybeSingle();
   if (overlap) return { ok: false, error: "slot_taken" };
 
-  // Read patient profile (for name in email + GCal event)
+  // Read patient profile (name for email + GCal event).
+  // Email comes from auth.user — profiles table has no email column.
+  const patientEmail = auth.user.email ?? null;
   const { data: profile } = await admin
     .from("profiles")
-    .select("full_name, email")
+    .select("full_name")
     .eq("id", auth.user.id)
-    .returns<{ full_name: string; email: string | null }[]>()
+    .returns<{ full_name: string }[]>()
     .single();
 
   // Insert appointment
@@ -106,38 +108,52 @@ export async function createBookingAction(
 
   // Side effects (best-effort — never undo the booking on failure)
   if (cd.calendar_mode === "google") {
-    try {
-      const eventId = await createBookingEvent({
-        dentistId: cd.dentist_id,
-        startIso: start.toISOString(),
-        endIso: end.toISOString(),
-        patientName: profile?.full_name ?? "Patient",
-        patientPhone: input.patientPhone,
-        note: input.patientNote,
-      });
-      await admin
-        .from("appointments")
-        .update({ gcal_event_id: eventId } as never)
-        .eq("id", inserted.id);
-    } catch (e) {
-      console.error("[booking] gcal write failed (non-fatal):", e);
+    // Only attempt GCal write if the dentist has actually connected their calendar
+    const { data: calRow } = await admin
+      .from("dentist_calendars")
+      .select("dentist_id")
+      .eq("dentist_id", cd.dentist_id)
+      .returns<{ dentist_id: string }[]>()
+      .maybeSingle();
+
+    if (!calRow) {
+      console.log(
+        `[booking] dentist ${cd.dentist_id} has no GCal token — skipping calendar write (connect via /dashboard/calendar)`
+      );
+    } else {
+      try {
+        const eventId = await createBookingEvent({
+          dentistId: cd.dentist_id,
+          startIso: start.toISOString(),
+          endIso: end.toISOString(),
+          patientName: profile?.full_name ?? "Patient",
+          patientPhone: input.patientPhone,
+          note: input.patientNote,
+        });
+        await admin
+          .from("appointments")
+          .update({ gcal_event_id: eventId } as never)
+          .eq("id", inserted.id);
+      } catch (e) {
+        console.error("[booking] gcal write failed (non-fatal):", e);
+      }
     }
   }
 
-  if (profile?.email) {
+  if (patientEmail) {
     try {
       const isAr = input.locale === "ar";
       const dentistName = isAr ? cd.dentist?.name_ar : cd.dentist?.name_en;
       const clinicName = isAr ? cd.clinic?.name_ar : cd.clinic?.name_en;
-      const email = bookingPatientEmail({
-        patientName: profile.full_name,
+      const emailPayload = bookingPatientEmail({
+        patientName: profile?.full_name ?? "Patient",
         dentistName: dentistName ?? "Your dentist",
         clinicName: clinicName ?? "",
         slotIso: start.toISOString(),
         feeEgp: cd.fee_egp,
         locale: input.locale,
       });
-      await sendEmail({ to: profile.email, ...email });
+      await sendEmail({ to: patientEmail, ...emailPayload });
     } catch (e) {
       console.error("[booking] email send failed (non-fatal):", e);
     }
