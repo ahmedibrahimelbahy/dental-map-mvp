@@ -58,6 +58,47 @@
     "footerTagline": "The dentist booking engine, wired to the clinic.",
     "footerRights": "All rights reserved."
   },
+  "Search": {
+    "headerTitle": "Find a dentist",
+    "filtersTitle": "Filters",
+    "filterAnySpecialty": "Any specialty",
+    "filterAnyArea": "Any area",
+    "filterFeeMax": "Max fee (EGP)",
+    "filterApply": "Apply filters",
+    "filterReset": "Reset",
+    "resultsCount": "{count, plural, =0 {No dentists found} =1 {1 dentist} other {# dentists}}",
+    "emptyTitle": "No matches yet",
+    "emptyBody": "Try widening your filters, or browse all dentistry below."
+  },
+  "Profile": {
+    "fee": "Fee",
+    "experience": "{years, plural, =1 {1 year experience} other {# years experience}}",
+    "specialties": "Specialties",
+    "about": "About",
+    "atClinic": "At",
+    "pickSlotTitle": "Pick an open slot",
+    "pickSlotSubtitle": "Computed live from this dentist's calendar.",
+    "noSlots": "No open slots in the next 7 days. Try a different dentist or check back later.",
+    "loadingSlots": "Loading slots…",
+    "bookSlot": "Book this time"
+  },
+  "Booking": {
+    "headerTitle": "Confirm your booking",
+    "summaryDentist": "With",
+    "summaryWhen": "When",
+    "summaryFee": "Fee",
+    "summaryDuration": "{minutes}-min visit",
+    "patientName": "Your name",
+    "patientPhone": "Phone number",
+    "patientPhoneHint": "The clinic uses this to reach you.",
+    "patientNote": "Note for the dentist (optional)",
+    "submit": "Confirm booking",
+    "successTitle": "Booking confirmed.",
+    "successBody": "We sent the details to your email. The clinic has been notified — they'll call if anything changes.",
+    "successCta": "Back to home",
+    "alreadyTaken": "Sorry — this slot was just taken. Pick another.",
+    "errorGeneric": "Something went wrong. Please try again."
+  },
   "Dashboard": {
     "welcome": "Welcome back, {name}.",
     "navHome": "Overview",

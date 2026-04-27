@@ -58,6 +58,47 @@
     "footerTagline": "محرك حجز الأسنان، متصل مباشرة بأجندة العيادة.",
     "footerRights": "جميع الحقوق محفوظة."
   },
+  "Search": {
+    "headerTitle": "ابحث عن طبيب",
+    "filtersTitle": "الفلاتر",
+    "filterAnySpecialty": "كل التخصصات",
+    "filterAnyArea": "كل المناطق",
+    "filterFeeMax": "أقصى سعر (ج.م)",
+    "filterApply": "طبّق الفلاتر",
+    "filterReset": "إعادة تعيين",
+    "resultsCount": "{count, plural, =0 {لا يوجد أطباء} =1 {طبيب واحد} =2 {طبيبان} few {# أطباء} many {# طبيب} other {# طبيب}}",
+    "emptyTitle": "لا توجد نتائج",
+    "emptyBody": "جرّب توسيع الفلاتر."
+  },
+  "Profile": {
+    "fee": "السعر",
+    "experience": "{years, plural, =0 {بدون خبرة} =1 {سنة خبرة} =2 {سنتان خبرة} few {# سنوات خبرة} many {# سنة خبرة} other {# سنة خبرة}}",
+    "specialties": "التخصصات",
+    "about": "نبذة",
+    "atClinic": "في",
+    "pickSlotTitle": "اختر ميعاداً متاحاً",
+    "pickSlotSubtitle": "محسوب لحظياً من أجندة الطبيب.",
+    "noSlots": "لا توجد مواعيد متاحة خلال 7 أيام. جرّب طبيباً آخر.",
+    "loadingSlots": "جارٍ تحميل المواعيد…",
+    "bookSlot": "احجز هذا الميعاد"
+  },
+  "Booking": {
+    "headerTitle": "أكّد حجزك",
+    "summaryDentist": "مع",
+    "summaryWhen": "الموعد",
+    "summaryFee": "السعر",
+    "summaryDuration": "زيارة {minutes} دقيقة",
+    "patientName": "اسمك",
+    "patientPhone": "رقم الموبايل",
+    "patientPhoneHint": "العيادة بتستخدمه للتواصل معك.",
+    "patientNote": "ملاحظة للطبيب (اختياري)",
+    "submit": "أكّد الحجز",
+    "successTitle": "تم تأكيد الحجز.",
+    "successBody": "أرسلنا التفاصيل لبريدك. العيادة تم إخطارها — سيتواصلون إذا حدث أي تغيير.",
+    "successCta": "العودة للرئيسية",
+    "alreadyTaken": "عذراً — تم حجز هذا الميعاد للتو. اختر ميعاداً آخر.",
+    "errorGeneric": "حدث خطأ. حاول مرة أخرى."
+  },
   "Dashboard": {
     "welcome": "أهلاً بعودتك، {name}.",
     "navHome": "الرئيسية",
