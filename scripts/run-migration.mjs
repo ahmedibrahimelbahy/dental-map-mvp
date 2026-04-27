@@ -20,11 +20,32 @@ const password = process.env.SUPABASE_DB_PASSWORD;
 if (!url || !password) throw new Error("Supabase env vars not set");
 const ref = new URL(url).hostname.split(".")[0];
 
+const ALL_REGIONS = [
+  "eu-west-2",
+  "eu-west-1",
+  "eu-central-1",
+  "eu-north-1",
+  "eu-west-3",
+  "us-east-1",
+  "us-east-2",
+  "us-west-1",
+  "us-west-2",
+  "ap-south-1",
+  "ap-southeast-1",
+  "ap-southeast-2",
+  "ap-northeast-1",
+  "ap-northeast-2",
+  "ca-central-1",
+  "sa-east-1",
+];
+const PREFIXES = ["aws-0", "aws-1"];
 const candidates = [
   `postgres://postgres:${encodeURIComponent(password)}@db.${ref}.supabase.co:5432/postgres`,
-  ...["eu-central-1", "eu-west-2", "us-east-1", "us-east-2", "us-west-1", "ap-southeast-1"].map(
-    (r) =>
-      `postgres://postgres.${ref}:${encodeURIComponent(password)}@aws-0-${r}.pooler.supabase.com:5432/postgres`
+  ...PREFIXES.flatMap((p) =>
+    ALL_REGIONS.map(
+      (r) =>
+        `postgres://postgres.${ref}:${encodeURIComponent(password)}@${p}-${r}.pooler.supabase.com:5432/postgres`
+    )
   ),
 ];
 
@@ -38,7 +59,7 @@ for (const cs of candidates) {
   process.stdout.write(`→ ${host} ... `);
   client = new Client({
     connectionString: cs,
-    connectionTimeoutMillis: 5000,
+    connectionTimeoutMillis: 4000,
     ssl: { rejectUnauthorized: false },
   });
   try {
