@@ -29,21 +29,38 @@ export async function signUpAction(
     };
   }
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
+  // Create the auth user via service role with email already confirmed,
+  // bypassing Supabase's built-in SMTP rate limit. The handle_new_user
+  // trigger creates the matching profiles row from user_metadata.
+  const adminSupa = createAdminClient();
+  const { error: createErr } = await adminSupa.auth.admin.createUser({
     email,
     password,
-    options: {
-      data: { full_name: fullName, phone },
-    },
+    email_confirm: true,
+    user_metadata: { full_name: fullName, phone },
   });
 
-  if (error) {
-    return { ok: false, error: error.message };
+  if (createErr) {
+    const msg = (createErr.message || "").toLowerCase();
+    if (msg.includes("already") || msg.includes("registered")) {
+      return {
+        ok: false,
+        error: "An account with that email already exists. Try signing in.",
+        field: "email",
+      };
+    }
+    return { ok: false, error: createErr.message };
   }
-  // If email confirmation is required on Supabase, session is null
-  if (!data.session) {
-    redirect(`/${locale}/signin?checkEmail=1`);
+
+  // Now sign in with the cookie-aware client so the session lands in cookies
+  const supabase = await createClient();
+  const { error: signInErr } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+  if (signInErr) {
+    // User exists, just couldn't auto-sign-in — send to /signin
+    redirect(`/${locale}/signin`);
   }
 
   redirect(`/${locale}`);
