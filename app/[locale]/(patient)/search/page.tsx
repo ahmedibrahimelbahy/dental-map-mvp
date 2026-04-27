@@ -1,9 +1,9 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { listDentists } from "@/lib/dentists/list";
-import { DentistCard } from "@/components/patient/dentist-card";
+import { SearchResults } from "@/components/patient/search-results";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { Search as SearchIcon, MapPin, BadgeDollarSign } from "lucide-react";
+import { Search as SearchIcon } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -141,25 +141,13 @@ export default async function SearchPage({
           </form>
         </aside>
 
-        {/* Results */}
-        <div>
-          {dentists.length === 0 ? (
-            <div className="rounded-2xl border border-ink-100 bg-white p-10 text-center shadow-card">
-              <h3 className="font-display text-[20px] font-bold text-ink-900 mb-2">
-                {t("emptyTitle")}
-              </h3>
-              <p className="text-[14px] text-ink-500 max-w-[44ch] mx-auto">
-                {t("emptyBody")}
-              </p>
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 gap-4">
-              {dentists.map((d) => (
-                <DentistCard key={d.clinicDentistId} d={d} locale={locale} />
-              ))}
-            </div>
-          )}
-        </div>
+        {/* Results — client island with list/map toggle */}
+        <SearchResults
+          dentists={dentists}
+          locale={locale}
+          emptyTitle={t("emptyTitle")}
+          emptyBody={t("emptyBody")}
+        />
       </div>
     </div>
   );
