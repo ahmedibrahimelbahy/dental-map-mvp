@@ -21,3 +21,10 @@ Thumbs.db
 !logo/**/*.jpeg
 !logo/**/*.jpg
 !logo/**/*.png
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/

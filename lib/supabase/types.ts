@@ -16,6 +16,7 @@ export type AppointmentStatus =
   | "completed"
   | "cancelled"
   | "no_show";
+export type CalendarMode = "google" | "manual";
 
 export type WorkingHoursDay = {
   day: number; // 0 = Sunday, 6 = Saturday
@@ -111,6 +112,7 @@ export type Database = {
           fee_egp: number;
           slot_minutes: number;
           working_hours: WorkingHoursDay[];
+          calendar_mode: CalendarMode;
           is_active: boolean;
           created_at: string;
           updated_at: string;
