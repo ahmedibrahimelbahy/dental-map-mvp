@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createBookingEvent } from "@/lib/gcal/events";
-import { sendEmail, bookingPatientEmail } from "@/lib/email/resend";
+import { sendEmail, bookingPatientEmail, bookingClinicEmail } from "@/lib/email/resend";
 import type { CalendarMode } from "@/lib/supabase/types";
 
 export type BookingResult =
@@ -140,22 +140,52 @@ export async function createBookingAction(
     }
   }
 
+  const isAr = input.locale === "ar";
+  const dentistName = isAr ? cd.dentist?.name_ar : cd.dentist?.name_en;
+  const clinicName = isAr ? cd.clinic?.name_ar : cd.clinic?.name_en;
+  const dentistNameEn = cd.dentist?.name_en ?? "Your dentist";
+  const clinicNameEn = cd.clinic?.name_en ?? "";
+
+  // Patient confirmation email
   if (patientEmail) {
     try {
-      const isAr = input.locale === "ar";
-      const dentistName = isAr ? cd.dentist?.name_ar : cd.dentist?.name_en;
-      const clinicName = isAr ? cd.clinic?.name_ar : cd.clinic?.name_en;
-      const emailPayload = bookingPatientEmail({
-        patientName: profile?.full_name ?? "Patient",
-        dentistName: dentistName ?? "Your dentist",
-        clinicName: clinicName ?? "",
-        slotIso: start.toISOString(),
-        feeEgp: cd.fee_egp,
-        locale: input.locale,
+      await sendEmail({
+        to: patientEmail,
+        ...bookingPatientEmail({
+          patientName: profile?.full_name ?? "Patient",
+          dentistName: dentistName ?? dentistNameEn,
+          clinicName: clinicName ?? clinicNameEn,
+          slotIso: start.toISOString(),
+          feeEgp: cd.fee_egp,
+          locale: input.locale,
+        }),
       });
-      await sendEmail({ to: patientEmail, ...emailPayload });
     } catch (e) {
-      console.error("[booking] email send failed (non-fatal):", e);
+      console.error("[booking] patient email failed (non-fatal):", e);
+    }
+  }
+
+  // Clinic admin notification — sent to CLINIC_NOTIFICATION_EMAIL env var.
+  // Pilot shortcut: one env var covers all clinics. Replace with per-clinic
+  // lookup once we have a clinic_admins table.
+  const clinicAdminEmail = process.env.CLINIC_NOTIFICATION_EMAIL ?? null;
+  if (clinicAdminEmail) {
+    try {
+      await sendEmail({
+        to: clinicAdminEmail,
+        ...bookingClinicEmail({
+          patientName: profile?.full_name ?? "Patient",
+          patientPhone: input.patientPhone,
+          patientEmail: patientEmail ?? "",
+          dentistName: dentistNameEn,
+          clinicName: clinicNameEn,
+          slotIso: start.toISOString(),
+          feeEgp: cd.fee_egp,
+          patientNote: input.patientNote,
+        }),
+      });
+    } catch (e) {
+      console.error("[booking] clinic email failed (non-fatal):", e);
     }
   }
 
