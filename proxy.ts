@@ -7,6 +7,6 @@ export const config = {
   matcher: [
     // Match all paths except:
     // - /api, /_next, /_vercel, static files, and anything with a dot
-    "/((?!api|_next|_vercel|.*\\..*).*)",
+    "/((?!api|_next|_vercel|design-brief|.*\\..*).*)",
   ],
 };
