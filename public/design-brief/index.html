@@ -575,9 +575,182 @@
     border-top: 1px dashed var(--ink-200);
     margin: 5mm 0;
   }
+
+  /* ─── Screen-only utilities (hidden in PDF) ───────────── */
+  .screen-only { display: none; }
+  .pdf-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 22px;
+    background: white;
+    color: var(--teal-700);
+    border-radius: 999px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow:
+      0 1px 2px rgba(0,0,0,0.08),
+      0 14px 30px -10px rgba(0,0,0,0.30);
+    transition: transform 0.18s cubic-bezier(0.2,0.7,0.2,1),
+                box-shadow 0.18s cubic-bezier(0.2,0.7,0.2,1);
+  }
+  .pdf-download:hover {
+    transform: translateY(-1px);
+    box-shadow:
+      0 2px 4px rgba(0,0,0,0.10),
+      0 22px 44px -12px rgba(0,0,0,0.38);
+  }
+  .pdf-download .arrow {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--teal-500);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13pt;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  /* ════════════════════════════════════════════════════════════ */
+  /* SCREEN MODE — stack the document as cards in the browser     */
+  /* PDF rendering uses the print styles above, unaffected.       */
+  /* ════════════════════════════════════════════════════════════ */
+  @media screen {
+    html { background: linear-gradient(180deg, #F6FAFA 0%, #E7F7F4 50%, #F6FAFA 100%); }
+    body { padding: 28px 16px 56px 16px; background: transparent; }
+
+    .screen-only { display: block; }
+
+    /* Convert each "print page" into a centred document card */
+    .page,
+    .cover,
+    .section-divider {
+      max-width: 960px;
+      margin: 0 auto 22px auto !important;
+      height: auto !important;
+      min-height: 0 !important;
+      padding: 56px 64px !important;
+      border-radius: 16px;
+      box-shadow:
+        0 1px 2px rgba(15,27,42,0.05),
+        0 18px 50px -16px rgba(15,27,42,0.16);
+      page-break-after: auto !important;
+      break-after: auto !important;
+      background: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Cover keeps its drama — but bounded */
+    .cover {
+      background: linear-gradient(135deg, #08332D 0%, #0E6458 35%, #128074 75%, #1EA58F 100%);
+      color: white;
+      min-height: 640px !important;
+      padding: 72px 64px 60px 64px !important;
+      display: flex !important;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* Section dividers — tinted accent cards */
+    .section-divider {
+      background: var(--surface);
+      border-left: 6px solid var(--teal-500);
+      min-height: 0 !important;
+    }
+    .section-divider h1 { font-size: 40pt; }
+
+    /* Hide the print-only running header & footer on screen */
+    .running-header,
+    .running-footer { display: none !important; }
+
+    /* Don't crop asset cards via parent overflow */
+    .asset-card { overflow: visible; }
+
+    /* Sticky top bar with brand + PDF download */
+    .web-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      max-width: 960px;
+      margin: 0 auto 18px auto;
+      padding: 14px 22px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--ink-100);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow:
+        0 1px 2px rgba(15,27,42,0.04),
+        0 8px 24px -10px rgba(15,27,42,0.10);
+    }
+    .web-topbar .brand {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 14pt;
+      letter-spacing: -0.02em;
+      color: var(--ink-900);
+    }
+    .web-topbar .brand img {
+      width: 30px; height: 30px;
+      border-radius: 7px;
+      object-fit: contain;
+      background: var(--teal-50);
+      padding: 3px;
+    }
+    .web-topbar .brand span { color: var(--teal-500); }
+    .web-topbar .pdf-download { padding: 8px 16px; font-size: 9.5pt; }
+    .web-topbar .pdf-download .arrow { width: 18px; height: 18px; font-size: 10pt; }
+  }
+
+  /* Mobile */
+  @media screen and (max-width: 720px) {
+    body { padding: 12px 8px 32px 8px; }
+    .web-topbar { margin: 0 auto 12px auto; padding: 10px 14px; }
+    .web-topbar .pdf-download span:not(.arrow) { display: none; }
+    .web-topbar .pdf-download { padding: 6px; }
+    .page,
+    .cover,
+    .section-divider {
+      padding: 32px 24px !important;
+      border-radius: 12px;
+      margin-bottom: 14px !important;
+    }
+    .cover { padding: 56px 28px 40px 28px !important; min-height: 540px !important; }
+    .cover-title { font-size: 38pt !important; }
+    .cover-meta { grid-template-columns: 1fr 1fr !important; gap: 6mm !important; }
+    .section-divider h1 { font-size: 30pt !important; }
+    .swatch-grid { grid-template-columns: repeat(2, 1fr) !important; }
+    .meta-row { grid-template-columns: 1fr !important; }
+    .dodont { grid-template-columns: 1fr !important; }
+    table.spec { font-size: 8.5pt !important; }
+    table.spec th, table.spec td { padding: 1.5mm 2mm !important; }
+  }
 </style>
 </head>
 <body>
+
+<!-- Screen-only sticky topbar: brand + PDF download (hidden in PDF) -->
+<div class="web-topbar screen-only" role="banner">
+  <a href="#" class="brand" style="text-decoration:none;">
+    <img src="assets/logo.jpg" alt="Dental Map logo" />
+    <span style="color: var(--ink-900);">Dental<span> Map</span></span>
+    <span style="color: var(--ink-300); font-weight: 500; margin-left: 6px;">· Design Asset Brief</span>
+  </a>
+  <a class="pdf-download" href="dental-map-design-asset-brief.pdf" download>
+    <span class="arrow">↓</span>
+    <span>Download PDF</span>
+  </a>
+</div>
 
 <!-- ════════════════════════════════════════════════════════ -->
 <!-- COVER                                                    -->
