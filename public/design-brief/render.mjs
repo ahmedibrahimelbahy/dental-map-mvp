@@ -26,21 +26,39 @@ function dataUri(rel) {
 }
 
 const original = readFileSync(htmlPath, "utf-8");
-const refCount = (original.match(/src="assets\//g) || []).length;
-const inlined = original.replace(
+
+// Inline <img src="assets/..."> as base64
+const imgRefCount = (original.match(/src="assets\//g) || []).length;
+let working = original.replace(
   /src="(assets\/[^"]+)"/g,
   (_, p) => `src="${dataUri(p)}"`
 );
-if (refCount > 0) {
-  writeFileSync(htmlPath, inlined);
-  console.log(`Inlined ${refCount} <img src> refs as base64.`);
+
+// Inject the logo as a CSS variable so .web-topbar, .cover .brand-row,
+// and the .print-header pseudo-element all reference one inlined copy.
+// Re-injectable: replaces any existing :root --logo-bg block.
+const logoUri = dataUri("assets/logo.jpg");
+const logoVarBlock = `<style id="brand-vars">:root{--logo-bg:url('${logoUri}');}</style>`;
+const reLogoVar = /<style id="brand-vars">[\s\S]*?<\/style>/;
+if (reLogoVar.test(working)) {
+  working = working.replace(reLogoVar, logoVarBlock);
+} else {
+  working = working.replace("</head>", logoVarBlock + "\n</head>");
+}
+
+if (imgRefCount > 0 || !reLogoVar.test(original)) {
+  writeFileSync(htmlPath, working);
+  console.log(
+    `Inlined ${imgRefCount} <img src> refs + 1 CSS --logo-bg variable.`
+  );
   console.log(
     `HTML size: ${(original.length / 1024).toFixed(1)} KB → ${(
-      inlined.length / 1024
+      working.length / 1024
     ).toFixed(1)} KB`
   );
 } else {
-  console.log("No assets/ refs to inline (already self-contained).");
+  console.log("Already self-contained — refreshing logo var only.");
+  writeFileSync(htmlPath, working);
 }
 
 /* ── Step 2: render the (now self-contained) HTML to PDF ─────────────── */
