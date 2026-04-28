@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Dental Map · Clinic Dashboard Concepts · Apr 2026</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink: {
+            50:  "#F7F8F9",
+            100: "#EDEEF1",
+            200: "#D9DCE2",
+            300: "#B5BAC4",
+            400: "#8B92A0",
+            500: "#5F6776",
+            600: "#454C5C",
+            700: "#2F3645",
+            800: "#1F2533",
+            900: "#0F1320",
+          },
+          teal: {
+            50:  "#ECFEFA",
+            100: "#CCFBF1",
+            200: "#A8F1E2",
+            400: "#2DD4BF",
+            500: "#14B8A6",
+            600: "#0D9488",
+            700: "#0F766E",
+            800: "#115E59",
+            900: "#134E4A",
+          },
+          amber: { 50: "#FFFBEB", 100: "#FEF3C7", 200: "#FDE68A", 600: "#D97706", 700: "#B45309" },
+          rose:  { 50: "#FFF1F2", 100: "#FFE4E6", 600: "#E11D48", 700: "#BE123C" },
+          emerald:{50:"#ECFDF5",100:"#D1FAE5",600:"#059669",700:"#047857"}
+        },
+        fontFamily: {
+          display: ['"Fraunces"', 'serif'],
+          sans:    ['"Manrope"', 'system-ui', 'sans-serif'],
+          mono:    ['"JetBrains Mono"', 'monospace'],
+        },
+        boxShadow: {
+          card:  "0 1px 2px rgba(15,19,32,0.04), 0 4px 14px -4px rgba(15,19,32,0.06)",
+          tile:  "0 1px 1px rgba(15,19,32,0.04), 0 8px 28px -10px rgba(15,19,32,0.10)",
+          glow:  "0 8px 32px -8px rgba(13,148,136,0.35)",
+        },
+      }
+    }
+  };
+</script>
+<style>
+  :root { color-scheme: light; }
+  html, body { background: #F7F8F9; }
+  body { font-family: "Manrope", system-ui, sans-serif; color: #0F1320; }
+  .display { font-family: "Fraunces", serif; font-feature-settings: "ss01", "ss02"; letter-spacing: -0.02em; }
+  .small-caps { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: #8B92A0; }
+  .grain {
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.075 0 0 0 0 0.125 0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+  /* page sizing for print + screen */
+  .page {
+    width: 1040px;
+    min-height: 1380px;
+    margin: 24px auto;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(15,19,32,0.04), 0 24px 60px -20px rgba(15,19,32,0.18);
+    border-radius: 18px;
+    padding: 56px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  @media print {
+    @page { size: A4; margin: 0; }
+    html, body { background: #fff; }
+    .page {
+      width: 210mm; height: 297mm; min-height: auto;
+      margin: 0; box-shadow: none; border-radius: 0;
+      padding: 14mm 14mm; page-break-after: always;
+    }
+    .no-print { display: none !important; }
+  }
+  .approach-num {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: 110px;
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    background: linear-gradient(135deg,#0F766E 0%, #14B8A6 60%, #2DD4BF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .pill { display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:9999px; font-size:11px; font-weight:700; letter-spacing:0.04em; }
+  .recommended-pill {
+    background: linear-gradient(135deg,#0F766E 0%, #14B8A6 100%);
+    color: white;
+    box-shadow: 0 6px 20px -8px rgba(13,148,136,0.6);
+  }
+  /* Booking block patterns for the timeline */
+  .blk-booked { background: linear-gradient(180deg,#0D9488 0%, #115E59 100%); }
+  .blk-pending { background: repeating-linear-gradient(45deg,#F59E0B,#F59E0B 4px,#FBBF24 4px,#FBBF24 8px); }
+  .blk-empty   { background: #EDEEF1; }
+  .arrow {
+    width: 0; height: 0;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+  /* sparkline svg helper */
+  .spark { stroke: #0D9488; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  .spark-area { fill: url(#tealgrad); stroke: none; }
+
+  .tile { background: #fff; border: 1px solid #EDEEF1; border-radius: 16px; box-shadow: 0 1px 1px rgba(15,19,32,0.04), 0 8px 28px -10px rgba(15,19,32,0.10); }
+  .kpi-num { font-family:"Fraunces", serif; font-weight: 700; font-size: 38px; letter-spacing: -0.03em; line-height: 1; color: #0F1320; }
+  .kpi-label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #8B92A0; font-weight: 600; }
+  .delta-up   { color: #047857; }
+  .delta-down { color: #BE123C; }
+  /* a soft brand glow behind hero number on cover */
+  .glow-bg {
+    background: radial-gradient(60% 60% at 30% 30%, rgba(20,184,166,0.18), transparent 60%),
+                radial-gradient(40% 40% at 80% 70%, rgba(15,118,110,0.14), transparent 60%);
+  }
+</style>
+</head>
+<body class="text-ink-900">
+
+<!-- ================================================================== -->
+<!-- COVER PAGE                                                          -->
+<!-- ================================================================== -->
+<section class="page glow-bg">
+  <div class="absolute inset-0 grain pointer-events-none opacity-50"></div>
+  <div class="relative z-10 flex flex-col h-full" style="min-height: 1268px;">
+
+    <!-- top brand row -->
+    <div class="flex items-center justify-between mb-12">
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-teal-400 grid place-items-center shadow-glow">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2C8.5 2 6 4.5 6 8c0 1.5 0.4 2.7 0.9 3.7-0.6 1-1 2.2-1 3.6 0 3.5 1.3 6.7 3.4 6.7 1.2 0 1.7-0.7 2.7-0.7s1.5 0.7 2.7 0.7c2.1 0 3.4-3.2 3.4-6.7 0-1.4-0.4-2.6-1-3.6 0.5-1 0.9-2.2 0.9-3.7 0-3.5-2.5-6-6-6z" fill="white"/>
+          </svg>
+        </span>
+        <div>
+          <div class="text-[15px] font-bold tracking-tight">Dental Map</div>
+          <div class="text-[11px] text-ink-400">design proposal · v1</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="small-caps">Apr 28, 2026</div>
+        <div class="text-[12px] text-ink-500 mt-0.5">For: clinic onboarding pilot · Greater Cairo</div>
+      </div>
+    </div>
+
+    <!-- big title -->
+    <div class="flex-1 flex flex-col justify-center">
+      <div class="small-caps text-teal-700 mb-5">Clinic Portal · Dashboard Concepts</div>
+      <h1 class="display text-[88px] leading-[0.95] font-bold mb-6">
+        Three ways to give clinics<br/>
+        a <span class="italic" style="color:#0F766E">home</span> they actually open.
+      </h1>
+      <p class="text-[18px] leading-[1.6] text-ink-500 max-w-[58ch]">
+        We explored three flavors of clinic-side dashboard for the pilot. Each is built around
+        the data we have today — bookings, dentists, working hours, calendar mode — and gives
+        the clinic owner a single place to see how the practice is doing and act on it.
+      </p>
+
+      <div class="flex items-center gap-3 mt-12">
+        <div class="pill bg-ink-100 text-ink-700">A · Command Center</div>
+        <div class="pill bg-ink-100 text-ink-700">B · Analytics-First</div>
+        <div class="pill recommended-pill">C · Bento Grid · Recommended</div>
+      </div>
+    </div>
+
+    <!-- footer -->
+    <div class="mt-auto pt-10 border-t border-ink-100 flex items-end justify-between">
+      <div class="text-[12px] text-ink-400 leading-relaxed">
+        Egypt's first integrated patient → dentist booking platform.<br/>
+        Built on Supabase + Next.js. Synced with Google Calendar.
+      </div>
+      <div class="text-[10px] text-ink-300 font-mono">DM-CONCEPT-2026-04</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- APPROACH 1 — COMMAND CENTER                                         -->
+<!-- ================================================================== -->
+<section class="page">
+  <div class="flex items-start justify-between mb-6">
+    <div class="flex items-baseline gap-5">
+      <div class="approach-num">01</div>
+      <div>
+        <div class="small-caps text-teal-700">Approach</div>
+        <h2 class="display text-[44px] font-bold leading-[1] mb-2">Command Center</h2>
+        <p class="text-[14px] text-ink-500 max-w-[58ch]">
+          The morning-routine dashboard. Today's timeline is the hero — receptionists and
+          owners both get their answers in one glance.
+        </p>
+      </div>
+    </div>
+    <div class="pill bg-ink-100 text-ink-700">workflow-first</div>
+  </div>
+
+  <!-- mockup -->
+  <div class="rounded-2xl border border-ink-100 bg-ink-50 p-5 shadow-card">
+    <!-- header bar -->
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <div class="display text-[18px] font-bold">Today · Sun 28 Apr</div>
+        <div class="text-[11px] text-ink-500">Clinic Plus, Zamalek · 3 dentists active</div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="pill bg-amber-100 text-amber-700">3 unconfirmed</span>
+        <span class="pill bg-teal-100 text-teal-700">1 in chair now</span>
+      </div>
+    </div>
+
+    <!-- timeline -->
+    <div class="bg-white rounded-xl p-4 shadow-card mb-4">
+      <div class="grid grid-cols-[80px_repeat(12,1fr)] gap-1 text-[10px] text-ink-400 font-medium mb-2">
+        <div></div>
+        <div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+        <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div>
+      </div>
+      <!-- Dr. Sara -->
+      <div class="grid grid-cols-[80px_repeat(12,1fr)] gap-1 mb-1.5 items-center">
+        <div class="text-[12px] font-bold text-ink-700">Dr. Sara</div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-pending"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+      </div>
+      <!-- Dr. Ahmed -->
+      <div class="grid grid-cols-[80px_repeat(12,1fr)] gap-1 mb-1.5 items-center">
+        <div class="text-[12px] font-bold text-ink-700">Dr. Ahmed</div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-pending"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+      </div>
+      <!-- Dr. Mona -->
+      <div class="grid grid-cols-[80px_repeat(12,1fr)] gap-1 items-center">
+        <div class="text-[12px] font-bold text-ink-700">Dr. Mona</div>
+        <div class="h-7 rounded blk-pending"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-booked"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+        <div class="h-7 rounded blk-empty"></div>
+      </div>
+
+      <div class="flex items-center gap-4 mt-4 pt-3 border-t border-ink-100">
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded blk-booked"></div><span class="text-[11px] text-ink-500">Confirmed</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded blk-pending"></div><span class="text-[11px] text-ink-500">Pending confirmation</span></div>
+        <div class="flex items-center gap-1.5"><div class="w-3 h-3 rounded blk-empty"></div><span class="text-[11px] text-ink-500">Open slot</span></div>
+      </div>
+    </div>
+
+    <!-- KPI strip -->
+    <div class="grid grid-cols-4 gap-3 mb-4">
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">This week</div>
+        <div class="kpi-num mt-1">24</div>
+        <div class="text-[11px] delta-up font-bold mt-1">▲ 12% vs last</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">Revenue</div>
+        <div class="kpi-num mt-1">EGP 18.4k</div>
+        <div class="text-[11px] delta-up font-bold mt-1">▲ 18%</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">Filled hrs</div>
+        <div class="kpi-num mt-1">89%</div>
+        <div class="text-[11px] delta-up font-bold mt-1">▲ 4 pts</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">No-show</div>
+        <div class="kpi-num mt-1">1</div>
+        <div class="text-[11px] delta-down font-bold mt-1">▼ 50%</div>
+      </div>
+    </div>
+
+    <!-- Action queue -->
+    <div class="bg-white rounded-xl p-4 shadow-card">
+      <div class="small-caps mb-3">Action queue</div>
+      <div class="space-y-2">
+        <div class="flex items-center justify-between p-2.5 rounded-lg bg-amber-50 border border-amber-100">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 grid place-items-center text-[11px]">⚠</span>
+            <span class="text-[13px] text-ink-800">3 bookings tomorrow not confirmed</span>
+          </div>
+          <button class="px-3 py-1 rounded-md bg-amber-600 text-white text-[11px] font-bold">Send WhatsApp</button>
+        </div>
+        <div class="flex items-center justify-between p-2.5 rounded-lg bg-rose-50 border border-rose-100">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded-full bg-rose-100 text-rose-700 grid place-items-center text-[11px]">!</span>
+            <span class="text-[13px] text-ink-800">Patient hasn't shown: Ahmed Foly · 11:00</span>
+          </div>
+          <button class="px-3 py-1 rounded-md bg-rose-600 text-white text-[11px] font-bold">Mark no-show</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pros/cons -->
+  <div class="grid grid-cols-2 gap-5 mt-6">
+    <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-5">
+      <div class="small-caps text-emerald-700 mb-2">Why this works</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Receptionist + owner both get value daily</li>
+        <li>· Every action is one click — no menu hunting</li>
+        <li>· Today's timeline is the universal mental model</li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-rose-100 bg-rose-50/50 p-5">
+      <div class="small-caps text-rose-700 mb-2">The trade-off</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Looks like an ops tool, not a brand surface</li>
+        <li>· Less screenshot-worthy for marketing</li>
+        <li>· Trends and growth are pushed below the fold</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- APPROACH 2 — STRIPE-STYLE ANALYTICS                                 -->
+<!-- ================================================================== -->
+<section class="page">
+  <div class="flex items-start justify-between mb-6">
+    <div class="flex items-baseline gap-5">
+      <div class="approach-num">02</div>
+      <div>
+        <div class="small-caps text-teal-700">Approach</div>
+        <h2 class="display text-[44px] font-bold leading-[1] mb-2">Analytics-First</h2>
+        <p class="text-[14px] text-ink-500 max-w-[58ch]">
+          The numbers are the hero. Designed for owners who want to see the practice as a
+          business — growth, revenue mix, who's pulling weight.
+        </p>
+      </div>
+    </div>
+    <div class="pill bg-ink-100 text-ink-700">data-first</div>
+  </div>
+
+  <!-- mockup -->
+  <div class="rounded-2xl border border-ink-100 bg-ink-50 p-5 shadow-card">
+
+    <!-- big headline number -->
+    <div class="bg-white rounded-xl p-5 shadow-card mb-4 grid grid-cols-[1fr_auto] items-center gap-6">
+      <div>
+        <div class="kpi-label">Bookings this month</div>
+        <div class="flex items-baseline gap-3 mt-1">
+          <div class="display text-[64px] font-bold leading-none tracking-tight">142</div>
+          <div class="text-[14px] delta-up font-bold">▲ 23% vs last month</div>
+        </div>
+      </div>
+      <!-- sparkline -->
+      <svg viewBox="0 0 220 60" class="w-[260px] h-[60px]">
+        <defs>
+          <linearGradient id="tealgrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#14B8A6" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#14B8A6" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path class="spark-area" d="M0,45 L15,40 L30,42 L45,30 L60,32 L75,28 L90,18 L105,22 L120,14 L135,18 L150,10 L165,12 L180,6 L195,9 L210,4 L220,8 L220,60 L0,60 Z"/>
+        <path class="spark" d="M0,45 L15,40 L30,42 L45,30 L60,32 L75,28 L90,18 L105,22 L120,14 L135,18 L150,10 L165,12 L180,6 L195,9 L210,4 L220,8"/>
+      </svg>
+    </div>
+
+    <!-- 4 KPI cards -->
+    <div class="grid grid-cols-4 gap-3 mb-4">
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">Revenue</div>
+        <div class="kpi-num mt-1">EGP 105k</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">Filled hrs</div>
+        <div class="kpi-num mt-1">86%</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">No-show</div>
+        <div class="kpi-num mt-1">4.2%</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label">Avg fee</div>
+        <div class="kpi-num mt-1">EGP 740</div>
+      </div>
+    </div>
+
+    <!-- Bookings over time + by dentist + specialty mix -->
+    <div class="grid grid-cols-3 gap-3 mb-4">
+      <div class="col-span-2 bg-white rounded-xl p-4 shadow-card">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <div class="kpi-label">Bookings · last 30 days</div>
+          </div>
+          <div class="text-[11px] text-ink-400 font-medium">daily</div>
+        </div>
+        <div class="grid grid-cols-30 items-end gap-[3px] h-[120px]">
+          <!-- 30 bars -->
+          <div class="bg-teal-200 rounded-sm" style="height:30%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:55%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:42%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:68%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:38%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:75%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:52%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:48%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:62%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:78%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:55%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:38%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:65%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:88%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:72%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:60%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:82%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:48%"></div>
+          <div class="bg-teal-200 rounded-sm" style="height:54%"></div>
+          <div class="bg-teal-400 rounded-sm" style="height:78%"></div>
+          <div class="bg-teal-400 rounded-sm" style="height:64%"></div>
+          <div class="bg-teal-400 rounded-sm" style="height:70%"></div>
+          <div class="bg-teal-400 rounded-sm" style="height:92%"></div>
+          <div class="bg-teal-400 rounded-sm" style="height:75%"></div>
+          <div class="bg-teal-500 rounded-sm" style="height:85%"></div>
+          <div class="bg-teal-500 rounded-sm" style="height:68%"></div>
+          <div class="bg-teal-500 rounded-sm" style="height:55%"></div>
+          <div class="bg-teal-600 rounded-sm" style="height:95%"></div>
+          <div class="bg-teal-600 rounded-sm" style="height:82%"></div>
+          <div class="bg-teal-700 rounded-sm" style="height:72%"></div>
+        </div>
+        <div class="flex justify-between mt-2 text-[10px] text-ink-400 font-medium">
+          <span>30 Mar</span><span>14 Apr</span><span>28 Apr</span>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl p-4 shadow-card">
+        <div class="kpi-label mb-3">Specialty mix</div>
+        <div class="flex items-center justify-center mb-3">
+          <!-- donut -->
+          <svg viewBox="0 0 42 42" class="w-[140px] h-[140px]">
+            <circle cx="21" cy="21" r="15.91549" fill="#fff" stroke="#EDEEF1" stroke-width="6"/>
+            <!-- 40% Adult -->
+            <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#0F766E" stroke-width="6" stroke-dasharray="40 60" stroke-dashoffset="25" />
+            <!-- 25% Cosmetic -->
+            <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#14B8A6" stroke-width="6" stroke-dasharray="25 75" stroke-dashoffset="-15" />
+            <!-- 20% Ortho -->
+            <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#2DD4BF" stroke-width="6" stroke-dasharray="20 80" stroke-dashoffset="-40" />
+            <!-- 15% Pedi -->
+            <circle cx="21" cy="21" r="15.91549" fill="transparent" stroke="#A8F1E2" stroke-width="6" stroke-dasharray="15 85" stroke-dashoffset="-60" />
+          </svg>
+        </div>
+        <div class="space-y-1.5 text-[12px]">
+          <div class="flex items-center justify-between"><span class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-teal-700"></div>Adult</span><span class="font-bold">40%</span></div>
+          <div class="flex items-center justify-between"><span class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-teal-500"></div>Cosmetic</span><span class="font-bold">25%</span></div>
+          <div class="flex items-center justify-between"><span class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-teal-400"></div>Orthodontic</span><span class="font-bold">20%</span></div>
+          <div class="flex items-center justify-between"><span class="flex items-center gap-1.5"><div class="w-2 h-2 rounded-full bg-teal-200"></div>Pediatric</span><span class="font-bold">15%</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Revenue by dentist -->
+    <div class="bg-white rounded-xl p-4 shadow-card">
+      <div class="kpi-label mb-3">Revenue by dentist · this month</div>
+      <div class="space-y-2">
+        <div class="grid grid-cols-[100px_1fr_70px] items-center gap-3">
+          <div class="text-[13px] font-bold">Dr. Sara</div>
+          <div class="h-3 rounded-full bg-ink-100"><div class="h-3 rounded-full bg-teal-700" style="width:38%"></div></div>
+          <div class="text-[12px] font-bold text-right">EGP 39.9k</div>
+        </div>
+        <div class="grid grid-cols-[100px_1fr_70px] items-center gap-3">
+          <div class="text-[13px] font-bold">Dr. Ahmed</div>
+          <div class="h-3 rounded-full bg-ink-100"><div class="h-3 rounded-full bg-teal-500" style="width:28%"></div></div>
+          <div class="text-[12px] font-bold text-right">EGP 29.4k</div>
+        </div>
+        <div class="grid grid-cols-[100px_1fr_70px] items-center gap-3">
+          <div class="text-[13px] font-bold">Dr. Mona</div>
+          <div class="h-3 rounded-full bg-ink-100"><div class="h-3 rounded-full bg-teal-400" style="width:24%"></div></div>
+          <div class="text-[12px] font-bold text-right">EGP 25.2k</div>
+        </div>
+        <div class="grid grid-cols-[100px_1fr_70px] items-center gap-3">
+          <div class="text-[13px] font-bold">Dr. Yasmin</div>
+          <div class="h-3 rounded-full bg-ink-100"><div class="h-3 rounded-full bg-teal-200" style="width:10%"></div></div>
+          <div class="text-[12px] font-bold text-right">EGP 10.5k</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- pros/cons -->
+  <div class="grid grid-cols-2 gap-5 mt-6">
+    <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-5">
+      <div class="small-caps text-emerald-700 mb-2">Why this works</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Owner sees their business at a glance</li>
+        <li>· Charts make growth screenshot-worthy</li>
+        <li>· Best for pitching the platform to bigger clinics</li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-rose-100 bg-rose-50/50 p-5">
+      <div class="small-caps text-rose-700 mb-2">The trade-off</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Receptionist gets nothing useful here</li>
+        <li>· Needs a separate "Today" page for ops</li>
+        <li>· Charts need 2+ weeks of data to look right (cold start)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- APPROACH 3 — BENTO GRID (RECOMMENDED)                               -->
+<!-- ================================================================== -->
+<section class="page">
+  <div class="flex items-start justify-between mb-6">
+    <div class="flex items-baseline gap-5">
+      <div class="approach-num">03</div>
+      <div>
+        <div class="small-caps text-teal-700">Approach</div>
+        <h2 class="display text-[44px] font-bold leading-[1] mb-2">Bento Grid</h2>
+        <p class="text-[14px] text-ink-500 max-w-[58ch]">
+          Each tile is one widget. Operations and analytics share the screen, every tile is
+          independent code so we can grow the dashboard without a rewrite.
+        </p>
+      </div>
+    </div>
+    <div class="pill recommended-pill">★ recommended</div>
+  </div>
+
+  <!-- mockup: bento -->
+  <div class="rounded-2xl bg-ink-50 p-5 shadow-card border border-ink-100">
+
+    <div class="grid grid-cols-12 grid-rows-[auto_auto_auto] gap-3">
+      <!-- LEFT: today's schedule (large, 7 cols) -->
+      <div class="col-span-7 row-span-2 tile p-5">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <div class="small-caps">Today's schedule</div>
+            <div class="display text-[20px] font-bold leading-none mt-1">Sun · 28 Apr</div>
+          </div>
+          <span class="pill bg-teal-100 text-teal-700">3 dentists · 12 slots</span>
+        </div>
+
+        <!-- timeline -->
+        <div class="grid grid-cols-[60px_repeat(12,1fr)] gap-1 text-[9px] text-ink-400 font-medium mb-1.5">
+          <div></div>
+          <div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
+          <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div>
+        </div>
+        <div class="grid grid-cols-[60px_repeat(12,1fr)] gap-1 mb-1.5 items-center">
+          <div class="text-[10.5px] font-bold text-ink-700">Sara</div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-pending"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+        </div>
+        <div class="grid grid-cols-[60px_repeat(12,1fr)] gap-1 mb-1.5 items-center">
+          <div class="text-[10.5px] font-bold text-ink-700">Ahmed</div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-pending"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+        </div>
+        <div class="grid grid-cols-[60px_repeat(12,1fr)] gap-1 items-center">
+          <div class="text-[10.5px] font-bold text-ink-700">Mona</div>
+          <div class="h-6 rounded blk-pending"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-booked"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+          <div class="h-6 rounded blk-empty"></div>
+        </div>
+
+        <div class="flex items-center gap-3 mt-4 pt-3 border-t border-ink-100 text-[10px] text-ink-500">
+          <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded blk-booked"></div>Confirmed</div>
+          <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded blk-pending"></div>Pending</div>
+          <div class="flex items-center gap-1"><div class="w-2.5 h-2.5 rounded blk-empty"></div>Open</div>
+        </div>
+      </div>
+
+      <!-- RIGHT: 4 KPI tiles (5 cols, 2x2) -->
+      <div class="col-span-5 grid grid-cols-2 gap-3 row-span-2">
+        <div class="tile p-4 relative overflow-hidden">
+          <div class="kpi-label">This week</div>
+          <div class="kpi-num mt-1.5">24</div>
+          <div class="text-[10.5px] delta-up font-bold mt-1.5">▲ 12%</div>
+          <svg viewBox="0 0 80 30" class="absolute right-2 bottom-2 w-[70px] h-[26px]">
+            <path class="spark" d="M0,22 L10,18 L20,20 L30,12 L40,15 L50,8 L60,10 L70,4 L80,6"/>
+          </svg>
+        </div>
+        <div class="tile p-4 relative overflow-hidden">
+          <div class="kpi-label">Revenue</div>
+          <div class="kpi-num mt-1.5">EGP 18.4k</div>
+          <div class="text-[10.5px] delta-up font-bold mt-1.5">▲ 18%</div>
+          <svg viewBox="0 0 80 30" class="absolute right-2 bottom-2 w-[70px] h-[26px]">
+            <path class="spark" d="M0,24 L10,20 L20,22 L30,16 L40,18 L50,12 L60,8 L70,5 L80,3"/>
+          </svg>
+        </div>
+        <div class="tile p-4 relative overflow-hidden">
+          <div class="kpi-label">Filled hrs</div>
+          <div class="kpi-num mt-1.5">89%</div>
+          <div class="text-[10.5px] delta-up font-bold mt-1.5">▲ 4 pts</div>
+          <svg viewBox="0 0 80 30" class="absolute right-2 bottom-2 w-[70px] h-[26px]">
+            <path class="spark" d="M0,16 L10,18 L20,14 L30,16 L40,12 L50,10 L60,8 L70,9 L80,6"/>
+          </svg>
+        </div>
+        <div class="tile p-4 relative overflow-hidden">
+          <div class="kpi-label">No-show</div>
+          <div class="kpi-num mt-1.5">1</div>
+          <div class="text-[10.5px] delta-down font-bold mt-1.5">▼ 50%</div>
+          <svg viewBox="0 0 80 30" class="absolute right-2 bottom-2 w-[70px] h-[26px]">
+            <path class="spark" d="M0,8 L10,12 L20,10 L30,15 L40,18 L50,16 L60,20 L70,22 L80,24" stroke="#BE123C"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Leaderboard (full width) -->
+      <div class="col-span-12 tile p-5">
+        <div class="flex items-center justify-between mb-3">
+          <div class="small-caps">Dentist leaderboard</div>
+          <span class="text-[11px] text-ink-400 font-medium">this week · sortable</span>
+        </div>
+        <div class="grid grid-cols-[1.4fr_0.6fr_0.7fr_0.6fr_2fr] gap-3 text-[10.5px] text-ink-400 font-bold uppercase tracking-wider mb-2 px-1">
+          <div>Dentist</div><div>Bookings</div><div>Revenue</div><div>Filled</div><div></div>
+        </div>
+        <div class="space-y-1">
+          <div class="grid grid-cols-[1.4fr_0.6fr_0.7fr_0.6fr_2fr] gap-3 items-center px-1 py-2 rounded-lg hover:bg-ink-50">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-teal-500 text-white grid place-items-center text-[10px] font-bold">SH</div>
+              <span class="text-[13px] font-bold">Dr. Sara Hassan</span>
+            </div>
+            <div class="text-[13px] font-semibold">9</div>
+            <div class="text-[13px] font-semibold">EGP 6,750</div>
+            <div class="text-[13px] font-semibold">92%</div>
+            <div class="h-2 rounded-full bg-ink-100"><div class="h-2 rounded-full bg-teal-600" style="width:92%"></div></div>
+          </div>
+          <div class="grid grid-cols-[1.4fr_0.6fr_0.7fr_0.6fr_2fr] gap-3 items-center px-1 py-2 rounded-lg hover:bg-ink-50">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-teal-400 text-white grid place-items-center text-[10px] font-bold">AF</div>
+              <span class="text-[13px] font-bold">Dr. Ahmed Fawzy</span>
+            </div>
+            <div class="text-[13px] font-semibold">8</div>
+            <div class="text-[13px] font-semibold">EGP 6,000</div>
+            <div class="text-[13px] font-semibold">88%</div>
+            <div class="h-2 rounded-full bg-ink-100"><div class="h-2 rounded-full bg-teal-500" style="width:88%"></div></div>
+          </div>
+          <div class="grid grid-cols-[1.4fr_0.6fr_0.7fr_0.6fr_2fr] gap-3 items-center px-1 py-2 rounded-lg hover:bg-ink-50">
+            <div class="flex items-center gap-2">
+              <div class="w-7 h-7 rounded-full bg-teal-200 text-teal-800 grid place-items-center text-[10px] font-bold">MS</div>
+              <span class="text-[13px] font-bold">Dr. Mona Soliman</span>
+            </div>
+            <div class="text-[13px] font-semibold">7</div>
+            <div class="text-[13px] font-semibold">EGP 5,650</div>
+            <div class="text-[13px] font-semibold">86%</div>
+            <div class="h-2 rounded-full bg-ink-100"><div class="h-2 rounded-full bg-teal-400" style="width:86%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action queue + Calendar health -->
+      <div class="col-span-7 tile p-5">
+        <div class="small-caps mb-3">Action queue</div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between p-2.5 rounded-lg bg-amber-50 border border-amber-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 grid place-items-center text-[11px]">⚠</span>
+              <span class="text-[12.5px] text-ink-800">3 bookings tomorrow not confirmed</span>
+            </div>
+            <button class="px-2.5 py-1 rounded-md bg-amber-600 text-white text-[10.5px] font-bold">WhatsApp</button>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-lg bg-rose-50 border border-rose-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-rose-100 text-rose-700 grid place-items-center text-[11px]">!</span>
+              <span class="text-[12.5px] text-ink-800">Patient hasn't shown: Ahmed Foly · 11:00</span>
+            </div>
+            <button class="px-2.5 py-1 rounded-md bg-rose-600 text-white text-[10.5px] font-bold">Mark no-show</button>
+          </div>
+          <div class="flex items-center justify-between p-2.5 rounded-lg bg-teal-50 border border-teal-100">
+            <div class="flex items-center gap-2">
+              <span class="w-6 h-6 rounded-full bg-teal-100 text-teal-700 grid place-items-center text-[11px]">★</span>
+              <span class="text-[12.5px] text-ink-800">Add a clinic photo — boosts profile views by ~40%</span>
+            </div>
+            <button class="px-2.5 py-1 rounded-md bg-teal-600 text-white text-[10.5px] font-bold">Upload</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-span-5 tile p-5">
+        <div class="small-caps mb-3">Calendar health</div>
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <span class="text-[12.5px] font-bold">Dr. Sara</span>
+            </div>
+            <span class="text-[11px] text-ink-500">synced 2m ago</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+              <span class="text-[12.5px] font-bold">Dr. Ahmed</span>
+            </div>
+            <span class="text-[11px] text-ink-500">manual mode</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <span class="text-[12.5px] font-bold">Dr. Mona</span>
+            </div>
+            <span class="text-[11px] text-ink-500">synced 5m ago</span>
+          </div>
+        </div>
+        <button class="mt-4 w-full py-2 rounded-lg border border-ink-200 text-[11.5px] font-bold text-ink-700 hover:bg-ink-50">Manage calendars</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- pros/cons -->
+  <div class="grid grid-cols-2 gap-5 mt-6">
+    <div class="rounded-xl border border-emerald-100 bg-emerald-50/50 p-5">
+      <div class="small-caps text-emerald-700 mb-2">Why we recommend it</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Best of A and B — both data and workflow on one screen</li>
+        <li>· Bento aesthetic = distinctly Dental Map, not generic SaaS</li>
+        <li>· Tiles are independent code — easy to add Reviews, Insurance, Retention later</li>
+        <li>· Scales gracefully from 1-dentist to 10-dentist clinics</li>
+      </ul>
+    </div>
+    <div class="rounded-xl border border-rose-100 bg-rose-50/50 p-5">
+      <div class="small-caps text-rose-700 mb-2">The trade-off</div>
+      <ul class="text-[13px] leading-[1.65] text-ink-700 space-y-1.5">
+        <li>· Slightly more design polish needed up front</li>
+        <li>· Some tiles look empty in cold-start phase (first 2 weeks)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ================================================================== -->
+<!-- COMPARISON / DECISION                                               -->
+<!-- ================================================================== -->
+<section class="page">
+  <div class="mb-8">
+    <div class="small-caps text-teal-700 mb-3">Decision</div>
+    <h2 class="display text-[52px] font-bold leading-[1] mb-3">At a glance.</h2>
+    <p class="text-[15px] text-ink-500 max-w-[68ch]">
+      Each direction emphasises different users. The bento grid wins because it serves both the
+      owner *and* the receptionist on one screen, and the modular layout is the easiest to
+      iterate on as we learn what pilot clinics actually look at.
+    </p>
+  </div>
+
+  <!-- comparison table -->
+  <div class="rounded-2xl border border-ink-100 overflow-hidden shadow-card">
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] bg-ink-900 text-white text-[12px] font-bold tracking-wide uppercase">
+      <div class="p-4">Criterion</div>
+      <div class="p-4">01 Command</div>
+      <div class="p-4">02 Analytics</div>
+      <div class="p-4 bg-teal-700">03 Bento ★</div>
+    </div>
+    <!-- rows -->
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Daily ops fit</div>
+      <div class="p-4 text-emerald-700 font-bold">Excellent</div>
+      <div class="p-4 text-rose-700 font-bold">Weak</div>
+      <div class="p-4 text-emerald-700 font-bold bg-teal-50/50">Excellent</div>
+    </div>
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Owner / KPI fit</div>
+      <div class="p-4 text-amber-700 font-bold">Good</div>
+      <div class="p-4 text-emerald-700 font-bold">Excellent</div>
+      <div class="p-4 text-emerald-700 font-bold bg-teal-50/50">Excellent</div>
+    </div>
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Visual identity / craft</div>
+      <div class="p-4 text-amber-700 font-bold">Plain</div>
+      <div class="p-4 text-amber-700 font-bold">Conventional</div>
+      <div class="p-4 text-emerald-700 font-bold bg-teal-50/50">Distinctive</div>
+    </div>
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Cold-start friendly</div>
+      <div class="p-4 text-emerald-700 font-bold">Yes</div>
+      <div class="p-4 text-rose-700 font-bold">Charts feel empty</div>
+      <div class="p-4 text-emerald-700 font-bold bg-teal-50/50">Yes (modular tiles)</div>
+    </div>
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Implementation effort</div>
+      <div class="p-4 text-emerald-700 font-bold">Lowest</div>
+      <div class="p-4 text-amber-700 font-bold">Medium</div>
+      <div class="p-4 text-amber-700 font-bold bg-teal-50/50">Medium</div>
+    </div>
+    <div class="grid grid-cols-[1.5fr_1fr_1fr_1fr] border-t border-ink-100 text-[13px]">
+      <div class="p-4 font-bold bg-ink-50">Future-proofness</div>
+      <div class="p-4 text-amber-700 font-bold">Limited</div>
+      <div class="p-4 text-amber-700 font-bold">Limited</div>
+      <div class="p-4 text-emerald-700 font-bold bg-teal-50/50">Highest</div>
+    </div>
+  </div>
+
+  <!-- Roadmap once 3 is picked -->
+  <div class="mt-10">
+    <div class="small-caps text-teal-700 mb-3">If we pick Bento — what we ship in week 1</div>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl bg-white border border-ink-100 p-5 shadow-card">
+        <div class="display text-[28px] font-bold leading-none mb-2">01</div>
+        <div class="font-bold text-[14px] mb-1">Today's schedule + 4 KPI tiles</div>
+        <div class="text-[12.5px] text-ink-500">Real-data tiles plug into the bookings table we already have. Done in days, not weeks.</div>
+      </div>
+      <div class="rounded-xl bg-white border border-ink-100 p-5 shadow-card">
+        <div class="display text-[28px] font-bold leading-none mb-2">02</div>
+        <div class="font-bold text-[14px] mb-1">Leaderboard + action queue</div>
+        <div class="text-[12.5px] text-ink-500">Action queue is the most underrated tile — turns the dashboard from a report into a tool.</div>
+      </div>
+      <div class="rounded-xl bg-white border border-ink-100 p-5 shadow-card">
+        <div class="display text-[28px] font-bold leading-none mb-2">03</div>
+        <div class="font-bold text-[14px] mb-1">Calendar health + profile completeness</div>
+        <div class="text-[12.5px] text-ink-500">Surfaces the parts of clinic onboarding that need the dentist's attention.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="mt-auto pt-12 flex items-center justify-between border-t border-ink-100">
+    <div class="text-[11px] text-ink-400">Dental Map · Concept v1 · Apr 2026</div>
+    <div class="text-[11px] text-ink-400">Recommended path: <span class="font-bold text-teal-700">03 — Bento Grid</span></div>
+  </div>
+</section>
+
+<!-- print helper -->
+<div class="no-print fixed bottom-6 right-6 flex gap-2">
+  <button onclick="window.print()" class="px-4 py-2.5 rounded-lg bg-teal-600 text-white text-[13px] font-bold shadow-glow hover:bg-teal-700">Save as PDF</button>
+</div>
+
+</body>
+</html>
