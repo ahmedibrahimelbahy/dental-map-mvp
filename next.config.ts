@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
+  async rewrites() {
+    return [
+      { source: "/design-brief", destination: "/design-brief/index.html" },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

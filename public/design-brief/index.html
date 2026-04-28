@@ -1,0 +1,2748 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dental Map — Design Asset Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  /* ─── Page setup ─────────────────────────────────────── */
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+  }
+
+  :root {
+    --teal-50:  #E7F7F4;
+    --teal-100: #C6EDE6;
+    --teal-200: #9DDFD3;
+    --teal-300: #6FD0BD;
+    --teal-400: #3FBFA6;
+    --teal-500: #1EA58F;
+    --teal-600: #128074;
+    --teal-700: #0E6458;
+    --teal-800: #0B4B42;
+    --teal-900: #08332D;
+
+    --ink-50:  #F6F8FA;
+    --ink-100: #E4E7EB;
+    --ink-200: #CBD1D9;
+    --ink-300: #A1ABB8;
+    --ink-400: #6C7787;
+    --ink-500: #475568;
+    --ink-600: #334155;
+    --ink-700: #1F2A3C;
+    --ink-800: #162132;
+    --ink-900: #0F1B2A;
+
+    --surface: #F6FAFA;
+    --coral-100: #FDE4DB;
+    --coral-500: #F2704E;
+    --coral-600: #D65735;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Manrope', system-ui, sans-serif;
+    color: var(--ink-900);
+    font-size: 10pt;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ─── Page wrappers ──────────────────────────────────── */
+  .page {
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+    padding-top: 6mm;
+  }
+  .page:last-child {
+    page-break-after: auto;
+  }
+
+  /* Cover overrides A4 margins via full-bleed positioning trick */
+  .cover {
+    page-break-after: always;
+    break-after: page;
+    position: relative;
+    margin: -18mm -16mm 0 -16mm;
+    height: 261mm;
+    background: linear-gradient(135deg, #08332D 0%, #0E6458 35%, #128074 75%, #1EA58F 100%);
+    color: white;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 22mm 18mm 18mm 18mm;
+  }
+  .cover::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(40% 30% at 85% 12%, rgba(255,255,255,0.10), transparent 60%),
+      radial-gradient(50% 40% at 15% 95%, rgba(63,191,166,0.30), transparent 65%);
+    pointer-events: none;
+  }
+  .cover::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.04 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    mix-blend-mode: screen;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .cover > * { position: relative; z-index: 1; }
+
+  .cover-mark {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cover-mark img {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: white;
+    padding: 6px;
+    object-fit: contain;
+  }
+  .cover-mark .wordmark {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    font-size: 22pt;
+    line-height: 1;
+  }
+  .cover-mark .wordmark span { color: var(--teal-200); }
+
+  .cover-title {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-size: 56pt;
+    line-height: 0.95;
+    max-width: 16ch;
+  }
+  .cover-title em {
+    font-style: normal;
+    color: var(--teal-200);
+  }
+
+  .cover-meta {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12mm;
+    border-top: 1px solid rgba(255,255,255,0.20);
+    padding-top: 6mm;
+  }
+  .cover-meta dt {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7pt;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal-200);
+    margin-bottom: 4px;
+  }
+  .cover-meta dd {
+    font-size: 11pt;
+    font-weight: 600;
+    margin: 0;
+  }
+  .cover-tagline {
+    font-size: 13pt;
+    line-height: 1.45;
+    max-width: 52ch;
+    color: rgba(255,255,255,0.88);
+    font-weight: 400;
+  }
+  .cover-tagline strong { color: white; font-weight: 600; }
+
+  /* ─── Running header & footer ────────────────────────── */
+  .running-header {
+    position: fixed;
+    top: 6mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-400);
+  }
+  .running-header .left { display: flex; align-items: center; gap: 8px; }
+  .running-header .left img { width: 14px; height: 14px; border-radius: 3px; object-fit: contain; }
+  .running-header .right { color: var(--teal-600); }
+
+  .running-footer {
+    position: fixed;
+    bottom: 8mm;
+    left: 16mm;
+    right: 16mm;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7pt;
+    color: var(--ink-300);
+  }
+
+  .cover ~ * .running-header,
+  .cover ~ * .running-footer { display: flex; }
+
+  /* ─── Section divider pages ──────────────────────────── */
+  .section-divider {
+    page-break-after: always;
+    break-after: page;
+    height: 261mm;
+    margin: -18mm -16mm 0 -16mm;
+    padding: 24mm 18mm;
+    background: var(--surface);
+    border-left: 6mm solid var(--teal-500);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .section-divider .eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9pt;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--teal-600);
+    margin-bottom: 10mm;
+  }
+  .section-divider .number {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 18pt;
+    font-weight: 700;
+    color: var(--ink-300);
+    margin-bottom: 4mm;
+  }
+  .section-divider h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    font-size: 48pt;
+    line-height: 1;
+    color: var(--ink-900);
+    margin: 0 0 10mm 0;
+    max-width: 20ch;
+  }
+  .section-divider p {
+    font-size: 13pt;
+    line-height: 1.5;
+    color: var(--ink-600);
+    max-width: 60ch;
+    margin: 0;
+  }
+  .section-divider .toc-row {
+    margin-top: 14mm;
+    border-top: 1px solid var(--ink-100);
+    padding-top: 6mm;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4mm 8mm;
+  }
+  .section-divider .toc-row span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    color: var(--ink-500);
+  }
+  .section-divider .toc-row span b {
+    color: var(--teal-700);
+    font-weight: 700;
+  }
+
+  /* ─── Page typography ────────────────────────────────── */
+  h2.section-h {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    font-size: 22pt;
+    line-height: 1.1;
+    color: var(--ink-900);
+    margin: 0 0 4mm 0;
+  }
+  h3.asset-h {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    font-size: 14pt;
+    line-height: 1.2;
+    color: var(--ink-900);
+    margin: 0 0 1.5mm 0;
+  }
+  h3.asset-h .asset-id {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9pt;
+    font-weight: 600;
+    color: white;
+    background: var(--teal-600);
+    padding: 1.5mm 2.5mm;
+    border-radius: 4px;
+    margin-right: 3mm;
+    vertical-align: 2px;
+  }
+  h4.sub-h {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 8pt;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    margin: 0 0 1.5mm 0;
+  }
+  p { margin: 0 0 2.5mm 0; }
+  p.lede {
+    font-size: 11pt;
+    color: var(--ink-600);
+    line-height: 1.55;
+    margin-bottom: 5mm;
+    max-width: 70ch;
+  }
+  ul, ol { margin: 0 0 3mm 0; padding-left: 5mm; }
+  li { margin-bottom: 1.5mm; }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 8.5pt;
+    background: var(--ink-50);
+    color: var(--ink-700);
+    padding: 0.5mm 1.5mm;
+    border-radius: 3px;
+    border: 1px solid var(--ink-100);
+  }
+
+  /* ─── Asset card ─────────────────────────────────────── */
+  .asset-card {
+    border: 1px solid var(--ink-100);
+    border-left: 3px solid var(--teal-500);
+    border-radius: 8px;
+    padding: 6mm 6mm 5mm 6mm;
+    margin-bottom: 6mm;
+    background: white;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .asset-card .meta-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+    margin: 3mm 0 4mm 0;
+    padding: 3mm 4mm;
+    background: var(--surface);
+    border-radius: 6px;
+    font-size: 9pt;
+  }
+  .asset-card .meta-row dt {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7pt;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    margin-bottom: 1mm;
+  }
+  .asset-card .meta-row dd {
+    margin: 0 0 2mm 0;
+    color: var(--ink-700);
+  }
+  .asset-card .meta-row dd:last-child { margin-bottom: 0; }
+
+  /* Spec table */
+  table.spec {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2mm 0 3mm 0;
+    font-size: 9pt;
+  }
+  table.spec th, table.spec td {
+    text-align: left;
+    padding: 2mm 3mm;
+    border-bottom: 1px solid var(--ink-100);
+    vertical-align: top;
+  }
+  table.spec th {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    border-bottom: 1.5px solid var(--teal-300);
+  }
+  table.spec td code { font-size: 8pt; }
+
+  /* Two-column do/don't */
+  .dodont {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4mm;
+    margin-top: 3mm;
+  }
+  .dodont .col {
+    border-radius: 6px;
+    padding: 3mm 4mm;
+  }
+  .dodont .do {
+    background: #ECFDF5;
+    border: 1px solid #A7F3D0;
+  }
+  .dodont .dont {
+    background: #FEF2F2;
+    border: 1px solid #FECACA;
+  }
+  .dodont h5 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 8pt;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 0 0 1.5mm 0;
+  }
+  .dodont .do h5 { color: #047857; }
+  .dodont .dont h5 { color: #B91C1C; }
+  .dodont ul {
+    margin: 0;
+    padding-left: 4mm;
+    font-size: 9pt;
+    line-height: 1.45;
+  }
+  .dodont .do ul { color: #064E3B; }
+  .dodont .dont ul { color: #7F1D1D; }
+  .dodont li { margin-bottom: 0.8mm; }
+
+  /* References row */
+  .refs {
+    margin-top: 3mm;
+    padding: 2.5mm 3.5mm;
+    background: var(--ink-50);
+    border-radius: 5px;
+    font-size: 9pt;
+    color: var(--ink-600);
+  }
+  .refs strong {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    display: block;
+    margin-bottom: 1mm;
+  }
+
+  /* Screenshot frame */
+  .screenshot {
+    margin: 4mm 0;
+    border: 1px solid var(--ink-100);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--surface);
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  .screenshot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .screenshot .caption {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: var(--ink-500);
+    padding: 2mm 3mm;
+    border-top: 1px solid var(--ink-100);
+    background: white;
+  }
+
+  /* Color swatch grid */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2mm;
+    margin: 3mm 0 5mm 0;
+  }
+  .swatch {
+    border-radius: 5px;
+    overflow: hidden;
+    border: 1px solid var(--ink-100);
+  }
+  .swatch .chip { height: 16mm; }
+  .swatch .label {
+    padding: 1.5mm 2mm;
+    font-size: 7.5pt;
+    background: white;
+  }
+  .swatch .label .name {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+    color: var(--ink-800);
+    display: block;
+  }
+  .swatch .label .hex {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-500);
+    font-size: 7pt;
+  }
+
+  /* Type spec block */
+  .type-spec {
+    border: 1px solid var(--ink-100);
+    border-radius: 6px;
+    padding: 4mm;
+    margin-bottom: 3mm;
+    background: white;
+  }
+  .type-spec .label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--teal-700);
+    margin-bottom: 1mm;
+  }
+  .type-spec .preview {
+    margin-bottom: 1.5mm;
+    color: var(--ink-900);
+  }
+  .type-spec .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 7.5pt;
+    color: var(--ink-500);
+  }
+
+  /* Pull-quote / callout */
+  .callout {
+    border-left: 3px solid var(--coral-500);
+    background: #FFF7F4;
+    padding: 4mm 5mm;
+    border-radius: 0 6px 6px 0;
+    margin: 4mm 0;
+    font-size: 10pt;
+  }
+  .callout strong {
+    color: var(--coral-600);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 700;
+  }
+
+  /* Inline pill */
+  .pill {
+    display: inline-block;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 7.5pt;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 1mm 2.5mm;
+    border-radius: 999px;
+    background: var(--teal-50);
+    color: var(--teal-700);
+    border: 1px solid var(--teal-200);
+  }
+  .pill.coral {
+    background: var(--coral-100);
+    color: var(--coral-600);
+    border-color: var(--coral-500);
+  }
+  .pill.ink {
+    background: var(--ink-50);
+    color: var(--ink-700);
+    border-color: var(--ink-200);
+  }
+
+  /* Dividers between asset cards */
+  hr.soft {
+    border: 0;
+    border-top: 1px dashed var(--ink-200);
+    margin: 5mm 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- COVER                                                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="cover">
+  <div class="cover-mark">
+    <img src="assets/logo.jpg" alt="Dental Map" />
+    <div class="wordmark">Dental<span> Map</span></div>
+  </div>
+
+  <div>
+    <div style="font-family:'Plus Jakarta Sans',sans-serif;font-size:9pt;font-weight:800;letter-spacing:0.22em;text-transform:uppercase;color:var(--teal-200);margin-bottom:8mm;">
+      Internal · Dev → Design
+    </div>
+    <h1 class="cover-title">
+      Design Asset<br/><em>Brief.</em>
+    </h1>
+    <p class="cover-tagline" style="margin-top:8mm;">
+      Every visual asset we need from the design team to take Dental Map
+      from <strong>functional MVP</strong> to <strong>shippable product</strong>
+      across the patient surface, dentist dashboard, marketing site, email,
+      and pilot collateral.
+    </p>
+  </div>
+
+  <dl class="cover-meta">
+    <div>
+      <dt>Project</dt>
+      <dd>Dental Map</dd>
+    </div>
+    <div>
+      <dt>Document</dt>
+      <dd>Visual asset request v1.0</dd>
+    </div>
+    <div>
+      <dt>Date</dt>
+      <dd>2026-04-28</dd>
+    </div>
+    <div>
+      <dt>Pages</dt>
+      <dd>9 categories · ~50 assets</dd>
+    </div>
+  </dl>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · 2. Brand foundation                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 2</div>
+  <div class="number">02</div>
+  <h1>Existing brand foundation.</h1>
+  <p>
+    What's already locked in code and shipping to users. Treat this as the
+    floor, not the ceiling — refine, don't break. Anything you change here
+    flows through every asset that follows.
+  </p>
+  <div class="toc-row">
+    <span><b>2.1</b> Palette</span>
+    <span><b>2.2</b> Type stack</span>
+    <span><b>2.3</b> Existing logo</span>
+    <span><b>2.4</b> Spacing &amp; shadow tokens</span>
+    <span><b>2.5</b> Personality direction</span>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- 2. Brand foundation — content                            -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§2 · Brand foundation</span>
+  </div>
+  <div class="running-footer">
+    <span>v1.0 · 2026-04-28 · Internal — Dev → Design</span>
+    <span></span>
+  </div>
+
+  <h2 class="section-h">2.1 &nbsp;Palette</h2>
+  <p class="lede">
+    Two anchors (teal &amp; ink), one warm surface, one accent. Sampled directly
+    from the existing logo and locked in <code>tailwind.config.ts</code>. Hex values
+    below are authoritative — please don't substitute close-but-different shades.
+  </p>
+
+  <h4 class="sub-h">Teal — primary brand &amp; CTAs</h4>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="chip" style="background:#E7F7F4"></div><div class="label"><span class="name">teal-50</span><span class="hex">#E7F7F4</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#C6EDE6"></div><div class="label"><span class="name">teal-100</span><span class="hex">#C6EDE6</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#9DDFD3"></div><div class="label"><span class="name">teal-200</span><span class="hex">#9DDFD3</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#6FD0BD"></div><div class="label"><span class="name">teal-300</span><span class="hex">#6FD0BD</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#3FBFA6"></div><div class="label"><span class="name">teal-400</span><span class="hex">#3FBFA6</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#1EA58F"></div><div class="label"><span class="name">teal-500 ★</span><span class="hex">#1EA58F</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#128074"></div><div class="label"><span class="name">teal-600</span><span class="hex">#128074</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#0E6458"></div><div class="label"><span class="name">teal-700</span><span class="hex">#0E6458</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#0B4B42"></div><div class="label"><span class="name">teal-800</span><span class="hex">#0B4B42</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#08332D"></div><div class="label"><span class="name">teal-900</span><span class="hex">#08332D</span></div></div>
+  </div>
+  <p style="font-size:9pt;color:var(--ink-500);">★ = primary brand value (logo pin, primary CTAs, focus rings, map pins, badges).</p>
+
+  <h4 class="sub-h" style="margin-top:5mm;">Ink — typography &amp; surfaces</h4>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="chip" style="background:#F6F8FA"></div><div class="label"><span class="name">ink-50</span><span class="hex">#F6F8FA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#E4E7EB"></div><div class="label"><span class="name">ink-100</span><span class="hex">#E4E7EB</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#CBD1D9"></div><div class="label"><span class="name">ink-200</span><span class="hex">#CBD1D9</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#A1ABB8"></div><div class="label"><span class="name">ink-300</span><span class="hex">#A1ABB8</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#6C7787"></div><div class="label"><span class="name">ink-400</span><span class="hex">#6C7787</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#475568"></div><div class="label"><span class="name">ink-500</span><span class="hex">#475568</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#334155"></div><div class="label"><span class="name">ink-600</span><span class="hex">#334155</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#1F2A3C"></div><div class="label"><span class="name">ink-700</span><span class="hex">#1F2A3C</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#162132"></div><div class="label"><span class="name">ink-800</span><span class="hex">#162132</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#0F1B2A"></div><div class="label"><span class="name">ink-900 ★</span><span class="hex">#0F1B2A</span></div></div>
+  </div>
+
+  <h4 class="sub-h" style="margin-top:5mm;">Accent &amp; surface</h4>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="chip" style="background:#F6FAFA"></div><div class="label"><span class="name">surface</span><span class="hex">#F6FAFA</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#FDE4DB"></div><div class="label"><span class="name">coral-100</span><span class="hex">#FDE4DB</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#F2704E"></div><div class="label"><span class="name">coral-500</span><span class="hex">#F2704E</span></div></div>
+    <div class="swatch"><div class="chip" style="background:#D65735"></div><div class="label"><span class="name">coral-600</span><span class="hex">#D65735</span></div></div>
+    <div class="swatch"><div class="chip" style="background:white;border:1px dashed var(--ink-200)"></div><div class="label"><span class="name">white</span><span class="hex">#FFFFFF</span></div></div>
+  </div>
+  <p style="font-size:9pt;color:var(--ink-500);">
+    Coral is sparingly used — only for "offer", "new", or attention-pulling badges.
+    Never as a primary CTA. Surface (<code>#F6FAFA</code>) alternates with white for
+    section banding.
+  </p>
+
+  <div class="callout">
+    <strong>Constraint:</strong> teal <code>#1EA58F</code> is the single primary
+    brand value. Patient hero CTAs, dentist-side primary actions, focus rings,
+    map pins, verified-tick checks, and active nav states all derive from it.
+    Don't introduce a second equally-weighted brand color.
+  </div>
+</section>
+
+<!-- 2.2 Type stack ─────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§2 · Brand foundation</span>
+  </div>
+  <div class="running-footer">
+    <span>v1.0 · 2026-04-28 · Internal — Dev → Design</span>
+    <span></span>
+  </div>
+
+  <h2 class="section-h">2.2 &nbsp;Type stack</h2>
+  <p class="lede">
+    Four families. Plus Jakarta Sans for display, Manrope for body, Cairo for all
+    Arabic glyphs, JetBrains Mono for code &amp; metadata. Loaded from Google Fonts.
+    Wired in via CSS variables (<code>--font-jakarta</code>, <code>--font-manrope</code>,
+    <code>--font-cairo</code>, <code>--font-jetbrains</code>).
+  </p>
+
+  <div class="type-spec">
+    <div class="label">Display — Plus Jakarta Sans (Latin) + Cairo (Arabic)</div>
+    <div class="preview" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:32pt;letter-spacing:-0.035em;line-height:1;">
+      Better dental care, without the phone tag.
+    </div>
+    <div class="meta">
+      Weights 700 / 800 · letter-spacing −0.03em on H1, −0.02em on H2 · used for
+      hero headlines, section heads, dentist names on cards, dashboard titles.
+    </div>
+  </div>
+
+  <div class="type-spec">
+    <div class="label">Body — Manrope (Latin) + Cairo (Arabic)</div>
+    <div class="preview" style="font-family:'Manrope',sans-serif;font-weight:400;font-size:11pt;line-height:1.65;max-width:60ch;">
+      Search 50+ verified dentists across Cairo. See real open slots. Book
+      instantly — the slot you pick lands in the clinic's own calendar, not a
+      lead queue.
+    </div>
+    <div class="meta">
+      Weights 300 / 400 / 500 / 600 / 700 · line-height 1.55–1.7 for body,
+      1.4 for labels · default UI text everywhere.
+    </div>
+  </div>
+
+  <div class="type-spec">
+    <div class="label">Mono — JetBrains Mono</div>
+    <div class="preview" style="font-family:'JetBrains Mono',monospace;font-size:10pt;color:var(--ink-700);">
+      booking_id · 4f8a2c1e &nbsp;·&nbsp; 2026-05-02 14:30 &nbsp;Africa/Cairo
+    </div>
+    <div class="meta">
+      Weights 400 / 500 / 600 · used sparingly for IDs, timestamps, slot codes,
+      and metadata pills (e.g. small-caps eyebrows have a mono-ish character but
+      use Jakarta with letter-spacing 0.14em).
+    </div>
+  </div>
+
+  <div class="type-spec">
+    <div class="label">Arabic display — Cairo</div>
+    <div class="preview" style="font-family:'Cairo','Plus Jakarta Sans',sans-serif;font-weight:800;font-size:28pt;line-height:1.15;direction:rtl;">
+      رعاية أسنان أفضل، بدون مكالمات هاتفية.
+    </div>
+    <div class="meta">
+      Cairo handles both Arabic display &amp; body. Pair with Manrope sizing,
+      apply <code>line-height: 1.7</code> for Arabic body (the script needs more
+      vertical space than Latin). Never letter-space Arabic.
+    </div>
+  </div>
+
+  <div class="dodont">
+    <div class="col do">
+      <h5>Do</h5>
+      <ul>
+        <li>Pair Jakarta + Manrope — never Jakarta alone.</li>
+        <li>Apply <code>letter-spacing: -0.03em</code> on display sizes ≥28pt.</li>
+        <li>Use <code>line-height: 1.7</code> for Arabic body, 1.55 for Latin.</li>
+        <li>Use small-caps eyebrows (Jakarta, 8pt, tracking 0.18em, uppercase).</li>
+      </ul>
+    </div>
+    <div class="col dont">
+      <h5>Don't</h5>
+      <ul>
+        <li>Don't use Inter, Geist, SF Pro, or "system-ui" — those break brand.</li>
+        <li>Don't introduce a serif. Brand is sans-only.</li>
+        <li>Don't letter-space Arabic — Cairo's metrics don't support it.</li>
+        <li>Don't go below 11px / 8pt for body text.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 2.3 Existing logo ──────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§2 · Brand foundation</span>
+  </div>
+  <div class="running-footer">
+    <span>v1.0 · 2026-04-28 · Internal — Dev → Design</span>
+    <span></span>
+  </div>
+
+  <h2 class="section-h">2.3 &nbsp;Existing logo (current state)</h2>
+  <p class="lede">
+    What ships today. Single raster JPEG at <code>public/dental-map-logo.jpg</code>,
+    rendered at 36×36px in the site header and 48×48px on the auth pages.
+    See <strong>Section 3.A</strong> for what we need delivered.
+  </p>
+
+  <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:6mm;align-items:start;">
+    <div style="border:1px solid var(--ink-100);border-radius:8px;padding:10mm;background:var(--surface);text-align:center;">
+      <img src="assets/logo.jpg" alt="" style="width:36mm;height:36mm;object-fit:contain;"/>
+      <div style="margin-top:3mm;font-family:'JetBrains Mono',monospace;font-size:7.5pt;color:var(--ink-500);">
+        public/dental-map-logo.jpg · 1024×1024 raster
+      </div>
+    </div>
+    <div>
+      <h4 class="sub-h">Issues we need fixed</h4>
+      <ul style="font-size:9.5pt;">
+        <li>JPEG, not vector — pixelates above 200px, can't recolor.</li>
+        <li>No transparent background — currently has hard-baked white square; bleeds visibly on tinted surfaces.</li>
+        <li>No dark-mode variant — illegible on dark hero / footer.</li>
+        <li>No icon-only mark — header on small screens still ships the full lockup.</li>
+        <li>No favicon set — currently using Next.js default.</li>
+        <li>No PWA icons — installable PWA is on roadmap (post-pilot).</li>
+        <li>Wordmark "Dental Map" is set in the live header at <code>components/brand-mark.tsx</code> using Plus Jakarta Sans with a teal accent on "Map" — this is rendered as live HTML, not part of the logo file. Worth deciding whether to formalize as a true wordmark asset.</li>
+      </ul>
+
+      <h4 class="sub-h" style="margin-top:5mm;">What's signature about it</h4>
+      <ul style="font-size:9.5pt;">
+        <li>The map-pin silhouette — speaks to "find a dentist near me".</li>
+        <li>The clean tooth glyph inside the pin — speaks to "this is dental, not generic health".</li>
+        <li>The teal hue — calm, clinical, modern (avoids the medical-blue cliché).</li>
+      </ul>
+
+      <p style="font-size:9.5pt;margin-top:3mm;">
+        These three properties are the brand's anchor. The redrawn vector logo
+        must keep all three; otherwise we're rebranding, not refining.
+      </p>
+    </div>
+  </div>
+
+  <h2 class="section-h" style="margin-top:8mm;">2.4 &nbsp;Spacing &amp; shadow tokens</h2>
+  <p style="font-size:9.5pt;">
+    Already defined in <code>tailwind.config.ts</code>. Honor these when designing
+    cards, modals, popovers, and any container that lives inside the app.
+  </p>
+  <table class="spec">
+    <thead>
+      <tr><th>Token</th><th>Value</th><th>Use</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>shadow-card</code></td><td><code>0 1px 2px rgba(15,27,42,0.04), 0 6px 18px -8px rgba(15,27,42,0.10)</code></td><td>Default card resting state (dentist cards, panels, modals).</td></tr>
+      <tr><td><code>shadow-card-hover</code></td><td><code>0 2px 4px rgba(15,27,42,0.05), 0 16px 40px -12px rgba(15,27,42,0.18)</code></td><td>Card hover. Always pair with <code>-translate-y-0.5</code>.</td></tr>
+      <tr><td><code>shadow-search</code></td><td><code>0 2px 4px rgba(15,27,42,0.04), 0 20px 60px -18px rgba(15,27,42,0.20)</code></td><td>Hero search bar — the one floating shadow on the home surface.</td></tr>
+      <tr><td><code>shadow-teal-glow</code></td><td><code>0 10px 30px -14px rgba(30,165,143,0.45)</code></td><td>Primary CTAs only. Never on inert chrome.</td></tr>
+      <tr><td><code>rounded-2xl</code></td><td>1rem (16px)</td><td>Cards, modals, hero panels, image frames.</td></tr>
+      <tr><td><code>rounded-xl</code></td><td>0.75rem (12px)</td><td>Buttons, inputs, avatars, small chips.</td></tr>
+      <tr><td><code>rounded-full</code></td><td>9999px</td><td>Pills, status badges, avatars.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:8mm;">2.5 &nbsp;Personality direction</h2>
+  <p class="lede" style="margin-bottom:2mm;">Three short rails the design team should hold to.</p>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4mm;margin-top:3mm;">
+    <div style="border:1px solid var(--ink-100);border-radius:6px;padding:4mm;background:white;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11pt;color:var(--teal-700);margin-bottom:1mm;">Confident</div>
+      <p style="font-size:9pt;margin:0;color:var(--ink-600);">We replace phone tag with a real booking. Don't hedge. No "maybe", no "we'll try", no apology copy.</p>
+    </div>
+    <div style="border:1px solid var(--ink-100);border-radius:6px;padding:4mm;background:white;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11pt;color:var(--teal-700);margin-bottom:1mm;">Calmly clinical</div>
+      <p style="font-size:9pt;margin:0;color:var(--ink-600);">Adjacent to healthcare without being cold or sterile. Generous whitespace, low-saturation color, soft shadows.</p>
+    </div>
+    <div style="border:1px solid var(--ink-100);border-radius:6px;padding:4mm;background:white;">
+      <div style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:11pt;color:var(--teal-700);margin-bottom:1mm;">Respectfully Egyptian</div>
+      <p style="font-size:9pt;margin:0;color:var(--ink-600);">Arabic-first. Cairo references where useful (areas, dialect cues). No clichés (no pyramids, no sphinxes, no "ancient" anything).</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-top:6mm;">
+    <strong>Avoid:</strong> the "Vezeeta look" (heavy blue, medical illustration, stock photos), the "kids' clinic" look (cartoony tooth mascots), and the "Western SaaS" look (purple gradients, abstract floating cards).
+    Dental Map sits between Linear's restraint and Practo's regional authenticity.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · A. Brand identity refinement           -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category A</div>
+  <div class="number">A</div>
+  <h1>Brand identity refinement.</h1>
+  <p>
+    Take the current raster logo and rebuild the brand mark as a vector system —
+    full lockup, icon-only, wordmark-only, with dark / light / monochrome variants
+    and the supporting platform asset set (favicon, PWA, social preview).
+  </p>
+  <div class="toc-row">
+    <span><b>A.1</b> Vector logo lockups</span>
+    <span><b>A.2</b> Logo color variants</span>
+    <span><b>A.3</b> Clear-space &amp; min-size</span>
+    <span><b>A.4</b> Favicon set</span>
+    <span><b>A.5</b> PWA icons</span>
+    <span><b>A.6</b> Brand guidelines page</span>
+  </div>
+</section>
+
+<!-- A.1 Vector logo lockups ────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§A · Brand identity</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">A.1 &nbsp;Vector logo — three lockups</h2>
+  <p class="lede">
+    The single raster <code>public/dental-map-logo.jpg</code> needs to become a
+    proper vector system. Three lockups, each living at a different scale and
+    surface in the product.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">A.1.a</span>Full lockup (mark + wordmark, horizontal)</h3>
+    <p>The signature. Mark on the leading edge, "Dental Map" wordmark trailing. Used in the site header on screens ≥640px, on email headers, on the cover of any document, on social profile banners.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/brand-mark.tsx</code> (header, currently inlined)<br/>email templates · social banners · sales kit</dd>
+        <dt>Reference rendering today</dt>
+        <dd>36×36 raster + live HTML wordmark "Dental<span style="color:var(--teal-500);font-weight:800"> Map</span>" set in Plus Jakarta Sans 19px / 800.</dd>
+      </div>
+      <div>
+        <dt>Deliverables</dt>
+        <dd>SVG (primary) + PDF (print-safe) + PNG @1x/2x/3x at 240×64, 480×128, 720×192. Embedded fonts in the SVG (don't reference external).</dd>
+        <dt>Naming</dt>
+        <dd><code>logo-full-color.svg</code>, <code>logo-full-color@2x.png</code>, …</dd>
+      </div>
+    </dl>
+    <div class="refs">
+      <strong>References to consider</strong>
+      Linear (mark + wordmark proportions, restraint), Practo (regional clinical confidence), Vercel (mark/wordmark spacing rhythm). The teal accent on "Map" is currently set in code — formalize it inside the SVG so external use stays consistent.
+    </div>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Outline the wordmark to paths — no font dependency at use-time.</li>
+          <li>Keep the mark anchored to the wordmark's cap-height optical centre.</li>
+          <li>Preserve the existing teal accent on "Map".</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't reduce padding around the mark below 6% of mark width.</li>
+          <li>Don't redraw the tooth-in-pin into something generic.</li>
+          <li>Don't ship the SVG with referenced (external) fonts.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">A.1.b</span>Icon-only mark</h3>
+    <p>The pin alone. Used everywhere the wordmark won't fit or would compete: favicons, PWA icons, app launcher, mobile header (&lt;640px), in-app empty-state graphics, footer collapse, social profile avatar, WhatsApp business avatar.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd>mobile header (where wordmark hides via <code>hidden sm:block</code>) · favicons · PWA · social avatar · email signature · clinic stickers (Section I)</dd>
+      </div>
+      <div>
+        <dt>Deliverables</dt>
+        <dd>SVG (primary, viewBox 0 0 64 64) + PNG export script ready for downstream sizing. Provide both rounded-square and circle-cropped variants.</dd>
+      </div>
+    </dl>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Design the mark to read at 16×16 (favicon size) — simplify silhouettes that disappear at that scale.</li>
+          <li>Provide a "monogram" abbreviation if simplification is needed (e.g. tooth-only) — decide one, ship it.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't ship multiple competing icon-only versions ("which one is canonical?" is a bug).</li>
+          <li>Don't use thin strokes that disappear at 32px or below.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">A.1.c</span>Wordmark-only</h3>
+    <p>"Dental Map" set as outlined paths, no mark. Used in narrow horizontal contexts — long footer rows, partner logo grids, email signatures where the mark already appears in the avatar slot.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd>footer · email signatures · partner pages · sales-kit page footers</dd>
+      </div>
+      <div>
+        <dt>Deliverables</dt>
+        <dd>SVG outlined paths · cap-height locked at 64px in source · keep teal accent on "Map".</dd>
+      </div>
+    </dl>
+    <div class="refs">
+      <strong>Reference</strong> Stripe's wordmark behavior in the footer — minimal, outlined, tonally lower than the masthead.
+    </div>
+  </div>
+</section>
+
+<!-- A.2 Logo color variants ────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§A · Brand identity</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">A.2 &nbsp;Color variants</h2>
+  <p class="lede">
+    Each lockup from A.1 needs four color variants to cover every surface the
+    logo lands on across the product, marketing, email, and print collateral.
+  </p>
+
+  <table class="spec">
+    <thead>
+      <tr><th>Variant</th><th>Filename suffix</th><th>Where used</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="pill">Full-color (default)</span></td>
+        <td><code>-color</code></td>
+        <td>White / light surfaces. Site header, email body, sales-kit cover, profile pages.</td>
+      </tr>
+      <tr>
+        <td><span class="pill ink" style="background:var(--ink-900);color:white;border-color:var(--ink-900)">On-dark</span></td>
+        <td><code>-on-dark</code></td>
+        <td>Cover hero (deep teal/ink gradient), email dark-mode rendering, dentist-facing splash, video stills.</td>
+      </tr>
+      <tr>
+        <td><span class="pill ink">Monochrome ink</span></td>
+        <td><code>-mono-ink</code></td>
+        <td>One-color print, fax forms (yes — pilot clinics may print), small embossed stickers.</td>
+      </tr>
+      <tr>
+        <td><span class="pill" style="background:white;color:var(--ink-700);border-color:var(--ink-200)">Monochrome white</span></td>
+        <td><code>-mono-white</code></td>
+        <td>On photography, on coral / accent backgrounds, on full-bleed photo OG images.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:9.5pt;margin-top:3mm;">
+    Full delivery matrix: <strong>3 lockups × 4 variants = 12 files in SVG</strong>,
+    plus PNG @1x/2x/3x for each = <strong>48 raster exports</strong>. Provide a
+    single Figma file as source-of-truth and a build script (or your tool's export
+    preset) so we can regenerate without re-asking you.
+  </p>
+
+  <h2 class="section-h" style="margin-top:8mm;">A.3 &nbsp;Clear-space &amp; minimum size</h2>
+  <p class="lede">Define both as part of the brand-guidelines page (A.6). Specifically we need clear values for:</p>
+  <ul>
+    <li><strong>Clear-space:</strong> the "no other elements may enter" zone around the mark, expressed as a multiple of the mark's cap-height (e.g. 0.5× cap-height on all sides). Most brands set this once and forget — we want it explicit.</li>
+    <li><strong>Minimum size on screen:</strong> the smallest pixel size at which the mark stays legible. Define separately for full lockup (likely ≥120px wide), icon-only (likely ≥24px), wordmark-only (likely ≥80px wide).</li>
+    <li><strong>Minimum size in print:</strong> for the sales kit and clinic stickers — typically full lockup ≥30mm wide, icon-only ≥10mm.</li>
+  </ul>
+
+  <div class="callout">
+    <strong>Today's headache:</strong> the live header passes <code>compact</code> to <code>BrandMark</code> on auth pages but the same raster logo gets squashed at 36px. With a vector mark + a defined min-size, that bug goes away.
+  </div>
+
+  <h2 class="section-h" style="margin-top:8mm;">A.4 &nbsp;Favicon set</h2>
+  <p class="lede">Browser-tab and bookmark icon. Currently a Next.js placeholder.</p>
+  <table class="spec">
+    <thead>
+      <tr><th>File</th><th>Size</th><th>Format</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>favicon.ico</code></td><td>16×16, 32×32, 48×48 (multi-res)</td><td>ICO</td><td>Lives at <code>app/favicon.ico</code>. Optimize the 16×16 layer separately — it cannot just be a downscale.</td></tr>
+      <tr><td><code>icon-192.png</code></td><td>192×192</td><td>PNG</td><td>Android home-screen.</td></tr>
+      <tr><td><code>icon-512.png</code></td><td>512×512</td><td>PNG</td><td>Android splash.</td></tr>
+      <tr><td><code>apple-touch-icon.png</code></td><td>180×180</td><td>PNG (no transparency)</td><td>iOS home-screen. Solid teal background, white mark — never a transparent PNG (iOS adds a white box).</td></tr>
+      <tr><td><code>safari-pinned-tab.svg</code></td><td>vector</td><td>SVG (single path, monochrome)</td><td>Safari pinned-tab. Color is set by the user's accent color, not by you.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:8mm;">A.5 &nbsp;PWA installable icons</h2>
+  <p class="lede">Required for the PWA install prompt (post-pilot roadmap, but assets-first is cheap).</p>
+  <ul>
+    <li><code>icon-192-maskable.png</code> — 192×192, with safe-zone padding (the icon must survive a circular mask, a squircle mask, and a rounded-rect mask).</li>
+    <li><code>icon-512-maskable.png</code> — 512×512, same constraints.</li>
+    <li><code>icon-192-any.png</code> &amp; <code>icon-512-any.png</code> — non-maskable variants for legacy installers.</li>
+    <li>Maskable safe-zone is a centred 80% circle inside the canvas — anything outside may be cropped.</li>
+  </ul>
+</section>
+
+<!-- A.6 Brand guidelines page ──────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§A · Brand identity</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">A.6 &nbsp;Brand guidelines — single page</h2>
+  <p class="lede">
+    Not a 40-page brand bible. One A4 page (or a single Notion / Figma page)
+    that anyone — a freelance illustrator, a partner, a journalist asking for
+    our logo — can read in under two minutes.
+  </p>
+
+  <h4 class="sub-h">Required sections (in this order)</h4>
+  <ol style="font-size:10pt;">
+    <li><strong>Logo lockups</strong> — the three from A.1, side by side, with filename + SVG link.</li>
+    <li><strong>Color variants</strong> — the 4 swatches from A.2, on-surface examples (light, dark, photo, accent).</li>
+    <li><strong>Clear-space &amp; min-size</strong> — diagrammed (cap-height grid, min-px callouts).</li>
+    <li><strong>Color palette</strong> — the swatches from §2.1, with hex + RGB + role.</li>
+    <li><strong>Type stack</strong> — Plus Jakarta Sans, Manrope, Cairo, JetBrains Mono with sample lines.</li>
+    <li><strong>Don'ts</strong> — 6 visual examples of common abuses: stretched, recolored to non-brand teal, on busy photo without overlay, mark-only with extra wordmark added, mark inside a circle (it's already a pin), tilted.</li>
+    <li><strong>Asset access</strong> — link to the Figma source + the exported asset folder.</li>
+    <li><strong>Contact</strong> — who to ping when in doubt (single email — likely the founding team).</li>
+  </ol>
+
+  <p class="lede" style="margin-top:5mm;">
+    Format: deliver as a Figma frame (so we can iterate inline) <em>and</em> as a
+    static PDF for external partners. Naming: <code>brand-guidelines-v1.pdf</code>.
+  </p>
+
+  <div class="callout">
+    <strong>Discipline:</strong> if a guideline can't be applied without reading
+    a paragraph, it's not a guideline — it's an aspiration. Diagrams over prose.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · B. Social & OG images                  -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category B</div>
+  <div class="number">B</div>
+  <h1>Social &amp; OG images.</h1>
+  <p>
+    Every link Dental Map appears in — WhatsApp, X/Twitter, LinkedIn, Slack
+    pastes — needs a designed preview, not the auto-screenshot Next.js
+    currently fills with. Multiple variants per surface so a shared profile
+    link looks different from a shared search.
+  </p>
+  <div class="toc-row">
+    <span><b>B.1</b> Default OG (1200×630)</span>
+    <span><b>B.2</b> Per-page OG variants</span>
+    <span><b>B.3</b> Twitter/X card</span>
+    <span><b>B.4</b> WhatsApp preview</span>
+  </div>
+</section>
+
+<!-- B.1 Default OG ─────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§B · Social &amp; OG</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">B.1 &nbsp;Default OG image</h2>
+  <p class="lede">
+    What appears when the homepage is shared. Currently nothing — Next.js
+    serves a default screenshot, which is illegible at thumbnail size.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">B.1</span>Homepage default OG</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Dimensions</dt>
+        <dd>1200×630 (Open Graph), with safe-zone in central 1080×566 (~10% padding).</dd>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/layout.tsx</code> &rarr; <code>metadata.openGraph.images</code></dd>
+      </div>
+      <div>
+        <dt>Locale variants</dt>
+        <dd>Two: <code>og-home-en.png</code> and <code>og-home-ar.png</code> (RTL layout, Arabic copy).</dd>
+        <dt>File format</dt>
+        <dd>PNG (preferred for crisp text) or WebP. Keep under 300KB each.</dd>
+      </div>
+    </dl>
+    <p>
+      <strong>Composition:</strong> dominant headline ("Better dental care, without the
+      phone tag." / "رعاية أسنان أفضل، بدون مكالمات هاتفية."), Dental Map full lockup
+      bottom-left, the teal-pin map dot pattern bottom-right or as a soft texture, no
+      photography. Text needs to be readable at 600×315 (the WhatsApp preview size).
+    </p>
+    <div class="refs">
+      <strong>References</strong>
+      Linear's release-note OG cards (single bold line + mark + soft accent), Vercel's docs OG (gradient + restrained type), Notion's empty-state OG (one line of value, no clutter). Avoid: stock dental photography, smiling-patient shots, abstract gradients without typography.
+    </div>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Set headline at min 64pt — must read at thumbnail.</li>
+          <li>Bake fonts to outlines (no live font in PNG).</li>
+          <li>Keep the lockup at ≥120px to honor min-size.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't put critical text in the outer 10% — Twitter crops.</li>
+          <li>Don't use photography — it doesn't survive thumbnail.</li>
+          <li>Don't mix AR and EN in the same image.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- B.2 Per-page OG variants ───────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§B · Social &amp; OG</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">B.2 &nbsp;Per-page OG variants (template-driven)</h2>
+  <p class="lede">
+    These shouldn't be hand-designed one at a time — they need to be a template
+    we can render dynamically per page. Deliver one Figma master per template; we
+    wire it to <code>next/og</code> so it renders on demand.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">B.2.a</span>Search-results OG template</h3>
+    <p>Shared when someone copies a filtered search URL ("dentists in Heliopolis under 500 EGP"). Should reflect filters: specialty, area, count.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/search/opengraph-image.tsx</code> (to be created)</dd>
+        <dt>Variables</dt>
+        <dd>specialty, area, result count, locale</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Big number ("23 dentists found"), then specialty + area as a subhead, lockup bottom-left, soft map texture.</dd>
+        <dt>Locale</dt>
+        <dd>Auto-flips RTL when <code>locale === "ar"</code></dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">B.2.b</span>Dentist-profile OG template</h3>
+    <p>Shared when someone sends a dentist link to a friend ("look at this orthodontist"). Most-shared link on the platform — design accordingly.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/dentist/[slug]/opengraph-image.tsx</code></dd>
+        <dt>Variables</dt>
+        <dd>name, title (consultant/specialist), specialty, fee, clinic name, area</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Avatar (initials block, teal-50 bg, teal-700 mono initials — same as <code>dentist-card.tsx:31</code>), name 56pt, specialty + area, fee badge, lockup bottom-right.</dd>
+        <dt>Locale</dt>
+        <dd>Use <code>nameAr</code> in AR template, <code>nameEn</code> in EN.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">B.2.c</span>For-clinics OG (dentist acquisition)</h3>
+    <p>The single most important share image — this is what dentists in WhatsApp groups will see when a peer sends them the pilot invite.</p>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/for-clinics/opengraph-image.tsx</code></dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Headline "Bookings that land in <em>your</em> calendar" (EN) / "حجوزات تصل مباشرة إلى تقويمك" (AR). Sub: "Plug into Dentolize. Free during pilot." Lockup bottom-left. Calm teal gradient bg.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <h2 class="section-h" style="margin-top:8mm;">B.3 &nbsp;Twitter / X card</h2>
+  <p style="font-size:9.5pt;">Twitter respects the OG image but at a different aspect ratio for the "summary_large_image" card. Same 1200×630 source works — but design with the 1.91:1 crop in mind.</p>
+
+  <h2 class="section-h" style="margin-top:6mm;">B.4 &nbsp;WhatsApp preview</h2>
+  <p style="font-size:9.5pt;">WhatsApp uses OG image but crops it square in the chat preview. Design needs to <strong>survive a centre-square crop at 300×300</strong>. Test every OG variant by previewing it in a real WhatsApp message before signing off — the <em>actual</em> distribution channel for the pilot is dentist WhatsApp groups, so this is the single most-viewed surface.</p>
+
+  <div class="callout">
+    <strong>Most distribution will happen in WhatsApp groups.</strong> Treat the
+    600×315 thumbnail (and the 300×300 square crop) as the design canvas. The
+    1200×630 full size is a courtesy to the rare desktop opener.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · C. App UI illustrations                -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category C</div>
+  <div class="number">C</div>
+  <h1>App UI illustrations.</h1>
+  <p>
+    Empty states, success states, error states, and onboarding panels. These
+    are the moments a user expects nothing — a flat default looks broken;
+    a thoughtful illustration looks like care. Nine assets, all in the same
+    illustration system.
+  </p>
+  <div class="toc-row">
+    <span><b>C.1–C.4</b> Empty states</span>
+    <span><b>C.5–C.6</b> Success states</span>
+    <span><b>C.7</b> Dentist signup onboarding (3 panels)</span>
+    <span><b>C.8</b> Google Calendar tutorial (3 panels)</span>
+    <span><b>C.9</b> Error states (404, 500, slot-taken)</span>
+  </div>
+</section>
+
+<!-- C illustration system intro ────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§C · App UI illustrations</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">C.0 &nbsp;Illustration system (read first)</h2>
+  <p class="lede">
+    All nine illustrations in this section need to feel like one family.
+    Define the visual rules once; apply across every asset. We'd rather have
+    one consistent illustrator than three variants from three sources.
+  </p>
+
+  <h4 class="sub-h">System rules</h4>
+  <table class="spec">
+    <thead><tr><th>Property</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Color count</td><td>Max 4 fills + 1 line color. Default palette: teal-500, teal-100, ink-900 (line), white (fill), coral-500 (single accent moment per illustration, optional).</td></tr>
+      <tr><td>Stroke weight</td><td>1.5px at 24×24 viewBox baseline → scales with line width. No mixing fat &amp; thin lines in same illustration.</td></tr>
+      <tr><td>Style</td><td>Geometric / semi-flat. Slight "depth via offset shape", not gradients or shading.</td></tr>
+      <tr><td>People</td><td>Avoid. If unavoidable (onboarding C.7/C.8), abstract — silhouettes, no faces, brown-skinned defaults to fit Egyptian audience.</td></tr>
+      <tr><td>Backgrounds</td><td>Transparent. Surface tinting happens in the parent component (<code>bg-teal-50</code>).</td></tr>
+      <tr><td>Format</td><td>SVG primary (inline-able). PNG fallback only for emails (where SVG renders inconsistently).</td></tr>
+      <tr><td>Sizing</td><td>Designed at viewBox 320×240 unless noted. Empty states render at 192px wide; onboarding panels at 320px wide.</td></tr>
+      <tr><td>Naming</td><td><code>illustration-&lt;state&gt;-&lt;variant&gt;.svg</code> e.g. <code>illustration-empty-no-results.svg</code></td></tr>
+    </tbody>
+  </table>
+
+  <div class="refs">
+    <strong>Style references</strong>
+    Doola's empty-states (geometric, restrained), Linear's onboarding (one accent color, line-driven, tiny humans), Stripe's docs illustrations (depth via offset, not shading). <em>Avoid:</em> blob.style purple gradients, isometric 3D, undraw.co generic style, Lottie-default cartoon humans.
+  </div>
+
+  <h4 class="sub-h" style="margin-top:5mm;">Across all 9 illustrations, deliver:</h4>
+  <ul>
+    <li>1 Figma file with all 9 frames + the design tokens (color styles, line styles).</li>
+    <li>9 SVG files (transparent bg, optimized via SVGO).</li>
+    <li>9 PNG @2x and @3x fallbacks for email use.</li>
+    <li>1 mood-board page in Figma (style references + do/don't).</li>
+  </ul>
+</section>
+
+<!-- C.1–C.4 empty states ───────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§C · App UI illustrations</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">C.1 – C.4 &nbsp;Empty states</h2>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.1</span>No search results</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/search/page.tsx</code> · empty branch when filters return zero rows</dd>
+        <dt>Existing copy</dt>
+        <dd>"No matches yet — try widening your filters, or browse all dentistry below." (<code>messages/en.json</code> → <code>Search.emptyBody</code>)</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>Magnifying-glass-over-map-with-no-pins. Or an empty appointment book with a tiny pin sticker on the corner. Pick one — don't ship two.</dd>
+        <dt>Sizing</dt>
+        <dd>Renders at 192×144 (viewBox 320×240 → scaled).</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.2</span>No bookings yet (dentist dashboard)</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/dashboard/bookings-table.tsx:56–63</code> · the <code>appointments.length === 0</code> branch</dd>
+        <dt>Existing copy</dt>
+        <dd>"No bookings yet — patient-side search ships next week." → expected to evolve to "When patients book, they'll appear here with phone, time, and quick actions."</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>An empty calendar page or a phone with a notification dot — the moment <em>before</em> the first booking, optimistic, not sad.</dd>
+        <dt>Tone</dt>
+        <dd>Anticipation, not absence. The dentist is one patient away from validation.</dd>
+      </div>
+    </dl>
+    <div class="refs">
+      <strong>Reference</strong>
+      Linear's empty inbox illustration (a single envelope, a soft ripple) — anticipation, not emptiness.
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.3</span>No Google Calendar connected</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/dashboard/gcal-connection-card.tsx</code> · disconnected state</dd>
+        <dt>Existing copy</dt>
+        <dd>"Connect to go live — Dental Map reads your Google Calendar free/busy to compute open slots, and writes new bookings back into it. Dentolize users: point Dentolize at the same Google Calendar and the loop becomes automatic." (<code>Dashboard.gcalExplainBody</code>)</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>Two calendar surfaces — Dental Map and Google Calendar — with a teal arc connecting them. Or a single calendar with a small "plug-in" icon hovering above it. The asset should communicate <em>linking</em>, not vague "calendar".</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.4</span>No clinic locations on map</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/patient/clinic-map.tsx:125–135</code> · the <code>mapped.length === 0</code> overlay (currently a generic gray pin SVG)</dd>
+        <dt>Existing copy</dt>
+        <dd>"No clinic locations to display" / "لا توجد عيادات بإحداثيات على الخريطة"</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>A flat city silhouette of Cairo (Nile + a few skyline cues, abstracted) with no pins on it. Specifically Cairo, not generic — the user opened a Cairo-tagged search.</dd>
+        <dt>Special note</dt>
+        <dd>Replaces the inline gray-pin SVG currently at <code>clinic-map.tsx:127–129</code>.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- C.5-C.6 success states ─────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§C · App UI illustrations</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">C.5 – C.6 &nbsp;Success states</h2>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.5</span>Booking confirmed</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/book/[slot]/confirm/page.tsx</code> · post-submit success route</dd>
+        <dt>Existing copy</dt>
+        <dd>"Booking confirmed. We sent the details to your email. The clinic has been notified — they'll call if anything changes." (<code>Booking.successTitle</code>, <code>successBody</code>)</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>A clean appointment card with a teal check-mark, soft confetti or a single ripple — never explosive celebration. This is healthcare; quiet relief beats triumph.</dd>
+        <dt>Sizing</dt>
+        <dd>Renders at 240×180 desktop, 192×144 mobile.</dd>
+      </div>
+    </dl>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Imply the appointment ("a card with date") not the celebration.</li>
+          <li>Use teal-500 for the confirmation tick.</li>
+          <li>Single coral accent allowed (the "new" badge moment) — optional.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't use Lottie confetti — the user just spent money on healthcare.</li>
+          <li>Don't include a smiling-face icon.</li>
+          <li>Don't rotate the card ≥6° — keep visual stability.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.6</span>Calendar synced</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/dashboard/gcal-connection-card.tsx</code> · the connected state · also the post-OAuth redirect <code>?gcal=connected</code></dd>
+        <dt>Existing copy</dt>
+        <dd>"Your Google Calendar is connected. Dental Map will read free/busy and write confirmed bookings here." (<code>Dashboard.gcalStatus_connected</code>)</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>Two calendars locked together with a soft teal pulse / loop arrow. Communicates "they talk now". Pair with the C.3 disconnected illustration so the before/after is visually obvious.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- C.7-C.8 onboarding ─────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§C · App UI illustrations</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">C.7 &nbsp;Dentist signup onboarding (3 panels)</h2>
+  <p class="lede">
+    A 3-step inline flow on first dashboard visit. Each panel: 320×240 illustration + headline + one-liner. Three illustrations total, sequential.
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Panel</th><th>Illustration</th><th>Headline (EN)</th><th>One-liner</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>C.7.a</code></td>
+        <td>A clinic facade with a "Welcome" sign and a Dental Map pin floating above</td>
+        <td>"Welcome to Dental Map."</td>
+        <td>"Three steps and you're live with your first booking."</td>
+      </tr>
+      <tr>
+        <td><code>C.7.b</code></td>
+        <td>A weekly calendar with hours blocks (Mon–Sat highlighted, Fri grayed) — translates the working-hours editor visually</td>
+        <td>"Tell us when you see patients."</td>
+        <td>"Working hours decide which slots show up. You can edit anytime."</td>
+      </tr>
+      <tr>
+        <td><code>C.7.c</code></td>
+        <td>The "two calendars locked together" motif from C.6 — but as the <em>future</em> state, more aspirational</td>
+        <td>"Connect your calendar — go live."</td>
+        <td>"We sync with Google Calendar (and through it, Dentolize). One toggle and patients can book."</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Critical:</strong> C.7.b should mirror the structure of <code>components/dashboard/working-hours-editor.tsx</code> — Sunday-first week (per <code>Dashboard.day0</code> = Sunday in <code>messages/en.json</code>), Friday as the visual rest day in Egypt. Don't ship a Monday-first calendar — that's a wrong-region tell.
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">C.8 &nbsp;Google Calendar tutorial (3 panels)</h2>
+  <p class="lede">
+    Inline help that explains the GCal handshake, shown when the dentist clicks
+    "How does this work?" next to the Connect button. The hardest concept in the
+    product — illustration earns its keep here.
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Panel</th><th>Illustration</th><th>Headline (EN)</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><code>C.8.a</code></td>
+        <td>A single calendar with shaded busy blocks — labelled "Your Google Calendar"</td>
+        <td>"We read your free/busy."</td>
+      </tr>
+      <tr>
+        <td><code>C.8.b</code></td>
+        <td>The same calendar with the busy blocks now visualized as <em>greyed-out slots</em> on a separate grid (the patient slot picker)</td>
+        <td>"Open slots are computed live."</td>
+      </tr>
+      <tr>
+        <td><code>C.8.c</code></td>
+        <td>A new event being written into the calendar — a single new block highlighted teal — labelled "New booking"</td>
+        <td>"Bookings land back in your calendar."</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- C.9 error states ───────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§C · App UI illustrations</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">C.9 &nbsp;Error states (3 illustrations)</h2>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.9.a</span>404 — page not found</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/not-found.tsx</code></dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>A map with a torn corner — playful but not cartoonish. The pin is still there; just the page around it is missing.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.9.b</span>500 — generic error</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>app/[locale]/error.tsx</code></dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>A clipboard with a small wrench overlapping it — "we know, we're fixing it." Tone: humble, not joking.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">C.9.c</span>Slot already taken</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/patient/booking-form.tsx</code> · the <code>alreadyTaken</code> branch</dd>
+        <dt>Existing copy</dt>
+        <dd>"Sorry — this slot was just taken. Pick another." (<code>Booking.alreadyTaken</code>)</dd>
+      </div>
+      <div>
+        <dt>Visual idea</dt>
+        <dd>A grid of slot cards with one greyed-out and a soft "X" — emphasizing "it was here a moment ago". Communicates that someone else just booked, not that the system failed.</dd>
+        <dt>Race-condition reality</dt>
+        <dd>This case <em>will</em> happen at pilot scale. The illustration is the difference between users blaming Dental Map vs. blaming bad luck.</dd>
+      </div>
+    </dl>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · D. Iconography                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category D</div>
+  <div class="number">D</div>
+  <h1>Iconography.</h1>
+  <p>
+    Lucide handles generic UI icons (chevrons, copy, share). Everything
+    dental-specific is on us. Five families: specialty, service, functional
+    brand variants, custom map pin, and trust badges.
+  </p>
+  <div class="toc-row">
+    <span><b>D.1</b> Specialty (7)</span>
+    <span><b>D.2</b> Service (8)</span>
+    <span><b>D.3</b> Functional / brand variants (6)</span>
+    <span><b>D.4</b> Custom map pin</span>
+    <span><b>D.5</b> Trust badges (7)</span>
+  </div>
+</section>
+
+<!-- D system ───────────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§D · Iconography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">D.0 &nbsp;Icon system rules</h2>
+  <p class="lede">
+    All custom icons in §D ship as one set so they sit cleanly next to Lucide
+    (which is what we use for non-dental icons everywhere in the app).
+  </p>
+  <table class="spec">
+    <thead><tr><th>Property</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Grid</td><td>24×24 viewBox (matches Lucide).</td></tr>
+      <tr><td>Stroke</td><td>1.5px (matches Lucide). Outline-only — no filled icons in this family.</td></tr>
+      <tr><td>Stroke caps / joins</td><td>round / round.</td></tr>
+      <tr><td>Optical alignment</td><td>Optical centre, not geometric — icons should feel balanced next to a Lucide icon at the same size.</td></tr>
+      <tr><td>Color in source</td><td>Single <code>currentColor</code> — never bake in teal or ink. Color comes from the parent.</td></tr>
+      <tr><td>Format</td><td>SVG primary. Provide a single <code>icons.tsx</code> with React-component exports (named after the icon, e.g. <code>OrthoIcon</code>).</td></tr>
+      <tr><td>Filenames</td><td><code>icon-&lt;family&gt;-&lt;name&gt;.svg</code> — e.g. <code>icon-specialty-ortho.svg</code></td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:6mm;">D.1 &nbsp;Specialty icons (7)</h2>
+  <p class="lede">
+    Used on the home-page specialty grid (<code>app/[locale]/page.tsx</code> · "Every kind of dentistry"), the search-page filter chips, and dentist-card specialty rows. Locked list — these are the only seven.
+  </p>
+  <table class="spec">
+    <thead><tr><th>Filename</th><th>Concept</th><th>Used in (EN/AR)</th></tr></thead>
+    <tbody>
+      <tr><td><code>icon-specialty-adult.svg</code></td><td>An adult tooth, clean. No mouth, no smile.</td><td>"Adult dentistry" / "أسنان البالغين"</td></tr>
+      <tr><td><code>icon-specialty-pediatric.svg</code></td><td>A small tooth with a soft side-cue (a pacifier outline? a star?) — not a cartoon face.</td><td>"Pediatric" / "أسنان الأطفال"</td></tr>
+      <tr><td><code>icon-specialty-ortho.svg</code></td><td>A tooth with a bracket / wire detail.</td><td>"Orthodontics" / "تقويم الأسنان"</td></tr>
+      <tr><td><code>icon-specialty-cosmetic.svg</code></td><td>A tooth with a soft sparkle / shine glyph.</td><td>"Cosmetic" / "تجميل الأسنان"</td></tr>
+      <tr><td><code>icon-specialty-endo.svg</code></td><td>A tooth in cross-section, showing the root canal — clinical.</td><td>"Endodontics" / "علاج الجذور"</td></tr>
+      <tr><td><code>icon-specialty-implants.svg</code></td><td>A tooth with a screw-post detail — abstract enough to not feel surgical.</td><td>"Implants" / "زراعة الأسنان"</td></tr>
+      <tr><td><code>icon-specialty-surgery.svg</code></td><td>A tooth with a soft surgical-tool cue (forceps abstracted, NOT a syringe — too aggressive).</td><td>"Oral surgery" / "جراحة الفم"</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Tone check:</strong> these icons appear next to "Find a dentist" CTAs.
+    They should reduce anxiety, not increase it. No blood, no instruments mid-action,
+    no exposed nerves. The icon for "Endodontics" is the hardest — see if a
+    simplified cross-section reads better than a literal root-canal procedure.
+  </div>
+</section>
+
+<!-- D.2 Service icons ──────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§D · Iconography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">D.2 &nbsp;Service icons (8)</h2>
+  <p class="lede">
+    Used on the dentist-profile page next to the services list. More granular
+    than specialty icons — patients pick a dentist, then see what services that
+    dentist offers.
+  </p>
+  <table class="spec">
+    <thead><tr><th>Filename</th><th>Concept</th><th>Label EN / AR</th></tr></thead>
+    <tbody>
+      <tr><td><code>icon-service-cleaning.svg</code></td><td>Tooth + brush bristles cue</td><td>Cleaning / تنظيف</td></tr>
+      <tr><td><code>icon-service-whitening.svg</code></td><td>Tooth + soft sparkle (different from cosmetic-specialty: more subtle)</td><td>Whitening / تبييض</td></tr>
+      <tr><td><code>icon-service-fillings.svg</code></td><td>Tooth with a small filling shape on the surface</td><td>Fillings / حشوات</td></tr>
+      <tr><td><code>icon-service-rootcanal.svg</code></td><td>Tooth cross-section + a clean canal line (the careful version of D.1's endo)</td><td>Root canal / علاج عصب</td></tr>
+      <tr><td><code>icon-service-extraction.svg</code></td><td>Tooth + a soft outward arrow — abstract, not clinical</td><td>Extraction / خلع</td></tr>
+      <tr><td><code>icon-service-braces.svg</code></td><td>Tooth row with brackets + wire</td><td>Braces / تقويم ثابت</td></tr>
+      <tr><td><code>icon-service-implants.svg</code></td><td>Same as D.1 implant or a slightly different angle (decide one — don't ship two)</td><td>Implants / زراعة</td></tr>
+      <tr><td><code>icon-service-xray.svg</code></td><td>A tooth in an x-ray frame (radiograph rectangle), the tooth shown lighter</td><td>X-ray / أشعة</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:6mm;">D.3 &nbsp;Functional / brand variants (6)</h2>
+  <p class="lede">
+    Where Lucide's defaults aren't enough — either we need a brand-aware variant
+    (WhatsApp, Google Calendar) or a tone-different replacement (Phone, Mail in
+    the bookings table). Match Lucide's stroke and grid exactly so they slot in.
+  </p>
+  <table class="spec">
+    <thead><tr><th>Filename</th><th>Replaces / supplements</th><th>Used in</th></tr></thead>
+    <tbody>
+      <tr><td><code>icon-fn-whatsapp.svg</code></td><td>Currently inlined SVG at <code>components/dashboard/bookings-table.tsx:147</code> · also will appear in clinic stickers</td><td>Bookings table action button · contact CTA · clinic stickers</td></tr>
+      <tr><td><code>icon-fn-gcal.svg</code></td><td>The Google Calendar mark (always-licensed; only the <em>sync motif</em> is custom — see C.6)</td><td>Connect-button label · dashboard nav · Sales kit step diagrams</td></tr>
+      <tr><td><code>icon-fn-dentolize.svg</code></td><td>Wordmark or icon for our key partner — coordinate with Dentolize on use rights</td><td>"For clinics" page · onboarding slide · sales kit</td></tr>
+      <tr><td><code>icon-fn-copy.svg</code></td><td>Lucide's <code>Copy</code> works — only override if we want a tonal match</td><td>"Copy details" buttons</td></tr>
+      <tr><td><code>icon-fn-phone-egp.svg</code></td><td>Phone icon with "+20" cue (Egypt country code) — used at booking when the phone field surfaces</td><td>Booking form phone label</td></tr>
+      <tr><td><code>icon-fn-clock-cairo.svg</code></td><td>Clock variant marked "GMT+2" or "Cairo" — used on slots / appointments</td><td>Slot grid · bookings table time cell</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:9pt;margin-top:3mm;color:var(--ink-500);">
+    The last two (D.3.e, D.3.f) are <em>nice-to-haves</em> — only ship if they
+    add clarity. If they feel forced, drop them and use the Lucide defaults.
+  </p>
+</section>
+
+<!-- D.4 map pin ────────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§D · Iconography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">D.4 &nbsp;Custom map pin</h2>
+  <p class="lede">
+    The single highest-visibility asset on the patient surface — every search
+    result paints multiple of these on the map. Today they're a quick CSS hack;
+    we want a proper designed asset.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">D.4</span>Map pin (replaces inline DivIcon)</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/patient/clinic-map.tsx:26–54</code> · the <code>makePinIcon</code> function — currently builds a 36×36 teardrop via inline HTML/SVG with a generic clipboard glyph inside</dd>
+        <dt>Today's color logic</dt>
+        <dd>Inactive: <code>#14b8a6</code> with white ring. Active (hover/selected): <code>#0f766e</code> with <code>#ccfbf1</code> ring + 1.15× scale.</dd>
+      </div>
+      <div>
+        <dt>Deliverables</dt>
+        <dd>SVG (3 states: default, hover, active). PNG @1x/2x/3x at 36×48 (anchored bottom-centre). Source Figma frame with state styles.</dd>
+        <dt>States</dt>
+        <dd>Default · Hover (1.15× scale, deeper teal ring) · Active/selected (filled with brand teal, white tooth glyph)</dd>
+      </div>
+    </dl>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Use a tooth glyph inside the pin — the brand cue.</li>
+          <li>Anchor the pin tip at <code>iconAnchor: [18, 36]</code> (matches existing math).</li>
+          <li>Match brand teal exactly — <code>#1EA58F</code> default, <code>#128074</code> active.</li>
+          <li>Soft drop-shadow inside the SVG — no separate shadow filter needed.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't use the clipboard / Lucide-Building glyph that's there now.</li>
+          <li>Don't ship a 64×64 pin — the cluster density at zoom 11 will overwhelm.</li>
+          <li>Don't animate via JS — bake transition into CSS, the existing inline asset already does.</li>
+          <li>Don't break the bottom-tip anchor — Leaflet positioning depends on it.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="refs">
+      <strong>Reference</strong>
+      Airbnb's listing pins (semantic content inside, not just a dot), Foursquare City Guide pins (tone), Mapbox Studio's pin tutorial for anchor mechanics.
+    </div>
+  </div>
+
+  <h2 class="section-h" style="margin-top:8mm;">D.5 &nbsp;Trust badges (7)</h2>
+  <p class="lede">
+    Badges that appear on dentist cards (<code>components/patient/dentist-card.tsx</code>),
+    profile pages, and inside search filter chips. Each one needs one icon
+    (24×24) and the rules for when it appears.
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Badge</th><th>Trigger</th><th>Color treatment</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Verified</strong> (<code>BadgeCheck</code> today)</td><td>Default for every pilot clinic — manual list</td><td>Teal-500 fill, white check</td></tr>
+      <tr><td><strong>Top-rated</strong></td><td>≥4.7 average from ≥10 reviews — post-pilot</td><td>Coral-500 background, white star</td></tr>
+      <tr><td><strong>On-time</strong></td><td>≥90% appointments started within 15min of booked time</td><td>Ink-700 outline + tiny clock</td></tr>
+      <tr><td><strong>Female dentist available</strong></td><td>At least one female dentist in clinic</td><td>Teal-100 fill, ink-700 silhouette</td></tr>
+      <tr><td><strong>Kids-friendly</strong></td><td>Manually flagged — pediatric specialty + clinic confirmation</td><td>Teal-100 fill, ink-700 small-figure cue</td></tr>
+      <tr><td><strong>Accessible</strong></td><td>Wheelchair access, no-stairs entrance — manual</td><td>Teal-100 fill, ink-700 wheelchair glyph</td></tr>
+      <tr><td><strong>Female-only hours</strong></td><td>Specific working-hours blocks women-only — relevant for some Cairo clinics</td><td>Coral-100 fill, coral-600 silhouette</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:9.5pt;margin-top:3mm;">
+    Each badge: <strong>two SVGs</strong> (icon-only 24×24, and pill version with label+icon 80×24). Pill version uses Plus Jakarta Sans 10pt 600 for the label.
+  </p>
+
+  <div class="callout">
+    <strong>Cultural specificity:</strong> the "female dentist available" and
+    "female-only hours" badges are a real-world need in Egypt that Vezeeta
+    handles poorly. Treat them as features, not afterthoughts. Get the silhouettes
+    respectful (modest, not cartoonish, no veil clichés or absences).
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · E. Photography                         -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category E</div>
+  <div class="number">E</div>
+  <h1>Photography direction.</h1>
+  <p>
+    Three jobs: refine the existing hero, set a portrait standard for the 50
+    pilot dentists, and set a clinic-interior standard. Plus a mood board so
+    every photographer (yours or each clinic's) shoots to the same brief.
+  </p>
+  <div class="toc-row">
+    <span><b>E.1</b> Hero refinement</span>
+    <span><b>E.2</b> Dentist portrait guide</span>
+    <span><b>E.3</b> Clinic interior guide</span>
+    <span><b>E.4</b> Mood board</span>
+  </div>
+</section>
+
+<!-- E.1 hero refinement ────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§E · Photography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">E.1 &nbsp;Hero refinement</h2>
+  <p class="lede">
+    The current hero ships in three baked PNGs (AR desktop, AR mobile, EN desktop)
+    that combine UI mock + imagery + headline overlay. They were built quickly to
+    ship the brief — they're now the most-viewed surface and need to graduate.
+  </p>
+
+  <h4 class="sub-h">Current state — what ships today</h4>
+  <div class="screenshot">
+    <img src="assets/screen-home-en.png" alt="Current homepage hero" />
+    <div class="caption">Current home — <code>app/[locale]/page.tsx</code> · live at <code>https://dental-map-mvp.vercel.app</code></div>
+  </div>
+
+  <div class="screenshot">
+    <img src="assets/screen-home-ar-desktop.png" alt="Current homepage hero (Arabic)" />
+    <div class="caption">Current AR home — RTL flip, Arabic Cairo type, identical layout</div>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">E.1</span>Refined hero — 4 deliverables</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd>Patient home <code>app/[locale]/page.tsx</code> · the hero block above the search bar</dd>
+        <dt>Replaces</dt>
+        <dd><code>hero-en-desktop.png</code>, <code>hero-ar-desktop.png</code>, <code>hero-ar-mobile.png</code> + the live composite (<code>live-hero.png</code>, <code>live-hero-top.png</code>) in repo root</dd>
+      </div>
+      <div>
+        <dt>Deliverables (4 files)</dt>
+        <dd>EN desktop (1920×900), EN mobile (750×1100), AR desktop (1920×900, RTL), AR mobile (750×1100, RTL)</dd>
+        <dt>Format</dt>
+        <dd>WebP primary (≤120KB each), PNG fallback</dd>
+      </div>
+    </dl>
+
+    <h4 class="sub-h" style="margin-top:3mm;">Composition direction</h4>
+    <ul style="font-size:9.5pt;">
+      <li>The teal radial wash (<code>bg-hero-wash</code> in <code>tailwind.config.ts</code>) stays — it's the brand atmosphere.</li>
+      <li>Add depth via an abstract Cairo-skyline silhouette (very subtle, ink-100 opacity 30% behind the search bar) — the "where" cue without resorting to landmarks.</li>
+      <li>Optionally: a single dentist-card preview floating tilted ~3° at 70% scale on the right (desktop only) — visual proof that bookings are real.</li>
+      <li>Mobile: vertical stack, no skyline silhouette (clutters at small size).</li>
+      <li>RTL: not just flipped — relayout. The eyebrow "Greater Cairo · pilot" still reads left-to-right of the icon, even in AR.</li>
+    </ul>
+
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Build in Figma so we can iterate quickly without re-shooting.</li>
+          <li>Hold to the existing copy — see <code>messages/en.json</code> &amp; <code>messages/ar.json</code> "Home" keys.</li>
+          <li>Layer 2–3 radial gradients (per CLAUDE.md anti-generic rules).</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't ship a stock photo of a dentist — instant generic.</li>
+          <li>Don't use a single flat radial — flat backgrounds look "AI-default".</li>
+          <li>Don't include landmarks (Pyramids, Sphinx, Khan el-Khalili).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- E.2 dentist portraits ──────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§E · Photography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">E.2 &nbsp;Dentist portrait — guide + placeholder</h2>
+  <p class="lede">
+    50 pilot dentists, each needing a portrait. We're not paying for a photographer
+    per clinic — most will use phone shots. The design team's job is to write the
+    short guide that turns a phone shot into a usable, consistent portrait.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">E.2.a</span>Style guide (the phone-shot rules)</h3>
+    <p>One short PDF (or 2-page Notion). Photographs the clinic-side WhatsApp can quickly read and follow.</p>
+    <ul style="font-size:9.5pt;">
+      <li>Frame: head + shoulders, vertical 3:4, centred. Eyes on upper third.</li>
+      <li>Background: clinic wall (teal-tinted if possible) or solid white. Never a window or "doorway with hallway behind."</li>
+      <li>Lighting: north-facing window or even ceiling fluorescent. No harsh single-side. No flash.</li>
+      <li>Pose: shoulders square. Slight smile (closed teeth, ironically) or neutral.</li>
+      <li>Wardrobe: white coat OK, scrubs OK, no patterned shirts. No clinic logo embroidery in frame.</li>
+      <li>Phone shot rules: portrait orientation, rear camera, no zoom (zoom degrades quality).</li>
+      <li>Send as: WhatsApp original-quality (turn off auto-compression).</li>
+    </ul>
+
+    <p style="font-size:9.5pt;margin-top:3mm;">
+      Deliver also: a 1-page "good shot vs. bad shot" comparison sheet — six side-by-side photos. The clinic admin sees this once on WhatsApp and immediately gets it.
+    </p>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">E.2.b</span>Portrait placeholder (when no photo provided)</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>components/patient/dentist-card.tsx:30–32</code> · today shows mono initials (e.g. "AS") on teal-50 background, 56×56 rounded-xl</dd>
+        <dt>Existing fallback</dt>
+        <dd>Initials block from last two name parts, teal-700 on teal-50, Plus Jakarta Sans 18px 800.</dd>
+      </div>
+      <div>
+        <dt>Deliverable</dt>
+        <dd>Keep the initials fallback as it is — but design the case where the dentist <em>has</em> a photo: a 1:1 cropped circular avatar at 56×56, with a 1px teal-200 border ring.</dd>
+        <dt>Cropping rule</dt>
+        <dd>Eyes on upper third of the circle. Implement in <code>lib/dentists/list.ts</code> via a centre-crop transform.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">E.3 &nbsp;Clinic interior — guide + placeholder</h2>
+  <p class="lede">Same logic as E.2 but for clinic photos. Used on dentist-profile page and (post-pilot) the clinic-detail page.</p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">E.3.a</span>Clinic photo style guide</h3>
+    <ul style="font-size:9.5pt;">
+      <li>Frame: 16:9 horizontal, the dental chair as central subject, room context visible.</li>
+      <li>Lighting: ambient overhead, no operatory light on. The chair should look <em>still</em>, not in-use.</li>
+      <li>Composition: at least one identifiable depth cue (cabinetry, second chair in background) — not a flat wall behind chair.</li>
+      <li>Cleanliness cues: visible (sealed instrument trays, clean counter) but not staged.</li>
+      <li>No people in shot. The patient feels safer when the room looks ready, not occupied.</li>
+    </ul>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">E.3.b</span>Clinic photo placeholder</h3>
+    <p>For clinics without a photo. A subtle illustration of a dental chair in the brand teal palette — flat, geometric, calm. Sized 16:9, optimized at 480×270.</p>
+  </div>
+</section>
+
+<!-- E.4 mood board ─────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§E · Photography</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">E.4 &nbsp;Mood board — single page</h2>
+  <p class="lede">
+    One Figma page. 12 reference shots. Six "yes" and six "no". Captioned. The
+    photographer / clinic admin / freelancer can read it in two minutes.
+  </p>
+
+  <h4 class="sub-h">"Yes" reference categories (six images)</h4>
+  <ol style="font-size:9.5pt;">
+    <li>A doctor portrait with calm clinical lighting — Practo's better profile shots.</li>
+    <li>A clinic interior with the chair as subject, depth cues, no people — high-end Cairo dental clinic photography (search "ToothPedia Cairo" or similar).</li>
+    <li>A booking screen with brand teal accents — Linear's calendar feature page is a fair adjacent reference.</li>
+    <li>A close-up of clean dental instruments (background shot for the "verified" badge story).</li>
+    <li>A patient hand on a phone, thumb-up swipe — implies the booking moment without showing the patient face.</li>
+    <li>An everyday Cairo street shot at golden hour (color reference for warmth in marketing photography, not a literal homepage shot).</li>
+  </ol>
+
+  <h4 class="sub-h" style="margin-top:5mm;">"No" reference categories (six images)</h4>
+  <ol style="font-size:9.5pt;">
+    <li>Generic Western stock dentist with thumbs-up — instant fake.</li>
+    <li>Smiling-patient-in-chair (we sell calm, not a perfect outcome).</li>
+    <li>Children's clinic cartoon mural background — wrong audience tonally.</li>
+    <li>Pyramids / Sphinx / palm trees in any composition — region cliché.</li>
+    <li>Hard flash dental tool close-up — surgery-anxiety trigger.</li>
+    <li>Vezeeta's blue medical hero photography style — exactly what we're not.</li>
+  </ol>
+
+  <p style="font-size:9.5pt;margin-top:5mm;">
+    Caption each one with <em>two words</em>: why-yes / why-no. ("Calm lighting." / "Stock smile.") Keep the page browsable in 60 seconds.
+  </p>
+
+  <div class="callout">
+    <strong>Where the mood board lives:</strong> Figma file shared with all pilot
+    clinics in the WhatsApp onboarding handoff. We're going to send this link
+    over WhatsApp 50 times — design it for that medium (one page, image-heavy,
+    light text, mobile-readable).
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · F. Email                               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category F</div>
+  <div class="number">F</div>
+  <h1>Email-template visuals.</h1>
+  <p>
+    We send transactional email via Resend (<code>lib/email</code>). Today they
+    are plain HTML with no header, no branding. Five branded headers + a footer
+    that match the product surface and survive Gmail / iOS Mail / Outlook.
+  </p>
+  <div class="toc-row">
+    <span><b>F.1</b> Patient confirmation</span>
+    <span><b>F.2</b> Clinic notification</span>
+    <span><b>F.3</b> Reminder (24h)</span>
+    <span><b>F.4</b> Dentist welcome</span>
+    <span><b>F.5</b> Footer</span>
+  </div>
+</section>
+
+<!-- F email visuals ────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§F · Email</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">F.0 &nbsp;Email constraints (read first)</h2>
+  <p class="lede">
+    Email is not the product surface. Outlook eats CSS, Gmail clips long
+    messages, iOS Mail handles dark mode unpredictably. The visuals below are
+    deliberately simpler than the in-app illustrations — survival > brand
+    fidelity.
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Constraint</th><th>Rule</th></tr></thead>
+    <tbody>
+      <tr><td>Header type</td><td>PNG only (no SVG, no live CSS gradients in header).</td></tr>
+      <tr><td>Width</td><td>600px max — beyond that Gmail force-scrolls.</td></tr>
+      <tr><td>Header height</td><td>120–160px. No taller — burns first-screen real estate.</td></tr>
+      <tr><td>Dark mode</td><td>Header should look acceptable when iOS auto-inverts. Use dark-on-teal, never white-on-light-teal.</td></tr>
+      <tr><td>Locale</td><td>Two PNGs per header: AR + EN. Never mix scripts in a single image.</td></tr>
+      <tr><td>Retina</td><td>Render at 1200×320, deliver at 600×160. Browsers downscale cleanly.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:6mm;">F.1 &nbsp;Booking confirmation — patient</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">F.1</span>Patient confirmation header</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>lib/email/booking-confirmation.tsx</code> (templates) · sent via Resend at booking submit</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Teal gradient bg (matching cover), Dental Map full lockup centred, white-tone wordmark variant from A.2. Subtle map texture at 8% opacity behind.</dd>
+      </div>
+    </dl>
+    <p>The email body itself is plain — the header is the only visual moment. Tone: "this booking is real, you're handled."</p>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">F.2 &nbsp;Clinic notification</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">F.2</span>Clinic notification header</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>lib/email/clinic-notification.tsx</code> · sent to clinic email at booking</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Different from F.1 — this one needs to feel like an <em>internal</em> alert, not a customer comm. Slimmer header (90px), ink-700 background, white lockup, tiny "New booking" pill in teal.</dd>
+      </div>
+    </dl>
+    <p>The clinic admin receiving this on WhatsApp / in clinic-side Gmail needs to instantly recognize it as "a Dental Map booking arrived" — not a marketing email.</p>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">F.3 &nbsp;24h reminder</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">F.3</span>Reminder header</h3>
+    <p>Sent 24h before the appointment. Header reads "Tomorrow at the clinic" / "غدًا في العيادة". Light tone — anticipation, not warning.</p>
+  </div>
+</section>
+
+<!-- F.4 + F.5 ──────────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§F · Email</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">F.4 &nbsp;Dentist welcome (post-signup)</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">F.4</span>Dentist welcome header</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>lib/email/dentist-welcome.tsx</code> (to be created) · sent at sign-up complete</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Refrain of the C.7.a "welcome to Dental Map" illustration, but flatter (illustrations don't render reliably in email — bake a screenshot of the illustration as PNG).</dd>
+      </div>
+    </dl>
+    <p>This is where the design team has the most license — the recipient is a friendly user (a dentist who just signed up), and we're trying to convert them to first booking.</p>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">F.5 &nbsp;Email footer (universal)</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">F.5</span>Universal email footer</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Lives in</dt>
+        <dd><code>lib/email/components/footer.tsx</code> — included by every transactional email</dd>
+      </div>
+      <div>
+        <dt>Contents</dt>
+        <dd>Wordmark-only logo (A.1.c monochrome ink) · single-line tagline "The dentist booking engine, wired to the clinic." · social icons (Instagram, Facebook, WhatsApp Business) · unsubscribe link · address block per Egyptian e-commerce regs.</dd>
+        <dt>Width</dt>
+        <dd>600px · 120px tall · ink-50 background · ink-500 text</dd>
+      </div>
+    </dl>
+    <div class="dodont">
+      <div class="col do">
+        <h5>Do</h5>
+        <ul>
+          <li>Use bulletproof email-safe HTML (table-based, inline styles).</li>
+          <li>Provide PNG-only social icons — don't trust SVG rendering.</li>
+          <li>Build in Figma + a static HTML file we paste into <code>footer.tsx</code>.</li>
+        </ul>
+      </div>
+      <div class="col dont">
+        <h5>Don't</h5>
+        <ul>
+          <li>Don't use web fonts in email — Outlook drops them.</li>
+          <li>Don't include a "Forward to a friend" CTA — we're transactional, not marketing.</li>
+          <li>Don't include the live tagline image as text — bake to outlines.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Test matrix before sign-off:</strong> the design team's deliverable
+    isn't done until the headers have been rendered in (a) Gmail desktop,
+    (b) Gmail Android, (c) iOS Mail light + dark, (d) Outlook 365, (e) WhatsApp
+    in-chat preview. Litmus / Email on Acid screenshots in the handoff.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · G. Marketing-site visuals              -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category G</div>
+  <div class="number">G</div>
+  <h1>Marketing-site visuals.</h1>
+  <p>
+    The home page beyond the hero, plus the "for clinics" acquisition surface,
+    plus content marketing assets. These are the assets that earn the click,
+    not just survive it.
+  </p>
+  <div class="toc-row">
+    <span><b>G.1</b> "How it works" 3-step illustrations</span>
+    <span><b>G.2</b> Feature-section icons</span>
+    <span><b>G.3</b> Testimonial avatar style</span>
+    <span><b>G.4</b> "For clinics" value-prop graphics</span>
+  </div>
+</section>
+
+<!-- G marketing visuals ───────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§G · Marketing</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">G.1 &nbsp;"How it works" — 3-step illustrations</h2>
+  <p class="lede">
+    The "Three steps. No calls. No confusion." section on the patient home
+    page (<code>app/[locale]/page.tsx</code> · <code>Home.howItWorks*</code>
+    keys). Three illustrations, each ~280×200, sequential.
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Step</th><th>Existing copy</th><th>Visual idea</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>1. Search</strong></td>
+        <td>"Filter by specialty, area, fee, insurance, or specific dentist."</td>
+        <td>A search bar on top of a Cairo map silhouette — pins lighting up under it. Same map silhouette as E.1's hero.</td>
+      </tr>
+      <tr>
+        <td><strong>2. Pick a real slot</strong></td>
+        <td>"Every slot is computed live from the dentist's own calendar."</td>
+        <td>A slot grid (matching <code>components/patient/slot-grid.tsx</code>) — one slot pulsing teal-500 mid-pick.</td>
+      </tr>
+      <tr>
+        <td><strong>3. Visit</strong></td>
+        <td>"Booking lands in the clinic's schedule. You get email + SMS reminders."</td>
+        <td>A clinic-card morphing into a calendar event — communicates "the booking is now in the calendar".</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:9.5pt;margin-top:3mm;">
+    These should follow the §C illustration system — same line weight, same
+    palette, same flat-with-offset depth — so they sit consistent next to the
+    in-app states.
+  </p>
+
+  <h2 class="section-h" style="margin-top:6mm;">G.2 &nbsp;Feature-section icons (3)</h2>
+  <p class="lede">
+    Three small icons used in the trust-strip below the hero ("Instant booking",
+    "Verified reviews only", "Arabic &amp; English"). Currently inline Lucide icons.
+  </p>
+  <ul style="font-size:9.5pt;">
+    <li><code>icon-feature-instant-booking.svg</code> — lightning + calendar fusion</li>
+    <li><code>icon-feature-verified-reviews.svg</code> — review card with a teal verified tick</li>
+    <li><code>icon-feature-bilingual.svg</code> — "ع" + "A" pairing, brand teal accent on one</li>
+  </ul>
+
+  <h2 class="section-h" style="margin-top:6mm;">G.3 &nbsp;Testimonial avatar style</h2>
+  <p class="lede">
+    Post-pilot we'll have real patient testimonials. Today none — but the
+    component's already in the design pipeline. The avatar style guide: same as
+    E.2.b dentist avatars (rounded-full, 1px teal-200 border, 56×56) but with
+    initials replaced by an abstract geometric figure if no photo (a minimal
+    profile silhouette in teal-100 / ink-700).
+  </p>
+
+  <h2 class="section-h" style="margin-top:6mm;">G.4 &nbsp;"For clinics" value-prop graphics</h2>
+  <p class="lede">
+    The acquisition page (<code>app/[locale]/for-clinics/page.tsx</code>) needs
+    to convince a Cairo dentist to sign up over WhatsApp. Three visual moments
+    needed.
+  </p>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">G.4.a</span>"Bookings land in your calendar" diagram</h3>
+    <p>The single most important visual on the site for dentist conversion. A diagram showing: Dental Map → Google Calendar → Dentolize. Three boxes, two arrows, all the brand teal. Should read at 320px wide on a phone.</p>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">G.4.b</span>"No double entry" comparison</h3>
+    <p>Side-by-side panel: <em>Vezeeta-style lead queue</em> on the left (greyed-out, "Phone call → manual entry → maybe lost") vs. <em>Dental Map</em> on the right (teal, "Book → calendar → done"). Shows the differentiator in one image.</p>
+  </div>
+
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">G.4.c</span>"Free during pilot" CTA banner</h3>
+    <p>A footer banner on the for-clinics page. Coral accent (the one moment we use coral on the marketing site). Copy: "Join the pilot — free until Q4 2026."</p>
+  </div>
+
+  <div class="callout">
+    <strong>The for-clinics page is the highest-leverage marketing surface.</strong>
+    A single dentist in a Cairo WhatsApp group sharing this page is worth more
+    than a thousand patient impressions. The design team should treat G.4 as the
+    most-attended moment in this section.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · H. Pilot sales kit                     -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category H</div>
+  <div class="number">H</div>
+  <h1>Pilot sales kit.</h1>
+  <p>
+    Things we hand to a dentist in person, on WhatsApp, or in a Zoom call —
+    when convincing them to be one of the 20–50 pilot clinics. Three deliverables;
+    each is a template we'll fill per-clinic.
+  </p>
+  <div class="toc-row">
+    <span><b>H.1</b> Clinic pitch one-pager</span>
+    <span><b>H.2</b> Demo deck (15 slides)</span>
+    <span><b>H.3</b> Business card</span>
+  </div>
+</section>
+
+<!-- H sales kit ────────────────────────────────────────────── -->
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§H · Sales kit</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">H.1 &nbsp;Clinic pitch one-pager</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">H.1</span>One-pager template (A4, single sheet)</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>A4 (210×297mm), 4mm bleed, 12mm safe-zone. Print-ready PDF + InDesign / Figma source.</dd>
+        <dt>Locale</dt>
+        <dd>Two versions — AR (RTL, primary for Cairo dentists) and EN (for English-comfortable founders).</dd>
+      </div>
+      <div>
+        <dt>Quantity</dt>
+        <dd>One template — we fill per-clinic. Rendered in PDF on demand from a Figma file (or via <code>next/og</code> if engineering owns the render).</dd>
+      </div>
+    </dl>
+
+    <h4 class="sub-h">Required content blocks</h4>
+    <ol style="font-size:9.5pt;">
+      <li><strong>Header band</strong> — Dental Map full lockup + tagline.</li>
+      <li><strong>The pitch in one line</strong> — "Bookings that land in your calendar." (No fluff.)</li>
+      <li><strong>The differentiator</strong> — three short bullets: "Live slots from your calendar · Direct calendar write-back · Free during pilot."</li>
+      <li><strong>How it works</strong> — the G.4.a diagram, smaller.</li>
+      <li><strong>What we ask for</strong> — three commitments from the clinic: connect calendar · respond to bookings within 24h · share feedback weekly.</li>
+      <li><strong>What we provide</strong> — three deliverables to the clinic: free profile + photos · QR sticker for clinic window · monthly performance report.</li>
+      <li><strong>Footer</strong> — contact name + phone + WhatsApp + signup URL with QR.</li>
+    </ol>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">H.2 &nbsp;Demo deck (15 slides)</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">H.2</span>Demo deck template (16:9)</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>16:9 (1920×1080) · Figma + Google Slides + PDF export. Bilingual variants.</dd>
+        <dt>Slide count</dt>
+        <dd>15 slides — fits a 20-min Zoom demo with Q&amp;A.</dd>
+      </div>
+      <div>
+        <dt>Outline</dt>
+        <dd>1. Cover · 2. Problem · 3. Patient pain · 4. Clinic pain · 5. The thesis · 6. Demo: search · 7. Demo: book · 8. Demo: dashboard · 9. The Dentolize/GCal flow · 10. Pilot scope · 11. What we ask for · 12. What you get · 13. Timeline · 14. Pricing (post-pilot) · 15. Q&amp;A + contact.</dd>
+      </div>
+    </dl>
+    <p>Each slide: title (Plus Jakarta Sans 36pt), one-liner (Manrope 18pt), one visual (illustration / screenshot / diagram). No bullet-soup slides. The deck is read in 60 seconds (skim) or 20 minutes (with talk-track) — design for both.</p>
+    <div class="refs">
+      <strong>References</strong>
+      Figma's pitch deck for design teams (visual restraint), Linear's series A deck (one big idea per slide), Vercel partner deck (clean wordmark + product screenshot rhythm).
+    </div>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">H.3 &nbsp;Business card</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">H.3</span>Business card</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>85×55mm · 0.4mm corner radius · 350gsm soft-touch coated</dd>
+      </div>
+      <div>
+        <dt>Quantity</dt>
+        <dd>One template. Founders' details swapped per person at print time.</dd>
+      </div>
+    </dl>
+    <p>Front: Dental Map full lockup centred on teal-700 background. Back: name, title, phone (WhatsApp-clickable QR), email, signup-page URL — all in white on ink-900 background. No clutter; the card lives in a Cairo dentist's pocket between two clinic days, it should still look like Dental Map after that.</p>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · I. Print collateral                    -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 3 · Category I</div>
+  <div class="number">I</div>
+  <h1>Print collateral.</h1>
+  <p>
+    Physical, in-clinic. The patient walks past the reception, sees the
+    Dental Map sticker on the window, and now Dental Map is real. Three small
+    print pieces — clinic-side, patient-facing.
+  </p>
+  <div class="toc-row">
+    <span><b>I.1</b> QR sticker</span>
+    <span><b>I.2</b> Reception flyer</span>
+    <span><b>I.3</b> Table tent</span>
+  </div>
+</section>
+
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§I · Print</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">I.1 &nbsp;QR sticker (window)</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">I.1</span>Window decal</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>120×120mm circle decal, vinyl, transparent backed (sticks inside the window, reads from outside). Bilingual layout (AR/EN stacked or two stickers).</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Icon-only mark (A.1.b) at top, "Book on Dental Map" / "احجز على دنتال ماب" caption, QR code centred → goes to <code>/{clinic-slug}</code>. Brand teal background, white type, single coral "free for patients" badge optional.</dd>
+      </div>
+    </dl>
+    <p>Print-ready CMYK with 3mm bleed, plus a digital PNG version for clinics that prefer to print themselves at a local printshop.</p>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">I.2 &nbsp;"We're on Dental Map" reception flyer</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">I.2</span>Reception A5 flyer</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>A5 (148×210mm), portrait, double-sided. 250gsm matte coated.</dd>
+      </div>
+      <div>
+        <dt>Front</dt>
+        <dd>Headline: "Book your next appointment in 30 seconds." (AR/EN). Brand teal hero with the H.1 one-pager's diagram. QR code bottom-third. Clinic-specific overprint zone (clinic name + dentist photo) at top.</dd>
+        <dt>Back</dt>
+        <dd>Three steps from G.1, smaller. Footer: clinic address + Dental Map URL.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <h2 class="section-h" style="margin-top:6mm;">I.3 &nbsp;Table tent (waiting room)</h2>
+  <div class="asset-card">
+    <h3 class="asset-h"><span class="asset-id">I.3</span>Tri-fold table tent</h3>
+    <dl class="meta-row">
+      <div>
+        <dt>Format</dt>
+        <dd>100×210mm folded (tri-panel). 350gsm soft-touch.</dd>
+      </div>
+      <div>
+        <dt>Composition</dt>
+        <dd>Each panel = one of the G.1 three steps (Search → Pick → Visit). QR on the last panel. Card sits on the receptionist's counter — patient picks it up while waiting, scans, and books their <em>next</em> appointment before they've left this one.</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="callout">
+    <strong>Print partner:</strong> the design team should suggest a vetted Cairo printshop
+    (or 3 candidates). Per-clinic per-piece quantities are small (50–100 pcs);
+    we don't want to ship from outside Egypt. Lead time matters more than
+    lowest price.
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · 4. Delivery & handoff                  -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 4</div>
+  <div class="number">04</div>
+  <h1>Delivery &amp; handoff.</h1>
+  <p>
+    How we want assets handed over so they slot into the codebase without
+    a back-and-forth. Naming, formats, folder structure, RTL rules, source
+    files.
+  </p>
+  <div class="toc-row">
+    <span><b>4.1</b> Naming conventions</span>
+    <span><b>4.2</b> Formats per asset type</span>
+    <span><b>4.3</b> Folder structure</span>
+    <span><b>4.4</b> Source files (Figma)</span>
+    <span><b>4.5</b> RTL / mirroring rules</span>
+  </div>
+</section>
+
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§4 · Delivery</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">4.1 &nbsp;Naming conventions</h2>
+  <p class="lede">Kebab-case, semantic family prefix, locale suffix where applicable, scale suffix where applicable.</p>
+  <table class="spec">
+    <thead><tr><th>Pattern</th><th>Example</th><th>Family</th></tr></thead>
+    <tbody>
+      <tr><td><code>logo-&lt;lockup&gt;-&lt;variant&gt;.&lt;ext&gt;</code></td><td><code>logo-full-color.svg</code> · <code>logo-icon-on-dark.svg</code></td><td>Brand identity (A)</td></tr>
+      <tr><td><code>og-&lt;page&gt;-&lt;locale&gt;.png</code></td><td><code>og-home-en.png</code> · <code>og-dentist-ar.png</code></td><td>Social (B)</td></tr>
+      <tr><td><code>illustration-&lt;state&gt;-&lt;variant&gt;.svg</code></td><td><code>illustration-empty-no-results.svg</code></td><td>UI illustrations (C)</td></tr>
+      <tr><td><code>icon-&lt;family&gt;-&lt;name&gt;.svg</code></td><td><code>icon-specialty-ortho.svg</code> · <code>icon-fn-whatsapp.svg</code></td><td>Iconography (D)</td></tr>
+      <tr><td><code>photo-&lt;subject&gt;-&lt;variant&gt;.&lt;ext&gt;</code></td><td><code>photo-hero-en-desktop.webp</code></td><td>Photography (E)</td></tr>
+      <tr><td><code>email-header-&lt;type&gt;-&lt;locale&gt;.png</code></td><td><code>email-header-confirmation-en.png</code></td><td>Email (F)</td></tr>
+      <tr><td><code>marketing-&lt;name&gt;.svg</code></td><td><code>marketing-howitworks-step1.svg</code></td><td>Marketing (G)</td></tr>
+      <tr><td><code>print-&lt;piece&gt;-&lt;locale&gt;.pdf</code></td><td><code>print-onepager-ar.pdf</code></td><td>Sales / print (H, I)</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:6mm;">4.2 &nbsp;Formats per asset type</h2>
+  <table class="spec">
+    <thead><tr><th>Asset type</th><th>Primary</th><th>Secondary</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>Logos / icons / illustrations</td><td>SVG</td><td>PNG @1x/2x/3x</td><td>SVG must use <code>currentColor</code>; PNG fallback only for email and where SVG inline is impractical.</td></tr>
+      <tr><td>OG / social</td><td>PNG</td><td>WebP</td><td>Bake fonts to outlines. Keep ≤300KB.</td></tr>
+      <tr><td>Photography (hero)</td><td>WebP</td><td>PNG</td><td>≤120KB per file. Provide AVIF if your tool supports it.</td></tr>
+      <tr><td>Email headers</td><td>PNG</td><td>—</td><td>No SVG. 600px wide. Test in Litmus / Email on Acid.</td></tr>
+      <tr><td>Print (sales kit, stickers)</td><td>PDF (CMYK, 3mm bleed)</td><td>InDesign / Figma source</td><td>Include print-ready and screen-preview variants.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 class="section-h" style="margin-top:6mm;">4.3 &nbsp;Folder structure (when handed back to engineering)</h2>
+  <pre style="background:var(--ink-50);border:1px solid var(--ink-100);border-radius:6px;padding:4mm;font-family:'JetBrains Mono',monospace;font-size:9pt;line-height:1.5;color:var(--ink-700);overflow:hidden;">
+public/
+  brand/
+    logo-full-color.svg
+    logo-icon-color.svg
+    logo-wordmark-color.svg
+    ...12 logo SVGs total + raster exports
+    favicon.ico
+    icon-192.png
+    icon-512.png
+    apple-touch-icon.png
+    safari-pinned-tab.svg
+  og/
+    og-home-en.png · og-home-ar.png
+    og-search-template.png
+    og-dentist-template.png
+    og-for-clinics-en.png · og-for-clinics-ar.png
+  illustrations/
+    empty/ · success/ · onboarding/ · errors/
+  icons/
+    specialty/ · service/ · functional/ · trust/
+    map-pin-default.svg · map-pin-hover.svg · map-pin-active.svg
+  photo/
+    hero-en-desktop.webp · hero-en-mobile.webp
+    hero-ar-desktop.webp · hero-ar-mobile.webp
+    placeholder-clinic.webp
+  email/
+    header-confirmation-en.png · header-confirmation-ar.png
+    header-clinic-notification-en.png · -ar.png
+    header-reminder-en.png · -ar.png
+    header-welcome-en.png · -ar.png
+    footer.html
+docs/
+  brand-guidelines.pdf
+  print/
+    onepager-template-en.pdf · -ar.pdf
+    deck-template-en.pdf · -ar.pdf
+    business-card.pdf
+    sticker-window.pdf
+    flyer-reception.pdf
+    table-tent.pdf
+  </pre>
+
+  <h2 class="section-h" style="margin-top:6mm;">4.4 &nbsp;Source files (Figma)</h2>
+  <ul>
+    <li>One Figma file per category (A–I) · 9 files total.</li>
+    <li>Each file lives in a shared "Dental Map" team — engineering should have viewer access.</li>
+    <li>Color and text styles defined as variables (Figma Variables, not local styles) so we can re-skin.</li>
+    <li>Components for repeated elements (logo lockups, email header chassis, OG template).</li>
+    <li>Each file's first frame = a "README" frame: what's in this file, where it lives in the product, last-updated date.</li>
+  </ul>
+
+  <h2 class="section-h" style="margin-top:6mm;">4.5 &nbsp;RTL / mirroring rules</h2>
+  <p class="lede">
+    Arabic-first means RTL is the canonical layout for half our users. The
+    short version: most things mirror; a handful don't.
+  </p>
+  <table class="spec">
+    <thead><tr><th>Asset element</th><th>Mirror in RTL?</th><th>Note</th></tr></thead>
+    <tbody>
+      <tr><td>Layout / column order</td><td>Yes</td><td>Mirror automatically — Tailwind's <code>rtl:</code> utilities handle this.</td></tr>
+      <tr><td>Wordmark "Dental Map"</td><td>No</td><td>Latin script; never flipped. AR-only surfaces use the wordmark in Latin form (it's our brand name).</td></tr>
+      <tr><td>Right-pointing arrows / chevrons</td><td>Yes</td><td>Per <code>dentist-card.tsx:74</code> already does <code>rtl:rotate-180</code>.</td></tr>
+      <tr><td>Calendar grid</td><td>No (Sunday first either way)</td><td>Egyptian week starts Sunday — same in AR &amp; EN.</td></tr>
+      <tr><td>Numerals</td><td>No (use Western Arabic 0–9)</td><td>Eastern Arabic numerals (٠١٢٣) are not standard in modern Egyptian web — we use Western.</td></tr>
+      <tr><td>Map pin / map UI</td><td>No</td><td>Geographic, not lingual.</td></tr>
+      <tr><td>Photography</td><td>No</td><td>Don't mirror photos — bodies and instruments have a "natural side". Reshoot if needed.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ════════════════════════════════════════════════════════ -->
+<!-- SECTION DIVIDER · 5. Acceptance & feedback               -->
+<!-- ════════════════════════════════════════════════════════ -->
+<section class="section-divider">
+  <div class="eyebrow">Section 5</div>
+  <div class="number">05</div>
+  <h1>Acceptance &amp; feedback loop.</h1>
+  <p>
+    How we'll review what's delivered, who signs off, and how this all phases
+    against the 5–6 week pilot timeline.
+  </p>
+  <div class="toc-row">
+    <span><b>5.1</b> Review rounds</span>
+    <span><b>5.2</b> Sign-off</span>
+    <span><b>5.3</b> Phasing against the pilot</span>
+  </div>
+</section>
+
+<section class="page">
+  <div class="running-header">
+    <span class="left"><img src="assets/logo.jpg" alt=""/> Dental Map · Design Asset Brief</span>
+    <span class="right">§5 · Acceptance</span>
+  </div>
+  <div class="running-footer"><span>v1.0 · 2026-04-28 · Internal — Dev → Design</span><span></span></div>
+
+  <h2 class="section-h">5.1 &nbsp;Review rounds</h2>
+  <p class="lede">
+    Two rounds per category. We'd rather catch issues at low fidelity than
+    polish the wrong thing.
+  </p>
+  <ol style="font-size:10pt;">
+    <li><strong>Round 1 — concept</strong>. Wireframes / sketches / mood. We confirm direction. ≤3 days turnaround on review.</li>
+    <li><strong>Round 2 — production</strong>. Final files, named per §4.1, in the folder structure of §4.3. We integrate &amp; ship.</li>
+  </ol>
+  <p>If a category fails Round 2 (anything broken, off-brand, or fundamentally different from Round 1), we go back to a Round 1.5 — we don't pile-up corrections on production files.</p>
+
+  <h2 class="section-h" style="margin-top:6mm;">5.2 &nbsp;Sign-off</h2>
+  <p class="lede">Two people sign off, neither alone:</p>
+  <ul>
+    <li><strong>Engineering lead</strong> — confirms the asset slots into the code without modification (right format, right naming, right anchor points, right size).</li>
+    <li><strong>Founder</strong> — confirms the asset is on-brand and tonally right.</li>
+  </ul>
+  <p>If they disagree, the founder breaks the tie. If the asset can't ship in production without code changes, that's an engineering-blocking review — back to design.</p>
+
+  <h2 class="section-h" style="margin-top:6mm;">5.3 &nbsp;Phasing against the 5–6 week pilot</h2>
+  <p class="lede">
+    Pilot launch is targeted ~6 weeks from project start (2026-04-22) — i.e.
+    early June 2026. Not every asset is needed at launch. Three phases:
+  </p>
+
+  <table class="spec">
+    <thead><tr><th>Phase</th><th>When</th><th>Required for launch</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Phase 1 — launch-blocking</strong></td>
+        <td>Now → 3 weeks</td>
+        <td>A.1 (logo lockups), A.4 (favicon set), B.1 (default OG), C.1–C.6 (empty + success states), D.4 (map pin), D.5 (verified badge only), F.1 (patient confirmation header), F.5 (footer).</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 2 — pilot-onboarding</strong></td>
+        <td>3 → 6 weeks</td>
+        <td>A.2 (variants), A.6 (guidelines), B.2 (per-page OG), C.7–C.8 (onboarding), D.1–D.2 (specialty / service icons), E.1 (refined hero), E.2/E.3 (photo guides), F.2–F.4 (other email headers), G.1–G.2 (marketing site), H.1–H.2 (sales kit).</td>
+      </tr>
+      <tr>
+        <td><strong>Phase 3 — post-pilot</strong></td>
+        <td>Week 6+</td>
+        <td>A.5 (PWA icons), C.9 (errors — not blocking, low traffic at MVP), D.5 (badges beyond Verified — earned over time), G.3 (testimonial avatars — wait for real testimonials), G.4 (for-clinics graphics — refine after first 5 clinics), H.3 (business card), I (all print collateral).</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout" style="margin-top:6mm;">
+    <strong>Phase 1 is non-negotiable for launch.</strong> If it slips, we ship
+    with current placeholders (the existing JPEG logo, the inline DivIcon pin,
+    the unbranded email). That's a known fallback — it's better to delay a
+    polish item to Phase 2 than to delay launch.
+  </div>
+
+  <h2 class="section-h" style="margin-top:8mm;">In closing</h2>
+  <p style="font-size:10pt;max-width:65ch;">
+    This brief is opinionated on purpose — the aim is to remove design-team
+    blockers, not to over-direct. Every "do/don't" exists because someone in
+    engineering already had to argue against the wrong version. Push back where
+    we've over-specified; we'd rather get one strong design opinion than a
+    cautious execution of ours.
+  </p>
+
+  <p style="font-size:10pt;margin-top:5mm;color:var(--ink-500);">
+    — The Dental Map engineering team
+  </p>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:8pt;color:var(--ink-400);margin-top:8mm;">
+    v1.0 · 2026-04-28 · <code>docs/design-asset-brief.pdf</code>
+  </p>
+</section>
+
+</body>
+</html>
