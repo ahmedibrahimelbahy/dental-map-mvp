@@ -40,6 +40,15 @@
   }
 }
 
+@layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer components {
   .display-h1 {
     font-family: var(--font-jakarta), var(--font-cairo), sans-serif;

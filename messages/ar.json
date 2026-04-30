@@ -66,6 +66,7 @@
     "filterFeeMax": "أقصى سعر (ج.م)",
     "filterApply": "طبّق الفلاتر",
     "filterReset": "إعادة تعيين",
+    "showFilters": "الفلاتر",
     "resultsCount": "{count, plural, =0 {لا يوجد أطباء} =1 {طبيب واحد} =2 {طبيبان} few {# أطباء} many {# طبيب} other {# طبيب}}",
     "emptyTitle": "لا توجد نتائج",
     "emptyBody": "جرّب توسيع الفلاتر."
@@ -194,5 +195,27 @@
     "noAccount": "لسه ماعندكش حساب؟",
     "linkSignIn": "تسجيل الدخول",
     "linkSignUp": "إنشاء حساب"
+  },
+  "Account": {
+    "title": "حسابي",
+    "upcoming": "القادمة",
+    "past": "السابقة والملغاة",
+    "emptyTitle": "لا توجد حجوزات بعد",
+    "emptyBody": "أول ما تحجز طبيب، الميعاد يظهر هنا. تقدر تلغي قبل الحجز بساعتين على الأقل — من غير ما تكلم العيادة.",
+    "emptyCta": "ابحث عن طبيب",
+    "cancel": "إلغاء الحجز",
+    "cancelConfirmTitle": "تلغي الحجز ده؟",
+    "cancelConfirmBody": "هنفضّي الميعاد ونبلّغ العيادة. تقدر تحجز تاني في أي وقت.",
+    "cancelConfirmYes": "أه، ألغيه",
+    "cancelConfirmNo": "خلّيه",
+    "statusPending": "بانتظار التأكيد",
+    "statusConfirmed": "مؤكد",
+    "statusCompleted": "تم",
+    "statusCancelled": "ملغي",
+    "statusNoShow": "لم يحضر",
+    "errorNotFound": "مش لاقيين الحجز ده.",
+    "errorTooLate": "فات الوقت — اتصل بالعيادة مباشرة.",
+    "errorAlreadyCancelled": "الحجز ده ملغي بالفعل.",
+    "errorServer": "في مشكلة. حاول تاني."
   }
 }

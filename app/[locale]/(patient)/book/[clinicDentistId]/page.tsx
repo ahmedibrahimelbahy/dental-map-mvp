@@ -69,9 +69,9 @@ export default async function BookPage({
   });
 
   return (
-    <div className="max-w-[920px] mx-auto px-5 md:px-8 py-10 md:py-14 grid md:grid-cols-[1fr_320px] gap-8">
+    <div className="max-w-[920px] mx-auto px-4 sm:px-5 md:px-8 py-8 md:py-14 grid md:grid-cols-[1fr_320px] gap-6 md:gap-8">
       <div>
-        <h1 className="display-h2 text-[28px] md:text-[36px] text-ink-900 mb-6">
+        <h1 className="display-h2 text-[24px] sm:text-[28px] md:text-[36px] text-ink-900 mb-5 md:mb-6 leading-tight">
           {t("headerTitle")}
         </h1>
         <BookingForm

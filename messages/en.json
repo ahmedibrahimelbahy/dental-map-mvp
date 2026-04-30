@@ -66,6 +66,7 @@
     "filterFeeMax": "Max fee (EGP)",
     "filterApply": "Apply filters",
     "filterReset": "Reset",
+    "showFilters": "Filters",
     "resultsCount": "{count, plural, =0 {No dentists found} =1 {1 dentist} other {# dentists}}",
     "emptyTitle": "No matches yet",
     "emptyBody": "Try widening your filters, or browse all dentistry below."
@@ -194,5 +195,27 @@
     "noAccount": "No account yet?",
     "linkSignIn": "Sign in",
     "linkSignUp": "Sign up"
+  },
+  "Account": {
+    "title": "My account",
+    "upcoming": "Upcoming",
+    "past": "Past & cancelled",
+    "emptyTitle": "No bookings yet",
+    "emptyBody": "When you book a dentist, your appointment shows up here. Cancel up to 2 hours before — no phone calls needed.",
+    "emptyCta": "Find a dentist",
+    "cancel": "Cancel booking",
+    "cancelConfirmTitle": "Cancel this booking?",
+    "cancelConfirmBody": "We'll free up the slot and let the clinic know. You can rebook any time.",
+    "cancelConfirmYes": "Yes, cancel it",
+    "cancelConfirmNo": "Keep booking",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "statusNoShow": "Missed",
+    "errorNotFound": "We couldn't find this booking.",
+    "errorTooLate": "Too late to cancel — please call the clinic directly.",
+    "errorAlreadyCancelled": "This booking is already cancelled.",
+    "errorServer": "Something went wrong. Please try again."
   }
 }

@@ -49,7 +49,10 @@
       "Bash(python *)",
       "Bash(npm init *)",
       "Bash(mkdir -p \"D:/Obsidian/Main/00-Inbox\" \"D:/Obsidian/Main/01-Projects/Dental Map\" \"D:/Obsidian/Main/01-Projects/Hg Brand identity\" \"D:/Obsidian/Main/01-Projects/AQL CRM\" \"D:/Obsidian/Main/02-Areas\" \"D:/Obsidian/Main/03-Resources/Design\" \"D:/Obsidian/Main/03-Resources/Tech\" \"D:/Obsidian/Main/03-Resources/Business\" \"D:/Obsidian/Main/04-Archive\" \"D:/Obsidian/Main/05-Daily\" \"D:/Obsidian/Main/_templates\" \"D:/Obsidian/Main/_attachments\")",
-      "Read(//d/Obsidian/**)"
+      "Read(//d/Obsidian/**)",
+      "Bash(node docs/design-brief/render.mjs)",
+      "Bash(git push *)",
+      "Bash(node public/design-brief/inspect.mjs)"
     ]
   }
 }

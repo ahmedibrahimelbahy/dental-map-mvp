@@ -3,6 +3,7 @@ import { Link } from "@/i18n/routing";
 import { BrandMark } from "./brand-mark";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SignOutButton } from "./dashboard/sign-out-button";
+import { MobileNav } from "./mobile-nav";
 import { getCurrentUser } from "@/lib/auth/session";
 import { LayoutDashboard } from "lucide-react";
 
@@ -21,8 +22,8 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-ink-100">
-      <div className="max-w-[1240px] mx-auto px-5 md:px-8 h-[68px] flex items-center justify-between gap-6">
-        <div className="flex items-center gap-10">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8 h-[64px] md:h-[68px] flex items-center justify-between gap-3 md:gap-6">
+        <div className="flex items-center gap-6 lg:gap-10 min-w-0">
           <BrandMark />
           <nav className="hidden lg:flex items-center gap-7 text-[14px] text-ink-700 font-medium">
             <Link href="/search" className="hover:text-teal-600 transition-colors">
@@ -40,7 +41,7 @@ export async function SiteHeader() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-4">
+        <div className="flex items-center gap-1.5 md:gap-3">
           <LocaleSwitcher />
 
           {!user && (
@@ -48,14 +49,17 @@ export async function SiteHeader() {
               <Link href="/signin" className="hidden md:inline btn-ghost">
                 {t("signIn")}
               </Link>
-              <Link href="/signup" className="btn-primary text-[13.5px] py-2.5 px-4 md:px-5">
+              <Link
+                href="/signup"
+                className="hidden sm:inline-flex btn-primary !text-[13px] !py-2 !px-3.5 md:!px-5"
+              >
                 {t("signUp")}
               </Link>
             </>
           )}
 
           {user && (
-            <div className="flex items-center gap-3">
+            <>
               {isDentistAdmin && (
                 <Link
                   href="/dashboard"
@@ -65,20 +69,39 @@ export async function SiteHeader() {
                   Dashboard
                 </Link>
               )}
-              <div
-                className="flex items-center gap-2.5 px-2.5 py-1.5 rounded-full bg-teal-50 border border-teal-100"
+              <Link
+                href={isDentistAdmin ? "/dashboard" : "/account"}
+                className="flex items-center gap-2 px-2 py-1 md:px-2.5 md:py-1.5 rounded-full bg-teal-50 border border-teal-100 hover:bg-teal-100 transition-colors"
                 title={user.profile.full_name}
               >
-                <span className="w-7 h-7 rounded-full bg-teal-500 text-white flex items-center justify-center text-[11px] font-bold">
+                <span className="w-7 h-7 rounded-full bg-teal-500 text-white flex items-center justify-center text-[11px] font-bold shrink-0">
                   {initials || "·"}
                 </span>
-                <span className="hidden sm:inline text-[13px] font-semibold text-teal-800 max-w-[12ch] truncate">
+                <span className="hidden sm:inline text-[13px] font-semibold text-teal-800 max-w-[10ch] truncate">
                   {firstName}
                 </span>
-              </div>
-              <SignOutButton label={t("signOut")} />
-            </div>
+              </Link>
+              <span className="hidden md:inline">
+                <SignOutButton label={t("signOut")} />
+              </span>
+            </>
           )}
+
+          <MobileNav
+            authed={!!user}
+            isDentistAdmin={isDentistAdmin}
+            firstName={firstName}
+            labels={{
+              search: t("search"),
+              specialties: t("specialties"),
+              areas: t("areas"),
+              forClinics: t("forClinics"),
+              signIn: t("signIn"),
+              signUp: t("signUp"),
+              account: t("account"),
+              dashboard: "Dashboard",
+            }}
+          />
         </div>
       </div>
     </header>

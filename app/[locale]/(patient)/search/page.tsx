@@ -1,7 +1,7 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
 import { listDentists } from "@/lib/dentists/list";
 import { SearchResults } from "@/components/patient/search-results";
+import { SearchFilters } from "@/components/patient/search-filters";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { Search as SearchIcon } from "lucide-react";
 
@@ -24,7 +24,6 @@ export default async function SearchPage({
   const sp = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("Search");
-  const isAr = locale === "ar";
 
   const admin = createAdminClient();
   const [{ data: specialties }, { data: areas }] = await Promise.all([
@@ -47,99 +46,35 @@ export default async function SearchPage({
   });
 
   return (
-    <div className="max-w-[1240px] mx-auto px-5 md:px-8 py-10 md:py-14">
+    <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8 py-8 md:py-14">
       <div className="flex items-center gap-3 mb-2">
         <span className="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
           <SearchIcon className="w-5 h-5" aria-hidden />
         </span>
-        <h1 className="display-h2 text-[28px] md:text-[36px] text-ink-900">
+        <h1 className="display-h2 text-[24px] sm:text-[28px] md:text-[36px] text-ink-900 leading-tight">
           {t("headerTitle")}
         </h1>
       </div>
-      <p className="text-[14px] text-ink-500 mb-8">
+      <p className="text-[13.5px] text-ink-500 mb-6 md:mb-8">
         {t("resultsCount", { count: dentists.length })}
       </p>
 
-      <div className="grid lg:grid-cols-[260px_1fr] gap-8">
-        {/* Filters */}
-        <aside className="lg:sticky lg:top-24 self-start">
-          <form
-            action="/search"
-            method="get"
-            className="rounded-2xl border border-ink-100 bg-white p-5 shadow-card space-y-5"
-          >
-            <h2 className="font-display text-[15px] font-bold text-ink-900">
-              {t("filtersTitle")}
-            </h2>
-
-            <div>
-              <label className="field-label" htmlFor="specialty">
-                {t("filterAnySpecialty")}
-              </label>
-              <select
-                id="specialty"
-                name="specialty"
-                defaultValue={sp.specialty ?? ""}
-                className="field-input !py-2.5 !text-[14px]"
-              >
-                <option value="">{t("filterAnySpecialty")}</option>
-                {(specialties ?? []).map((s) => (
-                  <option key={s.slug} value={s.slug}>
-                    {isAr ? s.name_ar : s.name_en}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="field-label" htmlFor="area">
-                {t("filterAnyArea")}
-              </label>
-              <select
-                id="area"
-                name="area"
-                defaultValue={sp.area ?? ""}
-                className="field-input !py-2.5 !text-[14px]"
-              >
-                <option value="">{t("filterAnyArea")}</option>
-                {(areas ?? []).map((a) => (
-                  <option key={a.slug} value={a.slug}>
-                    {isAr ? a.name_ar : a.name_en}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="field-label" htmlFor="feeMax">
-                {t("filterFeeMax")}
-              </label>
-              <input
-                id="feeMax"
-                name="feeMax"
-                type="number"
-                inputMode="numeric"
-                min={0}
-                step={50}
-                defaultValue={sp.feeMax ?? ""}
-                placeholder="—"
-                className="field-input !py-2.5 !text-[14px]"
-              />
-            </div>
-
-            <div className="flex gap-2 pt-1">
-              <button type="submit" className="btn-primary !py-2 !px-4 !text-[13px] flex-1">
-                {t("filterApply")}
-              </button>
-              <Link
-                href="/search"
-                className="btn-secondary !py-2 !px-4 !text-[13px]"
-              >
-                {t("filterReset")}
-              </Link>
-            </div>
-          </form>
-        </aside>
+      <div className="grid lg:grid-cols-[260px_1fr] gap-6 lg:gap-8">
+        <SearchFilters
+          specialties={specialties ?? []}
+          areas={areas ?? []}
+          current={sp}
+          locale={locale}
+          labels={{
+            title: t("filtersTitle"),
+            anySpecialty: t("filterAnySpecialty"),
+            anyArea: t("filterAnyArea"),
+            feeMax: t("filterFeeMax"),
+            apply: t("filterApply"),
+            reset: t("filterReset"),
+            showFilters: t("showFilters"),
+          }}
+        />
 
         {/* Results — client island with list/map toggle */}
         <SearchResults
