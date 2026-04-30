@@ -5,7 +5,7 @@ import { LocaleSwitcher } from "./locale-switcher";
 import { SignOutButton } from "./dashboard/sign-out-button";
 import { MobileNav } from "./mobile-nav";
 import { getCurrentUser } from "@/lib/auth/session";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, CalendarCheck } from "lucide-react";
 
 export async function SiteHeader() {
   const t = await getTranslations("Nav");
@@ -60,13 +60,21 @@ export async function SiteHeader() {
 
           {user && (
             <>
-              {isDentistAdmin && (
+              {isDentistAdmin ? (
                 <Link
                   href="/dashboard"
                   className="hidden md:inline-flex items-center gap-1.5 btn-ghost"
                 >
                   <LayoutDashboard className="w-4 h-4" aria-hidden />
                   Dashboard
+                </Link>
+              ) : (
+                <Link
+                  href="/account"
+                  className="hidden md:inline-flex items-center gap-1.5 btn-ghost"
+                >
+                  <CalendarCheck className="w-4 h-4" aria-hidden />
+                  {t("myBookings")}
                 </Link>
               )}
               <Link
@@ -91,6 +99,8 @@ export async function SiteHeader() {
             authed={!!user}
             isDentistAdmin={isDentistAdmin}
             firstName={firstName}
+            initials={initials}
+            fullName={user?.profile.full_name ?? ""}
             labels={{
               search: t("search"),
               specialties: t("specialties"),
@@ -98,8 +108,9 @@ export async function SiteHeader() {
               forClinics: t("forClinics"),
               signIn: t("signIn"),
               signUp: t("signUp"),
-              account: t("account"),
+              myBookings: t("myBookings"),
               dashboard: "Dashboard",
+              signOut: t("signOut"),
             }}
           />
         </div>
