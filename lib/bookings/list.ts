@@ -29,7 +29,7 @@ export async function listAppointmentsForAdmin(): Promise<AppointmentRow[]> {
     slot_start: string;
     slot_end: string;
     status: AppointmentRow["status"];
-    fee_at_booking: number;
+    fee_at_booking_egp: number;
     patient_phone: string;
     patient_note: string | null;
     gcal_event_id: string | null;
@@ -44,7 +44,7 @@ export async function listAppointmentsForAdmin(): Promise<AppointmentRow[]> {
     .from("appointments")
     .select(
       `
-      id, slot_start, slot_end, status, fee_at_booking,
+      id, slot_start, slot_end, status, fee_at_booking_egp,
       patient_phone, patient_note, gcal_event_id, patient_id,
       clinic_dentist:clinic_dentists!inner(
         dentist:dentists(name_ar, name_en),
@@ -89,7 +89,7 @@ export async function listAppointmentsForAdmin(): Promise<AppointmentRow[]> {
     slotStartIso: r.slot_start,
     slotEndIso: r.slot_end,
     status: r.status,
-    feeEgp: r.fee_at_booking,
+    feeEgp: r.fee_at_booking_egp,
     patientPhone: r.patient_phone,
     patientNote: r.patient_note,
     gcalEventId: r.gcal_event_id,

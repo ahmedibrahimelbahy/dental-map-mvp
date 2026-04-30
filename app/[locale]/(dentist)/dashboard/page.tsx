@@ -1,8 +1,13 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { requireDentistAdmin } from "@/lib/auth/session";
-import { createAdminClient } from "@/lib/supabase/admin";
-import { Link } from "@/i18n/routing";
-import { CalendarDays, CircleCheck, CircleAlert, ArrowRight } from "lucide-react";
+import { getDashboardData } from "@/lib/dashboard/data";
+import { TodayScheduleTile } from "@/components/dashboard/bento/today-schedule";
+import { KpiTile } from "@/components/dashboard/bento/kpi-tile";
+import { LeaderboardTile } from "@/components/dashboard/bento/leaderboard-tile";
+import { ActionQueueTile } from "@/components/dashboard/bento/action-queue-tile";
+import { CalendarHealthTile } from "@/components/dashboard/bento/calendar-health-tile";
+
+export const dynamic = "force-dynamic";
 
 export default async function DashboardHome({
   params,
@@ -14,114 +19,107 @@ export default async function DashboardHome({
   const user = await requireDentistAdmin(locale);
   const t = await getTranslations("Dashboard");
 
-  // Find dentists this admin manages (via clinic_admins → clinic_dentists → dentists)
-  const admin = createAdminClient();
-  const { data: clinicAdmins } = await admin
-    .from("clinic_admins")
-    .select("clinic_id")
-    .eq("profile_id", user.id)
-    .returns<{ clinic_id: string }[]>();
-  const clinicIds = clinicAdmins?.map((c) => c.clinic_id) ?? [];
+  const data = await getDashboardData(user.id);
+  const firstName = user.profile.full_name?.split(" ")[0] ?? "";
 
-  const { data: clinicDentists } = clinicIds.length
-    ? await admin
-        .from("clinic_dentists")
-        .select("dentist_id")
-        .in("clinic_id", clinicIds)
-        .returns<{ dentist_id: string }[]>()
-    : { data: [] as { dentist_id: string }[] };
-  const dentistIds = clinicDentists?.map((c) => c.dentist_id) ?? [];
-
-  const { data: calendars } = dentistIds.length
-    ? await admin
-        .from("dentist_calendars")
-        .select("dentist_id")
-        .in("dentist_id", dentistIds)
-        .returns<{ dentist_id: string }[]>()
-    : { data: [] as { dentist_id: string }[] };
-  const connectedCount = calendars?.length ?? 0;
-
-  return (
-    <div>
-      <h1 className="display-h2 text-[30px] md:text-[40px] text-ink-900 mb-8">
-        {t("welcome", { name: user.profile.full_name.split(" ")[0] })}
-      </h1>
-
-      <div className="grid md:grid-cols-3 gap-4 md:gap-5 mb-10">
-        <MetricCard label={t("todayBookings")} value="0" />
-        <MetricCard label={t("weekBookings")} value="0" />
-        <MetricCard
-          label={
-            connectedCount > 0 ? t("gcalConnected") : t("gcalNotConnected")
-          }
-          value={`${connectedCount}/${dentistIds.length || 0}`}
-          tone={connectedCount > 0 ? "ok" : "warn"}
-        />
-      </div>
-
-      {/* Quick action: connect GCal if needed */}
-      {dentistIds.length > 0 && connectedCount < dentistIds.length && (
-        <Link
-          href="/dashboard/calendar"
-          className="group rounded-2xl border border-teal-200 bg-gradient-to-br from-teal-50 to-white p-6 md:p-7 flex items-center justify-between gap-6 shadow-card hover:shadow-card-hover transition-all"
-        >
-          <div className="flex items-start gap-4">
-            <span className="w-11 h-11 rounded-xl bg-teal-500 text-white flex items-center justify-center shrink-0">
-              <CalendarDays className="w-5 h-5" aria-hidden />
-            </span>
-            <div>
-              <div className="font-display text-[18px] font-bold text-ink-900 mb-1">
-                {t("gcalExplainTitle")}
-              </div>
-              <p className="text-[14px] leading-[1.6] text-ink-500 max-w-[60ch]">
-                {t("gcalExplainBody")}
-              </p>
-            </div>
-          </div>
-          <ArrowRight
-            className="w-5 h-5 text-teal-600 shrink-0 rtl:rotate-180 transition-transform group-hover:translate-x-1 rtl:group-hover:-translate-x-1"
-            aria-hidden
-          />
-        </Link>
-      )}
-
-      {dentistIds.length === 0 && (
-        <div className="rounded-2xl border border-ink-100 bg-white p-6 md:p-7">
-          <p className="text-[14.5px] leading-[1.6] text-ink-600 max-w-[60ch]">
+  // Empty state — no clinic linked yet
+  if (data.clinicCount === 0) {
+    return (
+      <div>
+        <h1 className="display-h2 text-[30px] md:text-[40px] text-ink-900 mb-6">
+          {t("welcome", { name: firstName })}
+        </h1>
+        <div className="rounded-2xl border border-ink-100 bg-white p-7">
+          <p className="text-[14.5px] leading-[1.65] text-ink-600 max-w-[60ch]">
             {t("clinicPlaceholder")}
           </p>
         </div>
-      )}
-    </div>
-  );
-}
-
-function MetricCard({
-  label,
-  value,
-  tone = "neutral",
-}: {
-  label: string;
-  value: string;
-  tone?: "neutral" | "ok" | "warn";
-}) {
-  const Icon =
-    tone === "ok" ? CircleCheck : tone === "warn" ? CircleAlert : null;
-  const iconColor =
-    tone === "ok"
-      ? "text-teal-500"
-      : tone === "warn"
-        ? "text-coral-500"
-        : "text-ink-400";
+      </div>
+    );
+  }
 
   return (
-    <div className="rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card">
-      <div className="flex items-center gap-2 mb-2 small-caps text-ink-400">
-        {Icon && <Icon className={`w-4 h-4 ${iconColor}`} aria-hidden />}
-        {label}
-      </div>
-      <div className="font-display text-[28px] md:text-[32px] font-bold text-ink-900 tracking-tight2">
-        {value}
+    <div>
+      <header className="mb-8 md:mb-10">
+        <h1 className="display-h2 text-[28px] md:text-[36px] text-ink-900 leading-tight mb-1">
+          {t("welcome", { name: firstName })}
+        </h1>
+        <p className="text-[13.5px] text-ink-500">
+          {locale === "ar"
+            ? "نظرة سريعة على عيادتك اليوم."
+            : "A quick read on your clinic today."}
+        </p>
+      </header>
+
+      {/* ── Bento grid ─────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-12 gap-3 md:gap-4">
+        {/* Today's schedule — 7 cols on desktop, full on mobile */}
+        <div className="col-span-12 lg:col-span-7">
+          <TodayScheduleTile
+            dentists={data.dentists}
+            appointments={data.todayAppointments}
+            locale={locale}
+            todayLabel={t("bentoToday")}
+            emptyLabel={t("bentoTodayEmpty")}
+          />
+        </div>
+
+        {/* 4 KPI tiles — 5 cols on desktop, 2x2 grid */}
+        <div className="col-span-12 lg:col-span-5 grid grid-cols-2 gap-3 md:gap-4">
+          <KpiTile
+            label={t("bentoKpiWeekBookings")}
+            kpi={data.kpis.weekBookings}
+            tone="good-up"
+          />
+          <KpiTile
+            label={t("bentoKpiRevenue")}
+            kpi={data.kpis.weekRevenue}
+            format="currency"
+            tone="good-up"
+          />
+          <KpiTile
+            label={t("bentoKpiFilled")}
+            kpi={data.kpis.filledPct}
+            format="percent"
+            tone="good-up"
+          />
+          <KpiTile
+            label={t("bentoKpiNoShow")}
+            kpi={data.kpis.weekNoShows}
+            tone="good-down"
+          />
+        </div>
+
+        {/* Leaderboard — full width */}
+        <div className="col-span-12">
+          <LeaderboardTile
+            rows={data.leaderboard}
+            locale={locale}
+            title={t("bentoLeaderboard")}
+            emptyLabel={t("bentoLeaderboardEmpty")}
+          />
+        </div>
+
+        {/* Action queue — 7 cols */}
+        <div className="col-span-12 lg:col-span-7">
+          <ActionQueueTile
+            items={data.actionQueue}
+            locale={locale}
+            title={t("bentoActions")}
+            emptyLabel={t("bentoActionsEmpty")}
+          />
+        </div>
+
+        {/* Calendar health — 5 cols */}
+        <div className="col-span-12 lg:col-span-5">
+          <CalendarHealthTile
+            rows={data.calendarHealth}
+            locale={locale}
+            title={t("bentoCalHealth")}
+            manualLabel={t("bentoCalManual")}
+            manageLabel={t("bentoCalManage")}
+          />
+        </div>
       </div>
     </div>
   );
