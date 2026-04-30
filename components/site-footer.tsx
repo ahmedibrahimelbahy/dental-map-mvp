@@ -6,13 +6,14 @@ export function SiteFooter() {
   const home = useTranslations("Home");
   const brand = useTranslations("Brand");
   const nav = useTranslations("Nav");
+  const legal = useTranslations("Legal");
   const year = new Date().getFullYear();
 
   return (
     <footer className="border-t border-ink-100 bg-white">
-      <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-14 pb-10">
-        <div className="grid md:grid-cols-[1.5fr_1fr_1fr_1fr] gap-10 md:gap-12 mb-12">
-          <div>
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-14 pb-8 md:pb-10">
+        <div className="grid sm:grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-8 md:gap-10 mb-10 md:mb-12">
+          <div className="sm:col-span-2 md:col-span-1">
             <BrandMark />
             <p className="mt-4 text-[14.5px] leading-[1.6] text-ink-500 max-w-[38ch]">
               {home("footerTagline")}
@@ -20,7 +21,7 @@ export function SiteFooter() {
           </div>
 
           <FooterCol label={nav("search")}>
-            <FooterLink href="/search">{nav("specialties")}</FooterLink>
+            <FooterLink href="/specialties">{nav("specialties")}</FooterLink>
             <FooterLink href="/areas">{nav("areas")}</FooterLink>
             <FooterLink href="/search">{nav("search")}</FooterLink>
           </FooterCol>
@@ -34,9 +35,16 @@ export function SiteFooter() {
             <FooterLink href="/signin">{nav("signIn")}</FooterLink>
             <FooterLink href="/signup">{nav("signUp")}</FooterLink>
           </FooterCol>
+
+          <FooterCol label="Legal">
+            <FooterLink href="/privacy">{legal("navPrivacy")}</FooterLink>
+            <FooterLink href="/terms">{legal("navTerms")}</FooterLink>
+            <FooterLink href="/cancellation">{legal("navCancellation")}</FooterLink>
+            <FooterLink href="/cookies">{legal("navCookies")}</FooterLink>
+          </FooterCol>
         </div>
 
-        <div className="border-t border-ink-100 pt-6 flex flex-wrap items-center justify-between gap-4 text-[12.5px] text-ink-400">
+        <div className="border-t border-ink-100 pt-6 flex flex-wrap items-center justify-between gap-3 text-[12px] sm:text-[12.5px] text-ink-400">
           <div>
             © {year} {brand("name")} · {home("footerRights")}
           </div>

@@ -22,8 +22,31 @@ export async function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 bg-white/85 backdrop-blur-md border-b border-ink-100">
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8 h-[64px] md:h-[68px] flex items-center justify-between gap-3 md:gap-6">
-        <div className="flex items-center gap-6 lg:gap-10 min-w-0">
+      <div className="max-w-[1240px] mx-auto px-3 sm:px-5 md:px-8 h-[60px] md:h-[68px] flex items-center justify-between gap-2 md:gap-6">
+        {/* START side: hamburger (mobile) + brand + nav links (desktop) */}
+        <div className="flex items-center gap-2 md:gap-6 lg:gap-10 min-w-0">
+          <MobileNav
+            authed={!!user}
+            isDentistAdmin={isDentistAdmin}
+            firstName={firstName}
+            fullName={user?.profile.full_name ?? ""}
+            initials={initials}
+            labels={{
+              search: t("search"),
+              specialties: t("specialties"),
+              areas: t("areas"),
+              forClinics: t("forClinics"),
+              signIn: t("signIn"),
+              signUp: t("signUp"),
+              myBookings: t("myBookings"),
+              dashboard: "Dashboard",
+              signOut: t("signOut"),
+              menu: t("menu"),
+              browse: t("browse"),
+              patientRole: t("patientRole"),
+              adminRole: t("adminRole"),
+            }}
+          />
           <BrandMark />
           <nav className="hidden lg:flex items-center gap-7 text-[14px] text-ink-700 font-medium">
             <Link href="/search" className="hover:text-teal-600 transition-colors">
@@ -41,6 +64,7 @@ export async function SiteHeader() {
           </nav>
         </div>
 
+        {/* END side: locale switcher + auth actions */}
         <div className="flex items-center gap-1.5 md:gap-3">
           <LocaleSwitcher />
 
@@ -51,7 +75,7 @@ export async function SiteHeader() {
               </Link>
               <Link
                 href="/signup"
-                className="hidden sm:inline-flex btn-primary !text-[13px] !py-2 !px-3.5 md:!px-5"
+                className="btn-primary !text-[12.5px] sm:!text-[13px] !py-2 !px-3 sm:!px-3.5 md:!px-5"
               >
                 {t("signUp")}
               </Link>
@@ -94,25 +118,6 @@ export async function SiteHeader() {
               </span>
             </>
           )}
-
-          <MobileNav
-            authed={!!user}
-            isDentistAdmin={isDentistAdmin}
-            firstName={firstName}
-            initials={initials}
-            fullName={user?.profile.full_name ?? ""}
-            labels={{
-              search: t("search"),
-              specialties: t("specialties"),
-              areas: t("areas"),
-              forClinics: t("forClinics"),
-              signIn: t("signIn"),
-              signUp: t("signUp"),
-              myBookings: t("myBookings"),
-              dashboard: "Dashboard",
-              signOut: t("signOut"),
-            }}
-          />
         </div>
       </div>
     </header>

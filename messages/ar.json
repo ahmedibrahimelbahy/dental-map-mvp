@@ -12,6 +12,10 @@
     "signUp": "إنشاء حساب",
     "account": "حسابي",
     "myBookings": "حجوزاتي",
+    "menu": "القائمة",
+    "browse": "استكشاف",
+    "patientRole": "مريض",
+    "adminRole": "مدير عيادة",
     "signOut": "تسجيل الخروج"
   },
   "Home": {
@@ -196,6 +200,15 @@
     "noAccount": "لسه ماعندكش حساب؟",
     "linkSignIn": "تسجيل الدخول",
     "linkSignUp": "إنشاء حساب"
+  },
+  "Legal": {
+    "back": "العودة للرئيسية",
+    "lastUpdated": "آخر تحديث · إبريل 2026",
+    "draftNotice": "هذه مسودة تحت المراجعة القانونية. النسخة النهائية تصدر قبل الإطلاق العام. للاستفسار: legal@dentalmap.eg.",
+    "navPrivacy": "الخصوصية",
+    "navTerms": "الشروط",
+    "navCancellation": "الإلغاء",
+    "navCookies": "الكوكيز"
   },
   "Account": {
     "title": "حسابي",

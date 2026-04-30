@@ -12,7 +12,11 @@
     "signUp": "Sign up",
     "account": "My account",
     "myBookings": "My bookings",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "menu": "Menu",
+    "browse": "Browse",
+    "patientRole": "Patient",
+    "adminRole": "Clinic admin"
   },
   "Home": {
     "heroEyebrow": "Greater Cairo · pilot",
@@ -196,6 +200,15 @@
     "noAccount": "No account yet?",
     "linkSignIn": "Sign in",
     "linkSignUp": "Sign up"
+  },
+  "Legal": {
+    "back": "Back to home",
+    "lastUpdated": "Last updated April 2026",
+    "draftNotice": "This is a working draft prepared for legal review. Final version will be issued before public launch. Reach us at legal@dentalmap.eg with questions.",
+    "navPrivacy": "Privacy",
+    "navTerms": "Terms",
+    "navCancellation": "Cancellation",
+    "navCookies": "Cookies"
   },
   "Account": {
     "title": "My account",
