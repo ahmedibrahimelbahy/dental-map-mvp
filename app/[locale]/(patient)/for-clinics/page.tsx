@@ -11,8 +11,6 @@ import {
   ArrowRight,
   CheckCircle2,
   LogIn,
-  MessageCircle,
-  Mail,
   Sparkles,
 } from "lucide-react";
 
@@ -29,17 +27,9 @@ export default async function ForClinicsPage({
   const isDentistAdmin =
     user?.profile.role === "dentist_admin" || user?.profile.role === "ops";
 
-  // Build pre-filled email mailto link for the apply CTA.
-  const mailto = `mailto:clinics@dentalmap.eg?subject=${encodeURIComponent(
-    t("applyEmailSubject")
-  )}&body=${encodeURIComponent(t("applyEmailBody"))}`;
-
-  // Optional WhatsApp number — set NEXT_PUBLIC_CLINIC_WHATSAPP=20100xxxxxxx
-  // (digits only, country code prefix). If not set, only email shows.
-  const whatsappNumber = process.env.NEXT_PUBLIC_CLINIC_WHATSAPP;
-  const whatsappLink = whatsappNumber
-    ? `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(t("applyEmailBody"))}`
-    : null;
+  // Apply CTA — signed-in users go straight to the onboarding form.
+  // Signed-out users land on signup with the next= param so they come back here.
+  const applyHref = user ? "/onboard" : "/signup?next=/onboard";
 
   return (
     <div>
@@ -66,27 +56,14 @@ export default async function ForClinicsPage({
             </p>
 
             <div className="mt-7 md:mt-9 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              {whatsappLink ? (
-                <a
-                  href={whatsappLink}
-                  target="_blank"
-                  rel="noopener"
-                  className="btn-primary !py-3.5 !px-6 !text-[15px] inline-flex items-center justify-center gap-2 shadow-glow"
-                >
-                  <MessageCircle className="w-5 h-5" aria-hidden />
-                  {t("ctaApply")}
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-                </a>
-              ) : (
-                <a
-                  href={mailto}
-                  className="btn-primary !py-3.5 !px-6 !text-[15px] inline-flex items-center justify-center gap-2 shadow-glow"
-                >
-                  <Mail className="w-5 h-5" aria-hidden />
-                  {t("ctaApply")}
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-                </a>
-              )}
+              <Link
+                href={applyHref}
+                className="btn-primary !py-3.5 !px-6 !text-[15px] inline-flex items-center justify-center gap-2 shadow-glow"
+              >
+                <Sparkles className="w-5 h-5" aria-hidden />
+                {t("ctaApply")}
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
+              </Link>
 
               {isDentistAdmin ? (
                 <Link
@@ -275,27 +252,14 @@ export default async function ForClinicsPage({
             {t("finalBody")}
           </p>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
-            {whatsappLink ? (
-              <a
-                href={whatsappLink}
-                target="_blank"
-                rel="noopener"
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-teal-700 font-bold text-[15px] hover:bg-teal-50 transition-colors shadow-lg"
-              >
-                <MessageCircle className="w-5 h-5" aria-hidden />
-                {t("ctaApply")}
-                <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-              </a>
-            ) : (
-              <a
-                href={mailto}
-                className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-teal-700 font-bold text-[15px] hover:bg-teal-50 transition-colors shadow-lg"
-              >
-                <Mail className="w-5 h-5" aria-hidden />
-                {t("ctaApply")}
-                <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-              </a>
-            )}
+            <Link
+              href={applyHref}
+              className="inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-white text-teal-700 font-bold text-[15px] hover:bg-teal-50 transition-colors shadow-lg"
+            >
+              <Sparkles className="w-5 h-5" aria-hidden />
+              {t("ctaApply")}
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
+            </Link>
             {!isDentistAdmin && (
               <Link
                 href="/signin"
