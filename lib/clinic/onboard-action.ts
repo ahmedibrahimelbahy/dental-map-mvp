@@ -179,7 +179,9 @@ export async function onboardClinicAction(
         years_experience: d.yearsExp ?? null,
         bio_en: d.bioEn?.trim() || null,
         bio_ar: d.bioAr?.trim() || null,
-        is_published: false,
+        // Dentists start published — the clinic.is_published flag is the
+        // single visibility gate. Search requires both true.
+        is_published: true,
       } as never)
       .select("id")
       .returns<{ id: string }[]>()

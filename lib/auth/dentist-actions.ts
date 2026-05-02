@@ -152,5 +152,25 @@ export async function setClinicPublishedAction(input: {
     .update({ is_published: input.published } as never)
     .eq("id", input.clinicId);
   if (error) throw new Error(error.message);
+
+  // Cascade publish state to all dentists at this clinic.
+  // Search requires both clinic.is_published AND dentist.is_published, so
+  // an admin toggling the clinic ON expects their roster to go live too.
+  // (Reverses on toggle OFF — the clinic going dark hides everyone.)
+  const { data: cdRows } = await admin
+    .from("clinic_dentists")
+    .select("dentist_id")
+    .eq("clinic_id", input.clinicId)
+    .eq("is_active", true)
+    .returns<{ dentist_id: string }[]>();
+  const dentistIds = (cdRows ?? []).map((r) => r.dentist_id);
+  if (dentistIds.length > 0) {
+    const { error: dErr } = await admin
+      .from("dentists")
+      .update({ is_published: input.published } as never)
+      .in("id", dentistIds);
+    if (dErr) console.error("[publish] dentist cascade failed (non-fatal):", dErr);
+  }
+
   revalidatePath("/", "layout");
 }
