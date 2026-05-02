@@ -17,17 +17,17 @@ The differentiator is **simplicity and a flawless UI**: every feature here is ad
 
 ## 2. Scope
 
-Three additive ships, no UI revamp:
+Four additive ships, no UI revamp:
 
 - **Ship 1 — Ratings & sort.** Bayesian-smoothed dentist ratings, "New on Dental Map" treatment, sort-by-rating + 4★+ filter on `/search`.
 - **Ship 2 — Trust & Featured.** "Trusted by Dental Map" badge on clinic cards + profiles. Curated "Featured Dentists" rail on the homepage.
 - **Ship 3 — Discovery overhaul.** One-card-per-doctor results, universal autocomplete on the Specialty field, GPS distance slider with area-filter fallback, insurance filter, "Available today / this week" filter, soonest-slot badge on every card, save/favorite dentists, recently-viewed dentists.
+- **Ship 4 — Per-service pricing.** Per-clinic price list (cleaning, filling, implant, etc.). Price list section on clinic and doctor profiles; service-specific filter + price cap on `/search` ("dentists offering implants under 5000 EGP").
 
 ### Out of scope
 
-For the record, the following were considered and explicitly excluded from these three ships. They may be revisited post-pilot:
+For the record, the following were considered and explicitly excluded from these four ships. They may be revisited post-pilot:
 
-- Per-service pricing (Cleaning 200 EGP, Implant 6000 EGP)
 - Side-by-side dentist comparison
 - Doctor video intros
 - Pediatric-friendly badge (separate from the pediatric specialty)
@@ -48,6 +48,8 @@ For the record, the following were considered and explicitly excluded from these
 | Ratings | Bayesian-smoothed; hide stars until 3 reviews ("New on Dental Map") | Cold-start gaming-resistant; "New" treatment turns absence-of-stars into a positive trust signal. |
 | Featured dentists | Homepage rail only (no search boost) | Keeps editorial separate from organic search; protects long-term trust in result rankings. |
 | Doctor / clinic name search | Existing Specialty field upgraded to universal search with autocomplete | Capability addition without visual revamp; field shape stays the same. |
+| Per-service pricing scope | Display + service filter on `/search` (no service-specific sort) | Patients can answer "where can I get an implant under 5000 EGP" in one query; service-specific sort would bloat the sort dropdown without adding answers display can't already give. |
+| Per-service pricing ownership | Per-clinic, not per-(dentist, clinic) | Most Egyptian clinics use a flat clinic price list regardless of dentist; equipment-driven services (implants, scaling) are clinic-bound. Dentist-level fee variance still lives on `clinic_dentists.fee_egp` (the consultation fee). |
 
 ---
 
@@ -135,6 +137,72 @@ A separate trigger function looks up the affected `dentist_id` via the `appointm
 
 The recompute walks the dentist's `clinic_dentists.working_hours` JSONB for the next 14 days, subtracts existing `pending`/`confirmed` appointments, and stores the earliest open slot. If none in 14 days, sets `next_available_slot = null` (filtered as "no availability" in UI).
 
+### `services` — new reference table
+
+Catalog of dental services. Bilingual, public-read. Seeded once; new entries added via migration only.
+
+```sql
+create table services (
+  id uuid primary key default uuid_generate_v4(),
+  slug text unique not null,
+  name_ar text not null,
+  name_en text not null,
+  display_order int not null default 100,
+  created_at timestamptz not null default now()
+);
+
+alter table services enable row level security;
+create policy "services public read" on services for select using (true);
+```
+
+**Initial seed** (slug · Arabic · English, in the order patients tend to ask about them):
+
+```sql
+insert into services (slug, name_ar, name_en, display_order) values
+  ('consultation',     'كشف',                 'Consultation',         10),
+  ('scaling',          'تنظيف وتلميع',        'Scaling & polishing',  20),
+  ('filling-composite','حشو ضوئي',           'Composite filling',    30),
+  ('extraction',       'خلع',                 'Tooth extraction',     40),
+  ('root-canal',       'علاج جذور',           'Root canal',           50),
+  ('crown',            'تركيب طربوش',         'Crown',                60),
+  ('bridge',           'كوبري أسنان',         'Bridge',               70),
+  ('implant',          'زراعة أسنان',         'Dental implant',       80),
+  ('whitening',        'تبييض الأسنان',       'Teeth whitening',      90),
+  ('orthodontics-fixed','تقويم ثابت',         'Fixed braces',        100),
+  ('orthodontics-aligners','تقويم شفاف',     'Clear aligners',      110),
+  ('pediatric-checkup','كشف أطفال',           'Pediatric checkup',   120)
+on conflict (slug) do nothing;
+```
+
+### `clinic_services` — new join table
+
+```sql
+create table clinic_services (
+  clinic_id uuid not null references clinics(id) on delete cascade,
+  service_id uuid not null references services(id) on delete cascade,
+  fee_egp int not null check (fee_egp >= 0),
+  fee_egp_max int check (fee_egp_max is null or fee_egp_max >= fee_egp),
+  notes_ar text,
+  notes_en text,
+  is_published boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (clinic_id, service_id)
+);
+create index clinic_services_service_price_idx on clinic_services (service_id, fee_egp) where is_published = true;
+
+alter table clinic_services enable row level security;
+create policy "clinic_services public read" on clinic_services for select using (is_published = true);
+
+create trigger clinic_services_updated_at
+  before update on clinic_services
+  for each row execute function set_updated_at();
+```
+
+`fee_egp` is required (the lower bound or flat price). `fee_egp_max` is optional — set it when the service has a range (e.g., implants vary by brand: `fee_egp = 4000`, `fee_egp_max = 8000`). Display rule: if `fee_egp_max is null`, show `"4000 EGP"`; otherwise show `"4000 – 8000 EGP"`.
+
+`notes_ar` / `notes_en` are optional short qualifiers ("per arch", "incl. X-ray", "per quadrant") — kept text rather than structured because the variation is open-ended.
+
 ---
 
 ## 5. Patient UX flow
@@ -168,11 +236,12 @@ Layout unchanged — sidebar filters on left, results on right. Three categories
 - **4★+ rating** — toggle filter.
 - **Available today** / **Available this week** — pair of toggle chips (mutually exclusive).
 - **Distance slider** — only appears if user grants browser geolocation. When the slider is active, the area filter is hidden (mutually exclusive — avoids contradiction).
+- **Service** — single-select dropdown of services from the `services` catalog. When a specific service is selected, a paired **"Up to X EGP"** number input appears underneath. Selecting a service narrows results to dentists whose clinics offer that service; the price cap further restricts to clinics whose `clinic_services.fee_egp ≤ X`.
 
 **Result cards (one per doctor):**
 - Photo, name, title, top 2 specialties.
 - Rating chip — Bayesian smoothed value + count, OR "New on Dental Map" pill if `rating_count < 3`.
-- "From X EGP" — minimum fee across the doctor's clinics.
+- **Price label** — by default "Consultation from X EGP" (minimum `clinic_dentists.fee_egp` across the doctor's clinics). When a service filter is active, this becomes "[Service name] from X EGP" using the cheapest matching `clinic_services` row across the doctor's clinics.
 - Soonest-slot badge — "Today 4 PM" / "Tomorrow 11 AM" / "This Friday".
 - Trusted-clinic pill — shown if ANY clinic the doctor practices at is trusted.
 - Distance label — "1.2 km away" if GPS granted, hidden otherwise.
@@ -186,8 +255,16 @@ Adds:
 - Save heart in the header.
 - Visit-tracker — on mount, prepend this dentist's slug to the `dental_map_recent_dentists` cookie (deduplicate, cap at 10).
 - Each clinic listed on the profile shows the trusted badge if applicable.
+- **"Services & prices" section** — under the doctor's clinic list. For each service offered at any of the doctor's clinics, shows the *lowest* price across those clinics with a small "from [Clinic name]" attribution. Format follows the display rule from section 4: `"4000 EGP"` flat, or `"4000 – 8000 EGP"` if a range. If multiple clinics offer the same service, only the cheapest row is shown by default with a "see all" link revealing the others.
 
-### 5.5 New page — `/account/favorites`
+### 5.5 Clinic profile page
+
+Adds:
+
+- Trusted-clinic badge on the header (when `is_trusted = true`).
+- **"Price list" section** — full table of all services this clinic offers (joined `services` × `clinic_services` for this clinic, ordered by `services.display_order`). Two-column layout: service name + price. Rows with `notes_ar` / `notes_en` show the note as a small grey line beneath the service name.
+
+### 5.6 New page — `/account/favorites`
 
 Lists the patient's saved dentists. Card style consistent with `/search`. Empty state encourages browsing.
 
@@ -235,6 +312,10 @@ Filters AND with each other. Multi-select fields (insurance, specialty) OR withi
 | 4★+ | dentists.rating_smoothed ≥ 4.0 |
 | Available today | next_available_slot < tomorrow_start |
 | Available this week | next_available_slot < next_monday |
+| Service | EXISTS via `clinic_services` for ANY clinic the dentist practices at, where `service_id = ?` and `is_published = true` |
+| Service price cap | Combined with Service: also `clinic_services.fee_egp ≤ priceCap` (lower bound — generous match for ranged services) |
+
+**Note on service price cap matching:** when a clinic prices a service as a range (e.g., implants 4000–8000 EGP), the filter matches against the lower bound. This is intentionally optimistic: patients see the dentist as a candidate; the profile shows the full range so they can decide whether to pursue.
 
 ### 6.4 Aggregation query (one card per doctor)
 
@@ -258,6 +339,8 @@ type DentistResult = {
 ```
 
 Implemented as a single SQL query: GROUP BY `dentists.id`, JSON aggregate `clinic_dentists` joined with `clinics`. One round trip; both the collapsed and expanded card states render from this shape.
+
+**When the service filter is active**, the query additionally LEFT JOINs `clinic_services` filtered to the selected service, and `min_fee_egp` is computed from the matching `clinic_services.fee_egp` instead of `clinic_dentists.fee_egp`. The result type gains an optional `active_service: { slug, name_ar, name_en }` field so the card knows what label to render.
 
 ---
 
@@ -310,11 +393,24 @@ These criteria are written into the spec so the badge has meaning. They are not 
 - `favorites` CRUD endpoints (server actions or RPC).
 **UI:**
 - Homepage Specialty field → autocomplete dropdown + smart submit.
-- Result card data-shape rewrite: expandable clinics list, soonest-slot badge, "From X EGP" pricing, save heart, distance label. Visual style unchanged.
+- Result card data-shape rewrite: expandable clinics list, soonest-slot badge, "Consultation from X EGP" price label (becomes service-aware in Ship 4), save heart, distance label. Visual style unchanged.
 - Filter sidebar: insurance multi-select, available-today / available-this-week chips, distance slider (GPS-gated, hides area filter when active).
 - `/account/favorites` page.
 - Cookie-based recently-viewed; rail at the bottom of the homepage.
 - Save heart on doctor profile + cookie write on profile mount.
+
+### Ship 4 — Per-service pricing (~3–4 days)
+
+**Migrations:** `services` reference table + initial seed (12 rows); `clinic_services` join table + RLS.
+**Seed:** populate `clinic_services` for the pilot clinic cohort (manual SQL or a one-off CSV import — clinics provide their price lists during onboarding).
+**Server:**
+- `listDentists` extended to accept `serviceSlug` and `servicePriceMax` parameters; aggregation switches `min_fee_egp` to the service-specific price when active (per section 6.4).
+- New helper `getClinicPriceList(clinicId)` and `getDentistPriceList(dentistId)` (the latter returns cheapest price per service across the dentist's clinics).
+**UI:**
+- Service filter (dropdown + price-cap input) added to `/search` filter sidebar.
+- Result card price label switches to "[Service] from X EGP" when service filter is active.
+- "Price list" section on clinic profile.
+- "Services & prices" section on doctor profile (cheapest-per-service across their clinics, with "from [clinic]" attribution).
 
 ---
 
@@ -327,6 +423,8 @@ These criteria are written into the spec so the badge has meaning. They are not 
 | GPS denial degrades nearest-sort and distance-slider into dead UI | Hide the slider entirely when permission is denied; "Nearest" sort is disabled (greyed out with a "Allow location" hint). Area filter remains the safe primary cut. |
 | Featured pill perceived as paid promotion | Pilot is free for clinics, so featuring is editorial. The pill text is "Featured" not "Sponsored"; the homepage rail is curated by the team, not auctioned. Revisit the labeling if monetization changes featured behavior post-pilot. |
 | One-card-per-doctor changes existing search UX assumptions | The expanded card preserves the "I want a specific clinic" use case. Area filter narrows the implicit clinic preference. No regression in the use case the current shape serves. |
+| Per-service prices go stale and clinics dispute them at booking | Show `updated_at` for each `clinic_services` row on the clinic profile in small text ("Updated 2 weeks ago"). Add a clinic admin obligation in the pilot agreement: prices must be kept current. Long-term: admin UI for the clinic dashboard so clinics maintain their own price list (out of pilot scope; manual SQL is fine for the first cohort). |
+| Service catalog is too narrow / too broad | Catalog ships with 12 seeded services covering the most-asked Egyptian dental procedures. Adding more is a one-line migration; clinics can leave services blank. Revisit after first month of pilot data — if a service is requested but missing, add it. |
 
 ---
 
@@ -338,3 +436,5 @@ None blocking. The following will be confirmed during implementation planning:
 - Exact text for the "New on Dental Map" pill in Arabic.
 - The featured-rail's max card count (likely 6–8).
 - Whether `/dentist/admin/featured` ships in Ship 2 or is deferred — decision depends on whether ops wants to update the rail mid-pilot vs. set it once.
+- Confirmation of the 12-service seed list for `services`. Current proposal in section 4 covers the most-asked Egyptian dental procedures; clinics may request edits during onboarding.
+- Whether the clinic admin gets a self-service price-list editor in Ship 4 or it's deferred to Phase 2 (current decision: deferred — pilot uses manual SQL / CSV import).
