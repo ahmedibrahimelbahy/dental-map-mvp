@@ -98,7 +98,7 @@ export function bookingClinicEmail({
     timeZone: "Africa/Cairo",
   });
   const noteLine = patientNote ? `\n  Note:    ${patientNote}` : "";
-  const text = `New booking via Dental Map\n\n  Dentist: ${dentistName}\n  Clinic:  ${clinicName}\n  When:    ${when}\n  Fee:     ${feeEgp} EGP\n\nPatient details\n  Name:    ${patientName}\n  Phone:   ${patientPhone}\n  Email:   ${patientEmail}${noteLine}\n\nLog in to your dashboard to manage this appointment.\nhttps://dental-map-mvp.vercel.app/dashboard`;
+  const text = `New booking via Dental Map\n\n  Dentist: ${dentistName}\n  Clinic:  ${clinicName}\n  When:    ${when}\n  Fee:     ${feeEgp} EGP\n\nPatient details\n  Name:    ${patientName}\n  Phone:   ${patientPhone}\n  Email:   ${patientEmail}${noteLine}\n\nLog in to your dashboard to manage this appointment.\nhttps://dentalmap.app/dashboard`;
   return {
     subject: `New booking · ${patientName} · ${when}`,
     html: text.replace(/\n/g, "<br>"),

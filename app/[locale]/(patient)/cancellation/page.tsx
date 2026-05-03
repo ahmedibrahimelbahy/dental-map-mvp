@@ -107,7 +107,7 @@ function English() {
       </p>
       <p>
         If a clinic refuses to refund a deposit you reasonably believe is owed, please email{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>. We can mediate, though
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>. We can mediate, though
         we cannot legally compel the clinic.
       </p>
 
@@ -122,7 +122,7 @@ function English() {
       <h2>7. Contact</h2>
       <p>
         Questions about a cancellation, or a clinic that's not honouring this policy:{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
     </>
   );
@@ -195,7 +195,7 @@ function Arabic() {
       </p>
       <p>
         لو عيادة رفضت ترد عربون تعتقد إنه مستحق ليك، ابعتلنا على{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>. نقدر نوسط، لكن
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>. نقدر نوسط، لكن
         مش نقدر نلزم العيادة قانونيًا.
       </p>
 
@@ -210,7 +210,7 @@ function Arabic() {
       <h2>7. التواصل</h2>
       <p>
         أي استفسار عن إلغاء، أو عيادة مش بتلتزم بالسياسة دي:{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
     </>
   );

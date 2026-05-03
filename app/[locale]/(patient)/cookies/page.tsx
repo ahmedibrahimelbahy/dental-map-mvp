@@ -149,7 +149,7 @@ function English() {
 
       <h2>5. Contact</h2>
       <p>
-        Questions: <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a>.
+        Questions: <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a>.
       </p>
     </>
   );
@@ -265,7 +265,7 @@ function Arabic() {
 
       <h2>5. التواصل</h2>
       <p>
-        أسئلة: <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a>.
+        أسئلة: <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a>.
       </p>
     </>
   );

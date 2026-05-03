@@ -70,7 +70,7 @@ function English() {
       <p>
         You're responsible for everything done under your account. Keep your password
         confidential. If you suspect unauthorized access, change your password immediately and
-        email <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        email <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
 
       <h2>4. Bookings, fees, and payment</h2>
@@ -122,7 +122,7 @@ function English() {
       <p>
         We may suspend or close your account if you breach these terms or if there is fraud,
         abuse, or repeated no-shows. You can close your account at any time by emailing{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
 
       <h2>10. Disclaimer of warranties</h2>
@@ -173,7 +173,7 @@ function English() {
       <h2>15. Contact</h2>
       <p>
         For any question about these terms:{" "}
-        <a href="mailto:legal@dentalmap.eg">legal@dentalmap.eg</a>.
+        <a href="mailto:legal@dentalmap.app">legal@dentalmap.app</a>.
       </p>
     </>
   );
@@ -210,7 +210,7 @@ function Arabic() {
       <p>
         إنت مسؤول عن كل اللي يحصل من حسابك. خلّي كلمة المرور سرية. لو شككت في وصول غير مصرّح به،
         غيّرها فورًا وابعت إيميل لـ{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
 
       <h2>4. الحجز والرسوم والدفع</h2>
@@ -260,7 +260,7 @@ function Arabic() {
       <p>
         ممكن نعلّق أو نقفل حسابك لو خرقت الشروط دي أو لو في احتيال أو إساءة استخدام أو عدم حضور
         متكرر. تقدر تقفل حسابك في أي وقت بإيميل لـ{" "}
-        <a href="mailto:support@dentalmap.eg">support@dentalmap.eg</a>.
+        <a href="mailto:support@dentalmap.app">support@dentalmap.app</a>.
       </p>
 
       <h2>10. إخلاء المسؤولية عن الضمانات</h2>
@@ -305,7 +305,7 @@ function Arabic() {
       <h2>15. التواصل</h2>
       <p>
         لأي استفسار عن الشروط دي:{" "}
-        <a href="mailto:legal@dentalmap.eg">legal@dentalmap.eg</a>.
+        <a href="mailto:legal@dentalmap.app">legal@dentalmap.app</a>.
       </p>
     </>
   );

@@ -42,7 +42,7 @@ function English() {
       <p>
         <strong>Dental Map</strong> is operated from Cairo, Egypt as an online directory and
         booking platform that connects patients with dental professionals. This Privacy Policy
-        explains what personal data we collect when you use our website (dental-map-mvp.vercel.app
+        explains what personal data we collect when you use our website (dentalmap.app
         and any future production domain), what we do with it, and the rights you have over it
         under Egyptian Law No. 151 of 2020 (Personal Data Protection Law) and applicable best
         practices.
@@ -51,7 +51,7 @@ function English() {
       <h2>1. Who is responsible</h2>
       <p>
         The data controller is Dental Map. You can contact us at{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a> for any privacy-related
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a> for any privacy-related
         question, including requests to access, correct, or delete your data.
       </p>
 
@@ -179,7 +179,7 @@ function English() {
       </ul>
       <p>
         To exercise any of these rights, email{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a> from the address linked
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a> from the address linked
         to your account. We respond within 30 days.
       </p>
 
@@ -208,7 +208,7 @@ function English() {
       <h2>11. Contact</h2>
       <p>
         Questions, complaints, or data requests:{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a>.
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a>.
       </p>
     </>
   );
@@ -220,14 +220,14 @@ function Arabic() {
       <p>
         <strong>Dental Map</strong> منصة إلكترونية مقرها القاهرة، مصر، تربط المرضى بأطباء الأسنان
         وتتيح حجز المواعيد. توضح سياسة الخصوصية دي إيه البيانات اللي بنجمعها لما تستخدم موقعنا
-        (dental-map-mvp.vercel.app وأي نطاق نهائي مستقبلًا)، وإحنا بنعمل بيها إيه، وحقوقك تجاهها
+        (dentalmap.app وأي نطاق نهائي مستقبلًا)، وإحنا بنعمل بيها إيه، وحقوقك تجاهها
         تحت قانون حماية البيانات الشخصية رقم 151 لسنة 2020 وأفضل الممارسات المعمول بها.
       </p>
 
       <h2>1. مين المسؤول</h2>
       <p>
         المسؤول عن البيانات هو Dental Map. تقدر تتواصل معانا على{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a> لأي استفسار يخص الخصوصية،
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a> لأي استفسار يخص الخصوصية،
         بما في ذلك طلبات الوصول لبياناتك أو تصحيحها أو حذفها.
       </p>
 
@@ -352,7 +352,7 @@ function Arabic() {
       </ul>
       <p>
         لممارسة أي من حقوقك، ابعت إيميل من العنوان المرتبط بحسابك على{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a>. بنرد خلال 30 يوم.
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a>. بنرد خلال 30 يوم.
       </p>
 
       <h2>8. الأمان</h2>
@@ -379,7 +379,7 @@ function Arabic() {
       <h2>11. التواصل</h2>
       <p>
         أسئلة، شكاوى، أو طلبات بيانات:{" "}
-        <a href="mailto:privacy@dentalmap.eg">privacy@dentalmap.eg</a>.
+        <a href="mailto:privacy@dentalmap.app">privacy@dentalmap.app</a>.
       </p>
     </>
   );
