@@ -224,9 +224,15 @@
     background: #ffffff;
     border: 1px solid #e4e7eb;
     border-radius: 12px;
-    font-size: 15px;
+    /* 16px on mobile to prevent iOS Safari auto-zoom on focus */
+    font-size: 16px;
     color: #0f1b2a;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  @media (min-width: 768px) {
+    .field-input {
+      font-size: 15px;
+    }
   }
   .field-input:focus {
     outline: none;
@@ -272,9 +278,16 @@
     background: transparent;
     outline: none;
     border: 0;
-    font-size: 15px;
+    /* 16px on mobile to prevent iOS Safari auto-zoom on focus */
+    font-size: 16px;
     color: #0f1b2a;
     min-width: 0;
+  }
+  @media (min-width: 768px) {
+    .search-field input,
+    .search-field select {
+      font-size: 15px;
+    }
   }
   .search-field input::placeholder {
     color: #94a3b8;

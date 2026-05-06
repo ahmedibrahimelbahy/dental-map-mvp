@@ -59,7 +59,7 @@ export default async function SearchPage({
         {t("resultsCount", { count: dentists.length })}
       </p>
 
-      <div className="grid lg:grid-cols-[260px_1fr] gap-6 lg:gap-8">
+      <div className="grid lg:grid-cols-[260px_minmax(0,1fr)] gap-6 lg:gap-8">
         <SearchFilters
           specialties={specialties ?? []}
           areas={areas ?? []}

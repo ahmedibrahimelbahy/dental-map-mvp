@@ -53,7 +53,7 @@ export function LegalShell({
 
       <div className="grid md:grid-cols-[220px_1fr] gap-6 md:gap-10">
         {/* Side nav */}
-        <aside className="md:sticky md:top-24 self-start -mx-4 sm:-mx-5 md:mx-0 px-4 sm:px-5 md:px-0">
+        <aside className="md:sticky md:top-24 self-start">
           <ul className="flex md:flex-col gap-1 overflow-x-auto md:overflow-visible no-scrollbar pb-1 md:pb-0">
             {docs.map((d) => {
               const DocIcon = ICON[d];

@@ -74,7 +74,13 @@
     "showFilters": "Filters",
     "resultsCount": "{count, plural, =0 {No dentists found} =1 {1 dentist} other {# dentists}}",
     "emptyTitle": "No matches yet",
-    "emptyBody": "Try widening your filters, or browse all dentistry below."
+    "emptyBody": "Try widening your filters, or browse all dentistry below.",
+    "entityDentists": "Dentists",
+    "entityClinics": "Clinics",
+    "clinicCardSpecialtyCount": "{n, plural, =1 {1 specialty} other {# specialties}}",
+    "clinicCardFeeRange": "EGP {min}–{max}",
+    "clinicCardBookCta": "Book at this clinic",
+    "clinicCardDentistCount": "{n, plural, =1 {1 dentist} other {# dentists}}"
   },
   "Profile": {
     "fee": "Fee",
@@ -199,7 +205,11 @@
     "haveAccount": "Already have an account?",
     "noAccount": "No account yet?",
     "linkSignIn": "Sign in",
-    "linkSignUp": "Sign up"
+    "linkSignUp": "Sign up",
+    "googleSignIn": "Continue with Google",
+    "googleSignUp": "Sign up with Google",
+    "orContinueWith": "or",
+    "oauthFailed": "We couldn't complete Google sign-in. Please try again."
   },
   "ForClinics": {
     "heroEyebrow": "Cairo pilot · April 2026",
@@ -336,5 +346,49 @@
     "errorTooLate": "Too late to cancel — please call the clinic directly.",
     "errorAlreadyCancelled": "This booking is already cancelled.",
     "errorServer": "Something went wrong. Please try again."
+  },
+  "Specialties": {
+    "eyebrow": "Browse by specialty",
+    "heroTitle": "Find the right kind of dentist.",
+    "heroSubtitle": "From routine cleanings to implants and braces — every specialty in dentistry, with the dentists in Cairo who actually practice it.",
+    "topDentists": "Top dentists",
+    "noneYet": "We're onboarding dentists for this specialty. Check back soon.",
+    "viewAll": "View all {name} dentists",
+    "feeLabel": "EGP",
+    "desc": {
+      "adult": "Routine care for adult teeth — checkups, cleanings, fillings, and extractions. Your starting point if you haven't seen a dentist in a while.",
+      "pediatric": "Specialists in kids' teeth. Gentle, child-friendly care from the first tooth through the teen years, plus preventive guidance for parents.",
+      "orthodontics": "Braces, clear aligners, and bite correction for kids, teens, and adults. Straighten misaligned teeth and fix overbites or crossbites.",
+      "cosmetic": "Veneers, whitening, bonding, and smile makeovers. For when the goal is how your smile looks, not just how it works.",
+      "endodontics": "Root canal treatment and saving badly damaged teeth. The specialists you want when an infection has reached the nerve.",
+      "implants": "Replacing missing teeth with permanent, surgically placed implants. A long-term alternative to bridges and dentures.",
+      "oral-surgery": "Wisdom teeth, complex extractions, and jaw surgery. Done by surgeons trained for procedures general dentists refer out."
+    }
+  },
+  "Areas": {
+    "eyebrow": "Browse by area",
+    "heroTitle": "Cairo dentists, by neighborhood.",
+    "heroSubtitle": "Greater Cairo is big — pick the area you actually want to drive to. Every clinic is verified, every booking lands in the dentist's real calendar.",
+    "topClinics": "Featured clinics",
+    "noneYet": "No published clinics here yet. Check back soon.",
+    "viewAll": "Browse all dentists in {area}",
+    "feeFrom": "From",
+    "feeUnit": "EGP",
+    "dentistCount": "{count, plural, =1 {1 dentist} other {# dentists}}",
+    "desc": {
+      "default": "Browse verified dental clinics in this area of Greater Cairo.",
+      "zamalek": "An island neighborhood in the heart of the Nile, known for boutique clinics, expat-friendly practices, and a relaxed pace away from traffic.",
+      "nasr-city": "One of Cairo's largest residential districts. A wide mix of family clinics and large multi-specialty practices, easy to reach from the Ring Road.",
+      "maadi": "Leafy and international — modern clinics with a strong cosmetic and orthodontic scene, serving families and the diplomatic community.",
+      "heliopolis": "Historic, well-served, and central. Long-established clinics, plenty of specialists, and great access from northeast Cairo.",
+      "mohandessin": "A busy commercial district on the west bank. High concentration of specialists in cosmetic dentistry, implants, and orthodontics.",
+      "6-october": "A planned city west of Cairo with newer, larger clinics and modern equipment. Ideal if you live in west Cairo or work in Sheikh Zayed.",
+      "new-cairo": "East Cairo's expanding hub. Newer clinics with modern equipment, serving Fifth Settlement and the surrounding compounds.",
+      "sheikh-zayed": "West Cairo's compound belt. Modern clinics built for the residential growth pushing past 6th of October.",
+      "dokki": "Central Giza, dense and well-connected. A reliable mix of established neighborhood clinics and university-trained specialists.",
+      "downtown": "Old Cairo's historic core. Long-running practices and easy access from anywhere along the metro.",
+      "shoubra": "A dense, traditional neighborhood in north Cairo with a wide range of trusted family clinics.",
+      "ain-shams": "A populous northeastern district with accessible, family-oriented clinics."
+    }
   }
 }

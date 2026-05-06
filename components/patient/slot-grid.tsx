@@ -105,7 +105,7 @@ export function SlotGrid({
                       key={s.start}
                       type="button"
                       onClick={() => onPick(s)}
-                      className="px-3 py-1.5 rounded-lg border border-ink-100 text-[13px] font-semibold text-ink-700 hover:border-teal-500 hover:text-teal-700 hover:bg-teal-50 transition-colors"
+                      className="px-3 py-3 rounded-lg border border-ink-100 text-[13px] font-semibold text-ink-700 hover:border-teal-500 hover:text-teal-700 hover:bg-teal-50 transition-colors min-h-[44px]"
                     >
                       {new Date(s.start).toLocaleTimeString(locale, {
                         hour: "2-digit",

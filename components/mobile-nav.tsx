@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Link } from "@/i18n/routing";
 import {
   Menu,
@@ -50,6 +51,12 @@ export function MobileNav({
 }) {
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [mountTarget, setMountTarget] = useState<HTMLElement | null>(null);
+
+  // SSR-safe portal target
+  useEffect(() => {
+    setMountTarget(document.body);
+  }, []);
 
   // Lock body scroll while drawer is open
   useEffect(() => {
@@ -99,7 +106,7 @@ export function MobileNav({
         <Menu className="w-5 h-5" aria-hidden />
       </button>
 
-      {open && (
+      {open && mountTarget && createPortal(
         <div
           className="lg:hidden fixed inset-0 z-50"
           role="dialog"
@@ -255,7 +262,8 @@ export function MobileNav({
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        mountTarget
       )}
     </>
   );
