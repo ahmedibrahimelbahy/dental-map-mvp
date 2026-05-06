@@ -41,6 +41,6 @@ export const config = {
   matcher: [
     // Match all paths except:
     // - /api, /auth/callback, /_next, /_vercel, static files, anything with a dot
-    "/((?!api|auth/callback|_next|_vercel|design-brief|.*\\..*).*)",
+    "/((?!api|auth/callback|auth-debug|_next|_vercel|design-brief|.*\\..*).*)",
   ],
 };
