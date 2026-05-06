@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
@@ -60,9 +61,13 @@ export async function signUpAction(
   });
   if (signInErr) {
     // User exists, just couldn't auto-sign-in — send to /signin
+    revalidatePath("/", "layout");
     redirect(`/${locale}/signin`);
   }
 
+  // Bust the layout cache so the SiteHeader re-renders with the new
+  // auth state instead of serving the stale signed-out RSC payload.
+  revalidatePath("/", "layout");
   redirect(`/${locale}`);
 }
 
@@ -94,15 +99,18 @@ export async function signInAction(
       .returns<{ role: "patient" | "dentist_admin" | "ops" }[]>()
       .single();
     if (profile?.role === "dentist_admin" || profile?.role === "ops") {
+      revalidatePath("/", "layout");
       redirect(`/${locale}/dashboard`);
     }
   }
+  revalidatePath("/", "layout");
   redirect(`/${locale}`);
 }
 
 export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  revalidatePath("/", "layout");
   redirect("/");
 }
 

@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { Database } from "@/lib/supabase/types";
 
@@ -51,6 +52,11 @@ export async function GET(req: NextRequest) {
   if (error) {
     return NextResponse.redirect(`${origin}/en/signin?error=oauth_failed`);
   }
+
+  // Bust the layout cache so the SiteHeader re-renders with the new
+  // auth state instead of the stale signed-out RSC payload — the bug
+  // that left mobile users still seeing "Sign up" after Google sign-in.
+  revalidatePath("/", "layout");
 
   return response;
 }
