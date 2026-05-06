@@ -175,7 +175,7 @@ export default async function HomePage({
               <Link
                 key={slug}
                 href={`/search?specialty=${slug}`}
-                className="group rounded-2xl bg-white border border-ink-100 px-5 py-6 flex flex-col items-start gap-4 shadow-card hover:shadow-card-hover hover:border-teal-300 hover:-translate-y-0.5 transition-all"
+                className="group rounded-2xl bg-white border border-ink-100 px-5 py-6 flex flex-col items-start gap-4 shadow-card hover:shadow-card-hover hover:border-teal-300 hover:-translate-y-0.5 transition-[transform,box-shadow,border-color]"
               >
                 <span className="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center group-hover:bg-teal-500 group-hover:text-white transition-colors">
                   <Icon className="w-5 h-5" aria-hidden />

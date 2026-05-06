@@ -2,6 +2,7 @@
 
 import { useActionState } from "react";
 import { useLocale, useTranslations } from "next-intl";
+import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { signInAction, type AuthState } from "@/lib/auth/actions";
 
@@ -54,9 +55,16 @@ export function SignInForm() {
       <button
         type="submit"
         disabled={pending}
-        className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        {pending ? "…" : t("submitSignIn")}
+        {pending ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+            {t("submitSignIn")}
+          </>
+        ) : (
+          t("submitSignIn")
+        )}
       </button>
 
       <div className="mt-10 text-[14px] text-ink-500">

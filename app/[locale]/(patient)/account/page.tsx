@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { redirect } from "@/i18n/routing";
 import { getCurrentUser } from "@/lib/auth/session";
 import { listPatientBookings } from "@/lib/patient/bookings";
+import { getPatientReviewMap } from "@/lib/reviews/list";
 import { AccountBookings } from "@/components/patient/account-bookings";
 import { User } from "lucide-react";
 import type { PatientBooking } from "@/lib/patient/bookings";
@@ -23,7 +24,11 @@ export default async function AccountPage({
   }
 
   const t = await getTranslations("Account");
-  const bookings = await listPatientBookings(user.id);
+  const tr = await getTranslations("Reviews");
+  const [bookings, reviewsByAppt] = await Promise.all([
+    listPatientBookings(user.id),
+    getPatientReviewMap(user.id),
+  ]);
 
   const statusLabels: Record<PatientBooking["status"], string> = {
     pending: t("statusPending"),
@@ -73,6 +78,11 @@ export default async function AccountPage({
         pastLabel={t("past")}
         statusLabels={statusLabels}
         errorMessages={errorMessages}
+        reviewsByAppt={reviewsByAppt}
+        reviewsLabels={{
+          leaveReviewCta: tr("leaveReviewCta"),
+          youRated: (n: number) => tr("youRated", { n }),
+        }}
       />
     </div>
   );

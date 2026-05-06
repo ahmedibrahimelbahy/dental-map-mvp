@@ -39,7 +39,7 @@ export function ClinicCard({
   const firstDentistSlug = c.dentists[0]?.dentistSlug ?? "";
 
   return (
-    <article className="rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:border-teal-300 transition-all">
+    <article className="rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:border-teal-300 transition-[box-shadow,border-color]">
       <header className="flex items-start gap-4">
         <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
           <Building2 className="w-6 h-6" aria-hidden />

@@ -149,7 +149,12 @@
     "gcalStatus_bad_state": "حدث خطأ في الاتصال. حاول مجدداً.",
     "gcalStatus_state_mismatch": "الجلسة غير متطابقة. سجل الدخول وحاول مجدداً.",
     "gcalStatus_no_refresh": "Google لم يرجع refresh token. اضغط اربط مجدداً واختر السماح.",
-    "bookingsEmpty": "لا توجد حجوزات بعد — البحث من جهة المريض يبدأ الأسبوع القادم.",
+    "statusPending": "بانتظار التأكيد",
+    "statusConfirmed": "مؤكد",
+    "statusCompleted": "تم",
+    "statusCancelled": "ملغي",
+    "statusNoShow": "لم يحضر",
+    "bookingsEmpty": "لا توجد حجوزات بعد. لما يحجز مريض عند أحد أطبائك، هتظهر هنا.",
     "bookingsEmptyHint": "عندما يحجز المرضى، ستظهر حجوزاتهم هنا مع الموبايل والوقت وأزرار سريعة.",
     "clinicPlaceholder": "محرر ملف العيادة الكامل يأتي قريباً. في التجربة، نضيف العيادات يدوياً.",
     "modePickerTitle": "كيف تريد إدارة المواعيد المتاحة؟",
@@ -390,5 +395,26 @@
       "shoubra": "حي شعبي كثيف في شمال القاهرة بمجموعة واسعة من العيادات العائلية الموثوقة.",
       "ain-shams": "حي شمال شرقي مكتظ بعيادات عائلية في المتناول."
     }
+  },
+  "Reviews": {
+    "sectionTitle": "تقييمات موثّقة",
+    "avgRating": "{avg} من 5",
+    "verifiedCount": "{count, plural, zero {لا توجد تقييمات} one {تقييم موثّق واحد} two {تقييمان موثّقان} few {# تقييمات موثّقة} many {# تقييمًا موثّقًا} other {# تقييم موثّق}}",
+    "emptyTitle": "لا توجد تقييمات بعد",
+    "emptyBody": "كن أول من يقيّم بعد زيارته.",
+    "formTitle": "إيه رأيك في زيارتك؟",
+    "ratingLabel": "تقييمك",
+    "commentLabel": "احكِ للمرضى الآخرين عن تجربتك (اختياري)",
+    "commentPlaceholder": "إيه اللي خلى الدكتور أو العيادة مميزين؟",
+    "submit": "إرسال التقييم",
+    "submitting": "جاري الإرسال…",
+    "successTitle": "شكرًا على تقييمك!",
+    "successBody": "بيساعد المرضى التانيين يلاقوا أطباء كويسين.",
+    "leaveReviewCta": "اكتب تقييم",
+    "youRated": "قيّمت بـ {n} نجوم",
+    "verifiedPatient": "مريض موثّق",
+    "errorAlreadyReviewed": "إنت بالفعل قيّمت الميعاد ده.",
+    "errorNotCompleted": "تقدر تقيّم بس بعد إتمام الزيارة.",
+    "errorServer": "في مشكلة. حاول تاني."
   }
 }

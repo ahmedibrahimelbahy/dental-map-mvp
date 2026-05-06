@@ -320,8 +320,7 @@ function Step({ n, title, body }: { n: number; title: string; body: string }) {
       </span>
       <div className="relative">
         <div className="text-[11px] uppercase tracking-wider font-bold text-teal-700 mb-2">
-          {n === 1 ? "Step" : ""}
-          {n}
+          Step {n}
         </div>
         <h3 className="font-display text-[16px] md:text-[17px] font-bold text-ink-900 mb-2 leading-tight">
           {title}

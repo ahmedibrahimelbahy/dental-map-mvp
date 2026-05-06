@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
 import { saveWorkingHoursAction } from "@/lib/auth/dentist-actions";
 import type { WorkingHoursDay } from "@/lib/supabase/types";
-import { CircleCheck } from "lucide-react";
+import { CircleCheck, Loader2 } from "lucide-react";
 
 const SLOT_OPTIONS = [15, 20, 30, 45, 60];
 
@@ -154,9 +154,16 @@ export function WorkingHoursEditor({
           type="button"
           onClick={onSave}
           disabled={pending}
-          className="btn-primary disabled:opacity-60"
+          className="btn-primary disabled:opacity-60 inline-flex items-center justify-center gap-2"
         >
-          {pending ? "…" : t.save}
+          {pending ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
+              {t.save}
+            </>
+          ) : (
+            t.save
+          )}
         </button>
         {savedAt && !pending && (
           <span className="inline-flex items-center gap-2 text-[13px] text-teal-700 font-semibold">

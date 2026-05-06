@@ -156,13 +156,26 @@ export type Database = {
           patient_phone: string;
           patient_note: string | null;
           gcal_event_id: string | null;
+          reminder_sent_at: string | null;
+          review_request_sent_at: string | null;
           created_at: string;
           updated_at: string;
         };
         Insert: Omit<
           Database["public"]["Tables"]["appointments"]["Row"],
-          "id" | "created_at" | "updated_at" | "status" | "gcal_event_id"
-        > & { status?: AppointmentStatus; gcal_event_id?: string | null };
+          | "id"
+          | "created_at"
+          | "updated_at"
+          | "status"
+          | "gcal_event_id"
+          | "reminder_sent_at"
+          | "review_request_sent_at"
+        > & {
+          status?: AppointmentStatus;
+          gcal_event_id?: string | null;
+          reminder_sent_at?: string | null;
+          review_request_sent_at?: string | null;
+        };
         Update: Partial<Database["public"]["Tables"]["appointments"]["Row"]>;
       };
       reviews: {

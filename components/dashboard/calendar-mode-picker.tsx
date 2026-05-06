@@ -106,7 +106,7 @@ function ModeCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-6 transition-all flex flex-col ${
+      className={`rounded-2xl border p-6 transition-[border-color,background-color,box-shadow] flex flex-col ${
         active
           ? "border-teal-500 bg-teal-50/40 shadow-card"
           : "border-ink-100 bg-white shadow-card hover:border-teal-300"

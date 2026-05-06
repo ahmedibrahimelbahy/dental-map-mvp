@@ -151,7 +151,7 @@ export function SearchResults({
                 key={d.clinicDentistId}
                 onMouseEnter={() => setActiveId(d.clinicDentistId)}
                 onMouseLeave={() => setActiveId(null)}
-                className={`rounded-2xl transition-all ${
+                className={`rounded-2xl transition-shadow ${
                   activeId === d.clinicDentistId
                     ? "ring-2 ring-teal-400 ring-offset-1"
                     : ""

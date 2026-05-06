@@ -69,6 +69,83 @@ export function bookingPatientEmail({
   return { subject: `Booking confirmed · ${dentistName}`, html: text.replace(/\n/g, "<br>"), text };
 }
 
+export function bookingReminderEmail({
+  patientName,
+  dentistName,
+  clinicName,
+  slotIso,
+  locale,
+}: {
+  patientName: string;
+  dentistName: string;
+  clinicName: string;
+  slotIso: string;
+  locale: string;
+}): { subject: string; html: string; text: string } {
+  const isAr = locale === "ar";
+  const when = new Date(slotIso).toLocaleString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Africa/Cairo",
+  });
+  const accountUrl = `https://dentalmap.app/${locale}/account`;
+
+  if (isAr) {
+    const text = `مرحباً ${patientName}،\n\nتذكير بميعادك بكرة:\n  الطبيب: ${dentistName}\n  العيادة: ${clinicName}\n  الموعد: ${when}\n\nلو محتاج تلغي أو تعدل، اضغط هنا:\n${accountUrl}\n\nDental Map`;
+    return {
+      subject: `تذكير · ${dentistName} بكرة`,
+      html: text.replace(/\n/g, "<br>"),
+      text,
+    };
+  }
+  const text = `Hi ${patientName},\n\nReminder of your appointment tomorrow:\n  Dentist: ${dentistName}\n  Clinic:  ${clinicName}\n  When:    ${when}\n\nNeed to cancel or reschedule? Manage your booking:\n${accountUrl}\n\nDental Map`;
+  return {
+    subject: `Reminder · ${dentistName} tomorrow`,
+    html: text.replace(/\n/g, "<br>"),
+    text,
+  };
+}
+
+export function reviewRequestEmail({
+  patientName,
+  dentistName,
+  slotIso,
+  locale,
+  accountUrl,
+}: {
+  patientName: string;
+  dentistName: string;
+  slotIso: string;
+  locale: string;
+  accountUrl: string;
+}): { subject: string; html: string; text: string } {
+  const isAr = locale === "ar";
+  const when = new Date(slotIso).toLocaleString(locale, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "Africa/Cairo",
+  });
+
+  if (isAr) {
+    const text = `مرحباً ${patientName}،\n\nإزاي كانت زيارتك مع ${dentistName} يوم ${when}؟\nقيّمها في 30 ثانية، تساعد مرضى تانيين يلاقوا دكتور كويس.\n\n${accountUrl}\n\nشكراً،\nDental Map`;
+    return {
+      subject: `قيّم زيارتك مع ${dentistName}`,
+      html: text.replace(/\n/g, "<br>"),
+      text,
+    };
+  }
+  const text = `Hi ${patientName},\n\nHow was your visit with ${dentistName} on ${when}?\nIt takes 30 seconds to leave a review — and it helps other patients pick a great dentist.\n\n${accountUrl}\n\nThanks,\nDental Map`;
+  return {
+    subject: `How was your visit with ${dentistName}?`,
+    html: text.replace(/\n/g, "<br>"),
+    text,
+  };
+}
+
 export function bookingClinicEmail({
   patientName,
   patientPhone,

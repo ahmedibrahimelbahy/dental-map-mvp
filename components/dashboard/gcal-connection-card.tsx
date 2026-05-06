@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "@/i18n/routing";
-import { CalendarDays, CircleCheck } from "lucide-react";
+import { CalendarDays, CircleCheck, Loader2 } from "lucide-react";
 
 export function GcalConnectionCard({
   dentistId,
@@ -88,9 +88,16 @@ export function GcalConnectionCard({
               type="button"
               onClick={onDisconnect}
               disabled={pending || !dentistId}
-              className="btn-secondary text-[13px] !py-2 !px-4 disabled:opacity-60"
+              className="btn-secondary text-[13px] !py-2 !px-4 disabled:opacity-60 inline-flex items-center justify-center gap-2"
             >
-              {pending ? "…" : t.disconnect}
+              {pending ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden />
+                  {t.disconnect}
+                </>
+              ) : (
+                t.disconnect
+              )}
             </button>
           ) : (
             <button

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Copy, Check, Phone, Mail, MessageSquare, Calendar } from "lucide-react";
 import type { AppointmentRow } from "@/lib/bookings/list";
 
@@ -52,6 +53,14 @@ export function BookingsTable({
 }) {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const isAr = locale === "ar";
+  const t = useTranslations("Dashboard");
+  const statusLabels: Record<AppointmentRow["status"], string> = {
+    pending: t("statusPending"),
+    confirmed: t("statusConfirmed"),
+    completed: t("statusCompleted"),
+    cancelled: t("statusCancelled"),
+    no_show: t("statusNoShow"),
+  };
 
   if (appointments.length === 0) {
     return (
@@ -95,7 +104,7 @@ export function BookingsTable({
                   <span
                     className={`text-[10.5px] uppercase tracking-wider px-2 py-0.5 rounded-full border font-bold ${STATUS_COLORS[a.status]}`}
                   >
-                    {a.status}
+                    {statusLabels[a.status]}
                   </span>
                 </div>
 

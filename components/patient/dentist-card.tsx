@@ -1,5 +1,5 @@
 import { Link } from "@/i18n/routing";
-import { Star, MapPin, ArrowRight, BadgeCheck } from "lucide-react";
+import { MapPin, ArrowRight, BadgeCheck } from "lucide-react";
 import type { DentistListItem } from "@/lib/dentists/list";
 
 const TITLE_LABEL: Record<string, { en: string; ar: string }> = {
@@ -25,7 +25,7 @@ export function DentistCard({
   return (
     <Link
       href={`/dentist/${d.dentistSlug}`}
-      className="block rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 hover:border-teal-300 transition-all"
+      className="block rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 hover:border-teal-300 transition-[transform,box-shadow,border-color]"
     >
       <div className="flex items-start gap-4">
         <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[18px] font-bold shrink-0">
@@ -64,10 +64,6 @@ export function DentistCard({
           <span className="inline-flex items-center gap-1 text-[12px] text-ink-500">
             <BadgeCheck className="w-3.5 h-3.5 text-teal-500" aria-hidden />
             {isAr ? "موثق" : "Verified"}
-          </span>
-          <span className="inline-flex items-center gap-1 text-[12px] text-ink-400">
-            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" aria-hidden />
-            <span className="text-ink-500">{isAr ? "جديد" : "New"}</span>
           </span>
         </div>
         <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-teal-600">

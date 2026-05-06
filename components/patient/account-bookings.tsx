@@ -12,9 +12,18 @@ import {
   AlertCircle,
   ArrowRight,
   Trash2,
+  Loader2,
+  Star,
+  PenSquare,
 } from "lucide-react";
 import { cancelBookingAction } from "@/lib/booking/cancel-action";
 import type { PatientBooking } from "@/lib/patient/bookings";
+import { ReviewForm } from "@/components/patient/review-form";
+
+export type ReviewsLabels = {
+  leaveReviewCta: string;
+  youRated: (n: number) => string;
+};
 
 const TZ = "Africa/Cairo";
 
@@ -80,6 +89,8 @@ export function AccountBookings({
   pastLabel,
   statusLabels,
   errorMessages,
+  reviewsByAppt,
+  reviewsLabels,
 }: {
   bookings: PatientBooking[];
   locale: string;
@@ -95,12 +106,23 @@ export function AccountBookings({
   pastLabel: string;
   statusLabels: Record<PatientBooking["status"], string>;
   errorMessages: Record<"not_found" | "too_late" | "already_cancelled" | "server_error", string>;
+  reviewsByAppt: Record<string, { rating: number }>;
+  reviewsLabels: ReviewsLabels;
 }) {
   const isAr = locale === "ar";
   const [isPending, startTransition] = useTransition();
   const [pendingId, setPendingId] = useState<string | null>(null);
   const [confirmId, setConfirmId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [reviewOpenId, setReviewOpenId] = useState<string | null>(null);
+  // Optimistic merge: reviews submitted this session, before next server fetch.
+  const [localReviews, setLocalReviews] = useState<
+    Record<string, { rating: number }>
+  >({});
+
+  function reviewFor(apptId: string): { rating: number } | undefined {
+    return localReviews[apptId] ?? reviewsByAppt[apptId];
+  }
 
   const upcoming = bookings.filter((b) => b.isUpcoming && b.status !== "cancelled");
   const past = bookings.filter((b) => !b.isUpcoming || b.status === "cancelled");
@@ -221,7 +243,7 @@ export function AccountBookings({
                   </div>
                 )}
 
-                <div className="flex items-center justify-between gap-3 pt-3 border-t border-ink-100">
+                <div className="flex items-center justify-between gap-3 pt-3 border-t border-ink-100 flex-wrap">
                   {b.dentistSlug ? (
                     <Link
                       href={`/dentist/${b.dentistSlug}`}
@@ -233,20 +255,70 @@ export function AccountBookings({
                   ) : (
                     <span />
                   )}
-                  {b.isCancellable && confirmId !== b.id && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setError(null);
-                        setConfirmId(b.id);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-200 text-rose-700 text-[12.5px] font-bold hover:bg-rose-50 transition-colors"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" aria-hidden />
-                      {cancelLabel}
-                    </button>
-                  )}
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {b.status === "completed" &&
+                      (() => {
+                        const existing = reviewFor(b.id);
+                        if (existing) {
+                          return (
+                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-[12px] font-bold">
+                              <Star
+                                className="w-3.5 h-3.5 fill-amber-400 text-amber-400"
+                                strokeWidth={1.5}
+                                aria-hidden
+                              />
+                              {reviewsLabels.youRated(existing.rating)}
+                            </span>
+                          );
+                        }
+                        if (reviewOpenId === b.id) return null;
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setError(null);
+                              setReviewOpenId(b.id);
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-teal-200 bg-teal-50/60 text-teal-700 text-[12.5px] font-bold hover:bg-teal-100 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-400"
+                          >
+                            <PenSquare className="w-3.5 h-3.5" aria-hidden />
+                            {reviewsLabels.leaveReviewCta}
+                          </button>
+                        );
+                      })()}
+                    {b.isCancellable && confirmId !== b.id && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setError(null);
+                          setConfirmId(b.id);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-rose-200 text-rose-700 text-[12.5px] font-bold hover:bg-rose-50 transition-colors"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" aria-hidden />
+                        {cancelLabel}
+                      </button>
+                    )}
+                  </div>
                 </div>
+
+                {/* Inline review form — only for completed, unreviewed bookings */}
+                {b.status === "completed" &&
+                  reviewOpenId === b.id &&
+                  !reviewFor(b.id) && (
+                    <div className="mt-3">
+                      <ReviewForm
+                        appointmentId={b.id}
+                        locale={locale}
+                        onSuccess={(_id, rating) => {
+                          setLocalReviews((prev) => ({
+                            ...prev,
+                            [b.id]: { rating },
+                          }));
+                        }}
+                      />
+                    </div>
+                  )}
 
                 {/* Inline cancel confirmation */}
                 {confirmId === b.id && (
@@ -262,9 +334,16 @@ export function AccountBookings({
                         type="button"
                         onClick={() => handleCancel(b.id)}
                         disabled={isPending}
-                        className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[12.5px] font-bold disabled:opacity-60"
+                        className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-[12.5px] font-bold disabled:opacity-60 inline-flex items-center justify-center gap-1.5"
                       >
-                        {isPending && pendingId === b.id ? "…" : cancelConfirmYes}
+                        {isPending && pendingId === b.id ? (
+                          <>
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden />
+                            {cancelConfirmYes}
+                          </>
+                        ) : (
+                          cancelConfirmYes
+                        )}
                       </button>
                       <button
                         type="button"

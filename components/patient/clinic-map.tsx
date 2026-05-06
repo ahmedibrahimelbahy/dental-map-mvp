@@ -6,6 +6,14 @@ import "leaflet/dist/leaflet.css";
 import type { LatLngExpression } from "leaflet";
 import type { DentistListItem } from "@/lib/dentists/list";
 
+/* ── brand palette (mirrors tailwind.config.ts — keep in sync) ─────────── */
+// teal-700 / teal-500 from the brand teal scale.
+// Leaflet DivIcons are raw HTML strings, so we can't use Tailwind classes here.
+const PIN_COLOR_ACTIVE = "#0E6458"; // teal-700
+const PIN_COLOR_DEFAULT = "#1EA58F"; // teal-500
+const PIN_RING_ACTIVE = "#C6EDE6"; // teal-100
+const PIN_RING_DEFAULT = "#FFFFFF";
+
 /* ── fix Leaflet's default icon paths (broken by webpack) ──────────────── */
 function fixLeafletIcons() {
   if (typeof window === "undefined") return;
@@ -27,8 +35,8 @@ function makePinIcon(active: boolean) {
   if (typeof window === "undefined") return null;
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const L = require("leaflet") as typeof import("leaflet");
-  const bg = active ? "#0f766e" : "#14b8a6";
-  const ring = active ? "#ccfbf1" : "white";
+  const bg = active ? PIN_COLOR_ACTIVE : PIN_COLOR_DEFAULT;
+  const ring = active ? PIN_RING_ACTIVE : PIN_RING_DEFAULT;
   const scale = active ? 1.15 : 1;
   return L.divIcon({
     className: "",

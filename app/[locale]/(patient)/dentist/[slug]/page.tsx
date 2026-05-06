@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getDentistBySlug } from "@/lib/dentists/list";
 import { SlotGrid } from "@/components/patient/slot-grid";
+import { ReviewsSection } from "@/components/patient/reviews-section";
 import { MapPin, Stethoscope, BadgeCheck } from "lucide-react";
 
 const TITLE_LABEL: Record<string, { en: string; ar: string }> = {
@@ -22,6 +23,7 @@ export default async function DentistProfile({
   if (!data) notFound();
 
   const t = await getTranslations("Profile");
+  const tr = await getTranslations("Reviews");
   const isAr = locale === "ar";
   const { dentist, links, specialties } = data;
   const primary = links[0];
@@ -121,6 +123,19 @@ export default async function DentistProfile({
             }}
           />
         )}
+
+        <ReviewsSection
+          dentistId={dentist.id}
+          locale={locale}
+          labels={{
+            sectionTitle: tr("sectionTitle"),
+            avgRating: (avg: number) => tr("avgRating", { avg: avg.toFixed(1) }),
+            verifiedCount: (count: number) => tr("verifiedCount", { count }),
+            emptyTitle: tr("emptyTitle"),
+            emptyBody: tr("emptyBody"),
+            verifiedPatient: tr("verifiedPatient"),
+          }}
+        />
       </div>
 
       {/* Right: fee + clinic info card */}

@@ -149,7 +149,12 @@
     "gcalStatus_bad_state": "Something went wrong with the handshake. Please try again.",
     "gcalStatus_state_mismatch": "Session mismatch. Please sign in and try again.",
     "gcalStatus_no_refresh": "Google didn't return a refresh token. Click Connect again and choose Allow.",
-    "bookingsEmpty": "No bookings yet — patient-side search ships next week.",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "statusNoShow": "No-show",
+    "bookingsEmpty": "No bookings yet. When patients book one of your dentists, you'll see them here.",
     "bookingsEmptyHint": "When patients book, they'll appear here with phone, time, and quick actions.",
     "clinicPlaceholder": "Full clinic profile editor ships next. For now we're onboarding pilot clinics manually.",
     "modePickerTitle": "How do you want to manage availability?",
@@ -390,5 +395,26 @@
       "shoubra": "A dense, traditional neighborhood in north Cairo with a wide range of trusted family clinics.",
       "ain-shams": "A populous northeastern district with accessible, family-oriented clinics."
     }
+  },
+  "Reviews": {
+    "sectionTitle": "Verified reviews",
+    "avgRating": "{avg} of 5",
+    "verifiedCount": "{count, plural, =1 {1 verified review} other {# verified reviews}}",
+    "emptyTitle": "No reviews yet",
+    "emptyBody": "Be the first to leave one after your visit.",
+    "formTitle": "How was your visit?",
+    "ratingLabel": "Your rating",
+    "commentLabel": "Tell other patients about it (optional)",
+    "commentPlaceholder": "What stood out about the dentist or clinic?",
+    "submit": "Submit review",
+    "submitting": "Submitting…",
+    "successTitle": "Thanks for your review!",
+    "successBody": "It helps other patients find great dentists.",
+    "leaveReviewCta": "Leave a review",
+    "youRated": "You rated {n} stars",
+    "verifiedPatient": "Verified patient",
+    "errorAlreadyReviewed": "You've already reviewed this appointment.",
+    "errorNotCompleted": "You can only review after a completed visit.",
+    "errorServer": "Something went wrong. Please try again."
   }
 }
