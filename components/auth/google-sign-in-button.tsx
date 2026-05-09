@@ -1,9 +1,19 @@
 "use client";
 
-import { useFormStatus } from "react-dom";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { startGoogleOAuth } from "@/lib/auth/oauth-action";
+import { createClient } from "@/lib/supabase/client";
 
+/**
+ * Initiates Google OAuth from the BROWSER, not a server action.
+ *
+ * The PKCE verifier and OAuth state cookies need to land in
+ * document.cookie so they survive the round-trip through Google.
+ * Server actions can't do that on iOS Safari (confirmed via the
+ * /auth-debug screenshot showing zero server-set cookies). The
+ * browser SDK's signInWithOAuth writes everything via document.cookie
+ * AND returns a URL we can navigate to — best of both worlds.
+ */
 export function GoogleSignInButton({
   locale,
   label,
@@ -13,24 +23,42 @@ export function GoogleSignInButton({
   label: string;
   next?: string;
 }) {
-  return (
-    <form action={startGoogleOAuth.bind(null, locale, next)}>
-      <SubmitButton label={label} />
-    </form>
-  );
-}
+  const [busy, setBusy] = useState(false);
 
-function SubmitButton({ label }: { label: string }) {
-  const { pending } = useFormStatus();
+  async function handleClick() {
+    setBusy(true);
+    const supabase = createClient();
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ?? window.location.origin;
+    const redirectTo = `${siteUrl}/auth/callback?next=${encodeURIComponent(`/${locale}${next ?? ""}`)}`;
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo },
+    });
+
+    if (error) {
+      // Fall back to /signin?error=oauth_failed if Supabase couldn't
+      // start the flow at all
+      window.location.assign(`/${locale}/signin?error=oauth_failed`);
+      return;
+    }
+
+    if (data?.url) {
+      window.location.assign(data.url);
+    }
+  }
+
   return (
     <button
-      type="submit"
-      disabled={pending}
-      aria-busy={pending}
+      type="button"
+      onClick={handleClick}
+      disabled={busy}
+      aria-busy={busy}
       className="w-full inline-flex items-center justify-center gap-3 px-4 py-3 rounded-xl border border-ink-200 bg-white text-ink-800 font-semibold text-[14.5px] hover:bg-ink-50 active:bg-ink-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
       style={{ minHeight: 48 }}
     >
-      {pending ? (
+      {busy ? (
         <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
       ) : (
         <GoogleLogo />
