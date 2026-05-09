@@ -1,37 +1,75 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { signUpAction, type AuthState } from "@/lib/auth/actions";
+import { signUpAction } from "@/lib/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 
+/**
+ * Sign-up flow:
+ *   1. Server action creates the user (needs service role to bypass
+ *      Supabase's email-rate-limit + auto-confirm).
+ *   2. Client signs in via the browser SDK so cookies are written via
+ *      document.cookie — the only path that persists on iOS Safari
+ *      Private mode (confirmed via /auth-debug screenshot showing
+ *      ZERO server-set cookies on iPhone Safari incognito).
+ *   3. Hard reload to /{locale}.
+ */
 export function SignUpForm() {
   const t = useTranslations("Auth");
   const locale = useLocale();
-  const [state, formAction, pending] = useActionState<AuthState, FormData>(
-    signUpAction,
-    { ok: true } satisfies AuthState
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  // Hard-navigate on success to bypass the iOS Safari soft-nav cookie
-  // race that left mobile users still seeing Sign Up after sign-up.
-  const redirectTo = state.ok ? state.redirectTo : undefined;
-  useEffect(() => {
-    if (redirectTo) {
-      window.location.assign(redirectTo);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+
+    const fd = new FormData(e.currentTarget);
+    const email = ((fd.get("email") as string) || "").trim().toLowerCase();
+    const password = (fd.get("password") as string) || "";
+    const fullName = ((fd.get("fullName") as string) || "").trim();
+    const phone = ((fd.get("phone") as string) || "").trim();
+
+    const fdToSend = new FormData();
+    fdToSend.set("locale", locale);
+    fdToSend.set("email", email);
+    fdToSend.set("password", password);
+    fdToSend.set("fullName", fullName);
+    fdToSend.set("phone", phone);
+
+    // Step 1 — server creates the user (admin client, email_confirm:true)
+    const created = await signUpAction(undefined, fdToSend);
+    if (!created.ok) {
+      setError(created.error);
+      setBusy(false);
+      return;
     }
-  }, [redirectTo]);
-  const isRedirecting = !!redirectTo;
-  const busy = pending || isRedirecting;
+
+    // Step 2 — client signs in so the session lands in document.cookie
+    const supabase = createClient();
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    if (signInErr) {
+      // Account is created but auto-sign-in failed. Send them to /signin.
+      window.location.assign(`/${locale}/signin`);
+      return;
+    }
+
+    // Step 3 — hard navigate so the server-rendered shell sees the new session
+    window.location.assign(`/${locale}`);
+  }
 
   return (
-    <form action={formAction} className="space-y-5">
-      <input type="hidden" name="locale" value={locale} />
-
-      {state && !state.ok && (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {error && (
         <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -105,7 +143,7 @@ export function SignUpForm() {
         {busy ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
-            {isRedirecting ? "…" : t("submitSignUp")}
+            {t("submitSignUp")}
           </>
         ) : (
           t("submitSignUp")

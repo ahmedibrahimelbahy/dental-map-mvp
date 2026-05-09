@@ -52,26 +52,12 @@ export async function signUpAction(
     return { ok: false, error: createErr.message };
   }
 
-  // Now sign in with the cookie-aware client so the session lands in cookies
-  const supabase = await createClient();
-  const { error: signInErr } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
-  if (signInErr) {
-    // User exists, just couldn't auto-sign-in — let the client redirect to /signin
-    revalidatePath("/", "layout");
-    return { ok: true, redirectTo: `/${locale}/signin` };
-  }
-
-  // Bust the layout cache so the SiteHeader re-renders with the new
-  // auth state instead of serving the stale signed-out RSC payload.
-  revalidatePath("/", "layout");
-  // Hand the URL back to the client — the form does
-  // window.location.assign() instead of a soft Next.js redirect, which
-  // sidesteps the iOS Safari cookie-vs-navigation race that left
-  // mobile users still looking signed-out after sign-up.
-  return { ok: true, redirectTo: `/${locale}` };
+  // User created with email_confirm:true. We deliberately do NOT sign
+  // them in server-side — server-set cookies don't persist on iOS Safari
+  // Private mode (confirmed via /auth-debug). The client form runs
+  // signInWithPassword via the browser SDK after this returns ok, which
+  // sets cookies via document.cookie (does work on iOS Safari).
+  return { ok: true };
 }
 
 export async function signInAction(

@@ -1,41 +1,81 @@
 "use client";
 
-import { useActionState, useEffect } from "react";
+import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { signInAction, type AuthState } from "@/lib/auth/actions";
+import { createClient } from "@/lib/supabase/client";
 
+/**
+ * Sign-in form using the Supabase BROWSER client (not a server action).
+ *
+ * Why browser-side: server actions set cookies via response headers,
+ * which iOS Safari Private mode silently drops. The browser client
+ * writes cookies via document.cookie — confirmed working on the user's
+ * iPhone via /auth-debug. After success we do a hard reload so the
+ * server-rendered layout picks up the new auth state.
+ */
 export function SignInForm() {
   const t = useTranslations("Auth");
   const locale = useLocale();
-  const [state, formAction, pending] = useActionState<AuthState, FormData>(
-    signInAction,
-    { ok: true } satisfies AuthState
-  );
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  // Hard-navigate on success. We deliberately bypass Next.js soft routing
-  // here — on iOS Safari, server-action redirect() races with cookie
-  // commit, so the new request goes out without the auth cookies and
-  // the user appears still signed-out. window.location.assign forces
-  // the browser to fully commit cookies before navigating.
-  const redirectTo = state.ok ? state.redirectTo : undefined;
-  useEffect(() => {
-    if (redirectTo) {
-      window.location.assign(redirectTo);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setBusy(true);
+
+    const form = e.currentTarget;
+    const fd = new FormData(form);
+    const email = ((fd.get("email") as string) || "").trim().toLowerCase();
+    const password = (fd.get("password") as string) || "";
+
+    if (!email || !password) {
+      setError(t("requiredFields") ?? "Email and password are required.");
+      setBusy(false);
+      return;
     }
-  }, [redirectTo]);
 
-  const isRedirecting = !!redirectTo;
-  const busy = pending || isRedirecting;
+    const supabase = createClient();
+    const { error: signInErr } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (signInErr) {
+      setError(t("invalidCredentials") ?? "Invalid email or password.");
+      setBusy(false);
+      return;
+    }
+
+    // Resolve the role to decide where to land. Cookies are now in
+    // document.cookie via the browser SDK, so the next server request
+    // will see them.
+    const { data: auth } = await supabase.auth.getUser();
+    let target = `/${locale}`;
+    if (auth.user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", auth.user.id)
+        .returns<{ role: "patient" | "dentist_admin" | "ops" }[]>()
+        .single();
+      if (profile?.role === "dentist_admin" || profile?.role === "ops") {
+        target = `/${locale}/dashboard`;
+      }
+    }
+
+    // Hard navigation — bypasses Next.js Router Cache and forces a
+    // fresh server render with the new cookies attached.
+    window.location.assign(target);
+  }
 
   return (
-    <form action={formAction} className="space-y-5">
-      <input type="hidden" name="locale" value={locale} />
-
-      {state && !state.ok && (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {error && (
         <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900">
-          {state.error}
+          {error}
         </div>
       )}
 
@@ -75,7 +115,7 @@ export function SignInForm() {
         {busy ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
-            {isRedirecting ? "…" : t("submitSignIn")}
+            {t("submitSignIn")}
           </>
         ) : (
           t("submitSignIn")

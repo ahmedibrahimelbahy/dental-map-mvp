@@ -16,7 +16,7 @@ import {
   LayoutDashboard,
   LogOut,
 } from "lucide-react";
-import { signOutAction } from "@/lib/auth/actions";
+import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 
 type NavItem = { href: string; label: string; Icon: typeof Search };
 
@@ -247,18 +247,23 @@ export function MobileNav({
               )}
             </nav>
 
-            {/* sign out — pinned to bottom */}
+            {/* sign out — pinned to bottom. Uses the browser SDK so the
+                cookie clear lands in document.cookie (works on iOS Safari
+                Private; server actions don't). */}
             {authed && (
               <div className="p-3 border-t border-ink-100 bg-white">
-                <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-semibold text-rose-700 hover:bg-rose-50 active:bg-rose-100 transition-colors"
-                  >
-                    <LogOut className="w-5 h-5" aria-hidden />
-                    {labels.signOut}
-                  </button>
-                </form>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    const supabase = createBrowserSupabaseClient();
+                    await supabase.auth.signOut();
+                    window.location.assign("/");
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-[14px] font-semibold text-rose-700 hover:bg-rose-50 active:bg-rose-100 transition-colors"
+                >
+                  <LogOut className="w-5 h-5" aria-hidden />
+                  {labels.signOut}
+                </button>
               </div>
             )}
           </div>
