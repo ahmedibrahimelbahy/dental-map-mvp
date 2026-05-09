@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -13,6 +13,17 @@ export function SignUpForm() {
     signUpAction,
     { ok: true } satisfies AuthState
   );
+
+  // Hard-navigate on success to bypass the iOS Safari soft-nav cookie
+  // race that left mobile users still seeing Sign Up after sign-up.
+  const redirectTo = state.ok ? state.redirectTo : undefined;
+  useEffect(() => {
+    if (redirectTo) {
+      window.location.assign(redirectTo);
+    }
+  }, [redirectTo]);
+  const isRedirecting = !!redirectTo;
+  const busy = pending || isRedirecting;
 
   return (
     <form action={formAction} className="space-y-5">
@@ -88,13 +99,13 @@ export function SignUpForm() {
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={busy}
         className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        {pending ? (
+        {busy ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
-            {t("submitSignUp")}
+            {isRedirecting ? "…" : t("submitSignUp")}
           </>
         ) : (
           t("submitSignUp")

@@ -1,12 +1,11 @@
 "use server";
 
-import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export type AuthState =
-  | { ok: true }
+  | { ok: true; redirectTo?: string }
   | { ok: false; error: string; field?: string };
 
 export async function signUpAction(
@@ -60,15 +59,19 @@ export async function signUpAction(
     password,
   });
   if (signInErr) {
-    // User exists, just couldn't auto-sign-in — send to /signin
+    // User exists, just couldn't auto-sign-in — let the client redirect to /signin
     revalidatePath("/", "layout");
-    redirect(`/${locale}/signin`);
+    return { ok: true, redirectTo: `/${locale}/signin` };
   }
 
   // Bust the layout cache so the SiteHeader re-renders with the new
   // auth state instead of serving the stale signed-out RSC payload.
   revalidatePath("/", "layout");
-  redirect(`/${locale}`);
+  // Hand the URL back to the client — the form does
+  // window.location.assign() instead of a soft Next.js redirect, which
+  // sidesteps the iOS Safari cookie-vs-navigation race that left
+  // mobile users still looking signed-out after sign-up.
+  return { ok: true, redirectTo: `/${locale}` };
 }
 
 export async function signInAction(
@@ -100,18 +103,21 @@ export async function signInAction(
       .single();
     if (profile?.role === "dentist_admin" || profile?.role === "ops") {
       revalidatePath("/", "layout");
-      redirect(`/${locale}/dashboard`);
+      return { ok: true, redirectTo: `/${locale}/dashboard` };
     }
   }
   revalidatePath("/", "layout");
-  redirect(`/${locale}`);
+  // Same hard-nav-via-client pattern as signUpAction — eliminates the
+  // mobile cookie/RSC race entirely.
+  return { ok: true, redirectTo: `/${locale}` };
 }
 
 export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
-  redirect("/");
+  // No server-side redirect — caller does window.location.assign("/")
+  // so the auth-cookie clear is fully committed before navigation.
 }
 
 /**

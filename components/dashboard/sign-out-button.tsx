@@ -9,8 +9,11 @@ export function SignOutButton({ label }: { label: string }) {
   return (
     <form
       action={() => {
-        startTransition(() => {
-          signOutAction();
+        startTransition(async () => {
+          await signOutAction();
+          // Hard-navigate so the header updates immediately on mobile
+          // — same iOS Safari soft-nav-cookie-race fix as sign-in/up.
+          window.location.assign("/");
         });
       }}
     >

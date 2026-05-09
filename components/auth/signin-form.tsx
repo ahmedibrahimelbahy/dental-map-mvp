@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
@@ -13,6 +13,21 @@ export function SignInForm() {
     signInAction,
     { ok: true } satisfies AuthState
   );
+
+  // Hard-navigate on success. We deliberately bypass Next.js soft routing
+  // here — on iOS Safari, server-action redirect() races with cookie
+  // commit, so the new request goes out without the auth cookies and
+  // the user appears still signed-out. window.location.assign forces
+  // the browser to fully commit cookies before navigating.
+  const redirectTo = state.ok ? state.redirectTo : undefined;
+  useEffect(() => {
+    if (redirectTo) {
+      window.location.assign(redirectTo);
+    }
+  }, [redirectTo]);
+
+  const isRedirecting = !!redirectTo;
+  const busy = pending || isRedirecting;
 
   return (
     <form action={formAction} className="space-y-5">
@@ -54,13 +69,13 @@ export function SignInForm() {
 
       <button
         type="submit"
-        disabled={pending}
+        disabled={busy}
         className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
       >
-        {pending ? (
+        {busy ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
-            {t("submitSignIn")}
+            {isRedirecting ? "…" : t("submitSignIn")}
           </>
         ) : (
           t("submitSignIn")
