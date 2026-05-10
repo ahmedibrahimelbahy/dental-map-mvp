@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { listPatientBookings } from "@/lib/patient/bookings";
 import { getPatientReviewMap } from "@/lib/reviews/list";
 import { AccountBookings } from "@/components/patient/account-bookings";
+import { AccountSettingsCard } from "@/components/patient/account-settings-card";
 import { DeleteAccountCard } from "@/components/patient/delete-account-card";
 import { User } from "lucide-react";
 import type { PatientBooking } from "@/lib/patient/bookings";
@@ -63,6 +64,35 @@ export default async function AccountPage({
           </div>
         </div>
       </header>
+
+      <AccountSettingsCard
+        initialFullName={user.profile.full_name ?? ""}
+        initialPhone={user.profile.phone ?? ""}
+        email={user.email ?? ""}
+        locale={locale}
+        labels={{
+          title: t("settingsTitle"),
+          nameField: t("settingsName"),
+          phoneField: t("settingsPhone"),
+          emailField: t("settingsEmail"),
+          emailReadOnlyHint: t("settingsEmailHint"),
+          passwordField: t("settingsPassword"),
+          edit: t("settingsEdit"),
+          save: t("settingsSave"),
+          saving: t("settingsSaving"),
+          saved: t("settingsSaved"),
+          cancel: t("settingsCancel"),
+          changePassword: t("settingsChangePassword"),
+          currentPassword: t("settingsCurrentPassword"),
+          newPassword: t("settingsNewPassword"),
+          newPasswordHint: t("settingsNewPasswordHint"),
+          confirmNewPassword: t("settingsConfirmNewPassword"),
+          passwordsMismatch: t("settingsPasswordsMismatch"),
+          passwordChanged: t("settingsPasswordChanged"),
+          invalidName: t("settingsInvalidName"),
+          invalidPhone: t("settingsInvalidPhone"),
+        }}
+      />
 
       <AccountBookings
         bookings={bookings}
