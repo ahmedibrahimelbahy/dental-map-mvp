@@ -13,29 +13,55 @@ const FROM =
   process.env.RESEND_FROM ?? "Dental Map <onboarding@resend.dev>";
 
 /* ── generic send ──────────────────────────────────────────────────────── */
+export type EmailAttachment = {
+  filename: string;
+  /** Raw text content. We base64-encode it before handing to Resend. */
+  content: string;
+  contentType?: string;
+};
+
 export async function sendEmail({
   to,
   subject,
   html,
   text,
+  attachments,
 }: {
   to: string | string[];
   subject: string;
   html: string;
   text?: string;
+  attachments?: EmailAttachment[];
 }): Promise<void> {
   const resend = getClient();
   if (!resend) return;
 
-  const { error } = await resend.emails.send({ from: FROM, to, subject, html, text });
+  const payload: Parameters<typeof resend.emails.send>[0] = {
+    from: FROM,
+    to,
+    subject,
+    html,
+    text,
+  };
+
+  if (attachments?.length) {
+    payload.attachments = attachments.map((a) => ({
+      filename: a.filename,
+      content: Buffer.from(a.content, "utf-8").toString("base64"),
+      contentType: a.contentType,
+    }));
+  }
+
+  const { error } = await resend.emails.send(payload);
 
   if (error) {
-    // Resend SDK error — includes full message, e.g. domain not verified
     console.error("[email] Resend error:", JSON.stringify(error));
   }
 }
 
 /* ── templates ─────────────────────────────────────────────────────────── */
+
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://dentalmap.app";
 
 export function welcomePatientEmail({
   patientName,

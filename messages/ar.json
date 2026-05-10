@@ -108,6 +108,8 @@
     "successTitle": "تم تأكيد الحجز.",
     "successBody": "أرسلنا التفاصيل لبريدك. العيادة تم إخطارها — سيتواصلون إذا حدث أي تغيير.",
     "successCta": "العودة للرئيسية",
+    "addToCalendar": "أضف للتقويم",
+    "addToCalendarHint": "هنبعتلك ملف التقويم برضو في إيميل التأكيد — يشتغل على iPhone و Android و Outlook و Google Calendar.",
     "alreadyTaken": "عذراً — تم حجز هذا الميعاد للتو. اختر ميعاداً آخر.",
     "errorGeneric": "حدث خطأ. حاول مرة أخرى."
   },

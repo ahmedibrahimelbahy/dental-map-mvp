@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createBookingEvent } from "@/lib/gcal/events";
 import { sendEmail, bookingPatientEmail, bookingClinicEmail } from "@/lib/email/resend";
+import { generateBookingIcs } from "@/lib/booking/ics";
 import type { CalendarMode } from "@/lib/supabase/types";
 
 export type BookingResult =
@@ -146,6 +147,17 @@ export async function createBookingAction(
   const dentistNameEn = cd.dentist?.name_en ?? "Your dentist";
   const clinicNameEn = cd.clinic?.name_en ?? "";
 
+  // .ics calendar attachment so the patient can one-tap Add to Calendar
+  // from the email itself, regardless of mail client.
+  const icsContent = generateBookingIcs({
+    appointmentId: inserted.id,
+    startIso: start.toISOString(),
+    endIso: end.toISOString(),
+    dentistName: dentistNameEn,
+    clinicName: clinicNameEn,
+    feeEgp: cd.fee_egp,
+  });
+
   // Patient confirmation email
   if (patientEmail) {
     try {
@@ -159,6 +171,13 @@ export async function createBookingAction(
           feeEgp: cd.fee_egp,
           locale: input.locale,
         }),
+        attachments: [
+          {
+            filename: "dental-appointment.ics",
+            content: icsContent,
+            contentType: "text/calendar; charset=utf-8",
+          },
+        ],
       });
     } catch (e) {
       console.error("[booking] patient email failed (non-fatal):", e);

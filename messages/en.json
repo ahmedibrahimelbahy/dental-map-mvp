@@ -108,6 +108,8 @@
     "successTitle": "Booking confirmed.",
     "successBody": "We sent the details to your email. The clinic has been notified — they'll call if anything changes.",
     "successCta": "Back to home",
+    "addToCalendar": "Add to calendar",
+    "addToCalendarHint": "We'll also send the calendar file as an attachment in your confirmation email — works on iPhone, Android, Outlook, and Google Calendar.",
     "alreadyTaken": "Sorry — this slot was just taken. Pick another.",
     "errorGeneric": "Something went wrong. Please try again."
   },
