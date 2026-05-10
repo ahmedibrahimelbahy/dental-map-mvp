@@ -72,8 +72,9 @@ export function SignInForm() {
       )}
 
       <div>
-        <label htmlFor="email" className="field-label">
+        <label htmlFor="email" className="field-label inline-flex items-center gap-1">
           {t("email")}
+          <span className="text-rose-600" aria-hidden>*</span>
         </label>
         <input
           id="email"
@@ -88,8 +89,9 @@ export function SignInForm() {
       </div>
 
       <div>
-        <label htmlFor="password" className="field-label">
+        <label htmlFor="password" className="field-label inline-flex items-center gap-1">
           {t("password")}
+          <span className="text-rose-600" aria-hidden>*</span>
         </label>
         <input
           id="password"

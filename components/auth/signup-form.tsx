@@ -6,19 +6,15 @@ import { Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { signUpAction } from "@/lib/auth/actions";
 import { createClient } from "@/lib/supabase/client";
+import { PhoneInput } from "./phone-input";
 
-/**
- * One-shot sign-up: name + email + phone + password → user created
- * via admin client (email pre-confirmed) → client SDK signs them in
- * via signInWithPassword → hard reload.
- *
- * No OTP, no email click, no friction. Email validity is verified
- * later when we send a booking confirmation — if the address is fake
- * we just don't deliver to it.
- */
 export function SignUpForm() {
   const t = useTranslations("Auth");
   const locale = useLocale();
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState(""); // E.164-ish: "+201012345678"
+  const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,13 +23,11 @@ export function SignUpForm() {
     setError(null);
     setBusy(true);
 
-    const fd = new FormData(e.currentTarget);
-    const email = ((fd.get("email") as string) || "").trim().toLowerCase();
-    const password = (fd.get("password") as string) || "";
-    const fullName = ((fd.get("fullName") as string) || "").trim();
-    const phone = ((fd.get("phone") as string) || "").trim();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = fullName.trim();
+    const cleanPhone = phone.trim();
 
-    if (!email || !password || !fullName || !phone) {
+    if (!cleanEmail || !cleanName || !cleanPhone || !password) {
       setError(t("requiredFields"));
       setBusy(false);
       return;
@@ -44,14 +38,12 @@ export function SignUpForm() {
       return;
     }
 
-    // Step 1 — server creates the auth user (email_confirm:true bypasses
-    // OTP entirely). Service-role client only used here.
     const sendFd = new FormData();
     sendFd.set("locale", locale);
-    sendFd.set("email", email);
+    sendFd.set("email", cleanEmail);
     sendFd.set("password", password);
-    sendFd.set("fullName", fullName);
-    sendFd.set("phone", phone);
+    sendFd.set("fullName", cleanName);
+    sendFd.set("phone", cleanPhone);
 
     const created = await signUpAction(undefined, sendFd);
     if (!created.ok) {
@@ -67,81 +59,65 @@ export function SignUpForm() {
       return;
     }
 
-    // Step 2 — sign in client-side so cookies land in document.cookie.
     const supabase = createClient();
     const { error: signInErr } = await supabase.auth.signInWithPassword({
-      email,
+      email: cleanEmail,
       password,
     });
     if (signInErr) {
-      // Account is created but auto-sign-in failed — send to /signin
       window.location.assign(`/${locale}/signin`);
       return;
     }
 
-    // Step 3 — hard reload so the SSR shell sees the session
     window.location.assign(`/${locale}`);
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} className="space-y-5" noValidate>
       {error && (
         <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900">
           {error}
         </div>
       )}
 
-      <div>
-        <label htmlFor="fullName" className="field-label">
-          {t("fullName")}
-        </label>
+      <Field id="fullName" label={t("fullName")} required>
         <input
           id="fullName"
           type="text"
           name="fullName"
           required
           autoComplete="name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
           className="field-input"
         />
-      </div>
+      </Field>
 
-      <div>
-        <label htmlFor="email" className="field-label">
-          {t("email")}
-        </label>
+      <Field id="email" label={t("email")} required>
         <input
           id="email"
           type="email"
           name="email"
           required
           autoComplete="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="field-input"
         />
-      </div>
+      </Field>
 
-      <div>
-        <label htmlFor="phone" className="field-label">
-          {t("phone")}
-        </label>
-        <input
+      <Field id="phone" label={t("phone")} required hint={t("phoneHint")}>
+        <PhoneInput
           id="phone"
-          type="tel"
           name="phone"
+          value={phone}
+          onChange={setPhone}
+          locale={locale}
           required
-          autoComplete="tel"
-          inputMode="tel"
-          pattern="[0-9+\s\-]+"
-          className="field-input"
         />
-        <p className="mt-2 text-[12.5px] text-ink-500 leading-[1.5]">
-          {t("phoneHint")}
-        </p>
-      </div>
+      </Field>
 
-      <div>
-        <label htmlFor="password" className="field-label">
-          {t("password")}
-        </label>
+      <Field id="password" label={t("password")} required hint={t("passwordHint")}>
         <input
           id="password"
           type="password"
@@ -149,12 +125,11 @@ export function SignUpForm() {
           required
           minLength={8}
           autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="field-input"
         />
-        <p className="mt-2 text-[12.5px] text-ink-500 leading-[1.5]">
-          {t("passwordHint")}
-        </p>
-      </div>
+      </Field>
 
       <button
         type="submit"
@@ -172,5 +147,36 @@ export function SignUpForm() {
         </Link>
       </div>
     </form>
+  );
+}
+
+function Field({
+  id,
+  label,
+  required,
+  hint,
+  children,
+}: {
+  id: string;
+  label: string;
+  required?: boolean;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label htmlFor={id} className="field-label inline-flex items-center gap-1">
+        {label}
+        {required && (
+          <span className="text-rose-600" aria-hidden>
+            *
+          </span>
+        )}
+      </label>
+      {children}
+      {hint && (
+        <p className="mt-2 text-[12.5px] text-ink-500 leading-[1.5]">{hint}</p>
+      )}
+    </div>
   );
 }
