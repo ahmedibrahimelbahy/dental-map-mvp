@@ -227,6 +227,7 @@
     "emailNotConfirmed": "Please confirm your email first. Check your inbox for the 6-digit code.",
     "invalidCredentials": "Invalid email or password.",
     "emailAlreadyTaken": "An account with that email already exists. Try signing in instead.",
+    "phoneInvalid": "Please enter a valid phone number (at least 10 digits, including country code if international).",
     "requiredFields": "All fields are required."
   },
   "ForClinics": {

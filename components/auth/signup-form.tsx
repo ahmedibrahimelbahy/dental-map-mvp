@@ -58,6 +58,8 @@ export function SignUpForm() {
       const msg = created.error.toLowerCase();
       if (msg.includes("already") || msg.includes("registered")) {
         setError(t("emailAlreadyTaken"));
+      } else if (created.field === "phone" || msg.includes("phone")) {
+        setError(t("phoneInvalid"));
       } else {
         setError(created.error);
       }

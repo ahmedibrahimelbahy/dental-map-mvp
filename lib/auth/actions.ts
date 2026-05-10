@@ -3,10 +3,23 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendEmail, welcomePatientEmail } from "@/lib/email/resend";
 
 export type AuthState =
   | { ok: true; redirectTo?: string }
   | { ok: false; error: string; field?: string };
+
+/**
+ * Strip everything but digits and check we have a plausible phone
+ * number. Egyptian mobiles are 11 digits starting 010/011/012/015;
+ * with international prefix +20 they're 13. We accept anything from
+ * 10 to 15 digits to cover the realistic range, including international
+ * numbers for clinics with non-Egyptian customers.
+ */
+function isValidPhone(phone: string): boolean {
+  const digits = phone.replace(/\D/g, "");
+  return digits.length >= 10 && digits.length <= 15;
+}
 
 export async function signUpAction(
   _prev: AuthState | undefined,
@@ -26,6 +39,14 @@ export async function signUpAction(
       ok: false,
       error: "Password must be at least 8 characters.",
       field: "password",
+    };
+  }
+  if (!isValidPhone(phone)) {
+    return {
+      ok: false,
+      error:
+        "Please enter a valid phone number (at least 10 digits, including country code if international).",
+      field: "phone",
     };
   }
 
@@ -50,6 +71,16 @@ export async function signUpAction(
       };
     }
     return { ok: false, error: createErr.message };
+  }
+
+  // Send the welcome email — best-effort, never block sign-up on it.
+  try {
+    await sendEmail({
+      to: email,
+      ...welcomePatientEmail({ patientName: fullName, locale }),
+    });
+  } catch (e) {
+    console.error("[signup] welcome email failed (non-fatal):", e);
   }
 
   // User created with email_confirm:true. We deliberately do NOT sign
