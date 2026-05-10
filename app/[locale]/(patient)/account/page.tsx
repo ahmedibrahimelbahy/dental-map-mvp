@@ -82,7 +82,15 @@ export default async function AccountPage({
         reviewsByAppt={reviewsByAppt}
         reviewsLabels={{
           leaveReviewCta: tr("leaveReviewCta"),
-          youRated: (n: number) => tr("youRated", { n }),
+          // Pre-compute every possible rating — functions can't cross
+          // the server → client component boundary in Next.js.
+          youRatedByRating: {
+            1: tr("youRated", { n: 1 }),
+            2: tr("youRated", { n: 2 }),
+            3: tr("youRated", { n: 3 }),
+            4: tr("youRated", { n: 4 }),
+            5: tr("youRated", { n: 5 }),
+          },
         }}
       />
 

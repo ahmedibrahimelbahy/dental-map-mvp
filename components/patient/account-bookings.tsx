@@ -22,7 +22,10 @@ import { ReviewForm } from "@/components/patient/review-form";
 
 export type ReviewsLabels = {
   leaveReviewCta: string;
-  youRated: (n: number) => string;
+  /** Pre-computed by the server component for each possible rating (1–5).
+   *  Functions cannot cross the server → client boundary in Next.js, so
+   *  we pass a record instead of a formatter callback. */
+  youRatedByRating: Record<number, string>;
 };
 
 const TZ = "Africa/Cairo";
@@ -267,7 +270,7 @@ export function AccountBookings({
                                 strokeWidth={1.5}
                                 aria-hidden
                               />
-                              {reviewsLabels.youRated(existing.rating)}
+                              {reviewsLabels.youRatedByRating[existing.rating] ?? ""}
                             </span>
                           );
                         }
