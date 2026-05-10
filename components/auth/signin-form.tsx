@@ -7,11 +7,11 @@ import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * Email + password sign-in. Plain and familiar.
+ * Plain email + password sign-in via the browser SDK.
  *
- * Uses the browser SDK so cookies land in document.cookie (the only
- * reliable cross-browser path on iOS Safari). Hard-reloads on success
- * so the SSR-rendered shell picks up the new auth state.
+ * Cookies land in document.cookie (Safari-friendly), then a hard
+ * reload picks up the session in the SSR shell. Role-based redirect:
+ * admins → /dashboard, patients → home.
  */
 export function SignInForm() {
   const t = useTranslations("Auth");
@@ -20,12 +20,10 @@ export function SignInForm() {
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [needsConfirmation, setNeedsConfirmation] = useState(false);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
-    setNeedsConfirmation(false);
     setBusy(true);
 
     const cleanEmail = email.trim().toLowerCase();
@@ -42,17 +40,12 @@ export function SignInForm() {
     });
 
     if (signInErr) {
-      const msg = signInErr.message.toLowerCase();
-      if (msg.includes("not confirmed") || msg.includes("not verified")) {
-        setNeedsConfirmation(true);
-      } else {
-        setError(t("invalidCredentials"));
-      }
+      setError(t("invalidCredentials"));
       setBusy(false);
       return;
     }
 
-    // Resolve role to decide redirect target
+    // Resolve role for redirect
     let target = `/${locale}`;
     const { data: auth } = await supabase.auth.getUser();
     if (auth.user) {
@@ -70,41 +63,11 @@ export function SignInForm() {
     window.location.assign(target);
   }
 
-  async function resendConfirmation() {
-    setError(null);
-    setBusy(true);
-    const supabase = createClient();
-    const { error: resendErr } = await supabase.auth.resend({
-      type: "signup",
-      email: email.trim().toLowerCase(),
-    });
-    setBusy(false);
-    if (resendErr) {
-      setError(resendErr.message);
-      return;
-    }
-    setError(t("confirmationResent"));
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {error && (
         <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900">
           {error}
-        </div>
-      )}
-
-      {needsConfirmation && (
-        <div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-[13.5px] text-amber-900">
-          <p className="mb-2">{t("emailNotConfirmed")}</p>
-          <button
-            type="button"
-            onClick={resendConfirmation}
-            disabled={busy}
-            className="text-amber-900 underline font-semibold disabled:opacity-60"
-          >
-            {t("resendConfirmation")}
-          </button>
         </div>
       )}
 
