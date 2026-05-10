@@ -83,12 +83,20 @@ export function MobileNav({
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  const browseItems: NavItem[] = [
-    { href: "/search", label: labels.search, Icon: Search },
-    { href: "/specialties", label: labels.specialties, Icon: Sparkles },
-    { href: "/areas", label: labels.areas, Icon: MapPin },
-    { href: "/for-clinics", label: labels.forClinics, Icon: Building },
-  ];
+  // "For clinics" is marketing for prospective customers — hide it for
+  // anyone who's already signed in (patient or clinic admin alike).
+  const browseItems: NavItem[] = authed
+    ? [
+        { href: "/search", label: labels.search, Icon: Search },
+        { href: "/specialties", label: labels.specialties, Icon: Sparkles },
+        { href: "/areas", label: labels.areas, Icon: MapPin },
+      ]
+    : [
+        { href: "/search", label: labels.search, Icon: Search },
+        { href: "/specialties", label: labels.specialties, Icon: Sparkles },
+        { href: "/areas", label: labels.areas, Icon: MapPin },
+        { href: "/for-clinics", label: labels.forClinics, Icon: Building },
+      ];
 
   function close() {
     setOpen(false);

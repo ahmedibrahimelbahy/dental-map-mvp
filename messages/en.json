@@ -228,7 +228,19 @@
     "invalidCredentials": "Invalid email or password.",
     "emailAlreadyTaken": "An account with that email already exists. Try signing in instead.",
     "phoneInvalid": "Please enter a valid phone number (at least 10 digits, including country code if international).",
-    "requiredFields": "All fields are required."
+    "requiredFields": "All fields are required.",
+    "rolePickerEyebrow": "Account · Create",
+    "rolePickerTitle": "What brings you here?",
+    "rolePickerSubtitle": "Pick the option that fits best — we'll set up your account accordingly.",
+    "rolePatientTitle": "I'm a patient",
+    "rolePatientBody": "Find a dentist in Cairo, see real-time slots, and book in seconds.",
+    "roleClinicTitle": "I run a clinic or I'm a dentist",
+    "roleClinicBody": "List your clinic on Dental Map. Live calendar sync, verified reviews, free during pilot.",
+    "rolePickCta": "Continue",
+    "changeRole": "Pick a different option",
+    "signUpClinicSubtitle": "Create your admin account first. After that you'll add your clinic and dentists.",
+    "submitSignUpClinic": "Create account & continue",
+    "clinicNextStepHint": "Next step: tell us about your clinic and dentists. About 2 minutes."
   },
   "ForClinics": {
     "heroEyebrow": "Cairo pilot · April 2026",

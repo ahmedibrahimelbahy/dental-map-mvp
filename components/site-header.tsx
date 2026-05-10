@@ -58,9 +58,13 @@ export async function SiteHeader() {
             <Link href="/areas" className="hover:text-teal-600 transition-colors">
               {t("areas")}
             </Link>
-            <Link href="/for-clinics" className="hover:text-teal-600 transition-colors">
-              {t("forClinics")}
-            </Link>
+            {/* "For clinics" is marketing for non-customers — hide once
+                the user is signed in (regardless of role). */}
+            {!user && (
+              <Link href="/for-clinics" className="hover:text-teal-600 transition-colors">
+                {t("forClinics")}
+              </Link>
+            )}
           </nav>
         </div>
 

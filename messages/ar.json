@@ -228,7 +228,19 @@
     "invalidCredentials": "البريد أو كلمة المرور غير صحيحة.",
     "emailAlreadyTaken": "في حساب بالبريد ده بالفعل. جرّب تسجل الدخول.",
     "phoneInvalid": "اكتب رقم تليفون صحيح (10 أرقام على الأقل، مع رمز الدولة لو دولي).",
-    "requiredFields": "كل الحقول مطلوبة."
+    "requiredFields": "كل الحقول مطلوبة.",
+    "rolePickerEyebrow": "إنشاء حساب",
+    "rolePickerTitle": "إيه اللي جابك هنا؟",
+    "rolePickerSubtitle": "اختر اللي يناسبك أكتر — هنجهز الحساب على أساسه.",
+    "rolePatientTitle": "أنا مريض",
+    "rolePatientBody": "ابحث عن طبيب أسنان في القاهرة، شوف المواعيد لحظيًا، واحجز في ثواني.",
+    "roleClinicTitle": "أنا عيادة أو دكتور",
+    "roleClinicBody": "اعرض عيادتك على Dental Map. تزامن مباشر مع التقويم، تقييمات موثّقة، ومجاني خلال التجربة.",
+    "rolePickCta": "كمّل",
+    "changeRole": "اختر خيار تاني",
+    "signUpClinicSubtitle": "اعمل حساب الإدارة الأول. بعدها هتضيف عيادتك وأطبائك.",
+    "submitSignUpClinic": "أنشئ الحساب وكمّل",
+    "clinicNextStepHint": "الخطوة الجاية: احكيلنا عن عيادتك وأطبائك. حوالي دقيقتين."
   },
   "ForClinics": {
     "heroEyebrow": "تجربة القاهرة · إبريل 2026",
