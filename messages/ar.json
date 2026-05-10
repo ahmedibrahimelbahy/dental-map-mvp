@@ -215,7 +215,17 @@
     "googleSignUp": "إنشاء حساب بـ Google",
     "orContinueWith": "أو",
     "oauthFailed": "تعذّر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى.",
-    "safariOauthNote": "تسجيل الدخول بـ Google لا يعمل على Safari بسبب إعدادات الخصوصية في آبل. استخدم البريد وكلمة المرور بالأسفل — يعمل بنفس الطريقة."
+    "safariOauthNote": "تسجيل الدخول بـ Google لا يعمل على Safari بسبب إعدادات الخصوصية في آبل. استخدم رابط البريد بالأسفل — نفس النتيجة.",
+    "sendMagicLink": "ابعتلي رابط دخول",
+    "sendSignUpLink": "ابعتلي رابط تسجيل",
+    "magicLinkHint": "هنبعتلك رابط دخول بضغطة. مفيش كلمة مرور.",
+    "checkEmailTitle": "افتح بريدك",
+    "checkEmailBody": "بعتنا رابط دخول على {email}. اضغطه من تليفونك أو من الكمبيوتر عشان تدخل.",
+    "emailNotArrivedHint": "ما وصلش؟",
+    "tryAgain": "حاول تاني",
+    "emailRequired": "اكتب بريدك أولاً.",
+    "requiredFields": "كل الحقول مطلوبة.",
+    "noAccountForEmail": "مفيش حساب بالبريد ده. سجّل حساب جديد أولاً."
   },
   "ForClinics": {
     "heroEyebrow": "تجربة القاهرة · إبريل 2026",

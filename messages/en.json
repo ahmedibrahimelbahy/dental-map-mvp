@@ -215,7 +215,17 @@
     "googleSignUp": "Sign up with Google",
     "orContinueWith": "or",
     "oauthFailed": "We couldn't complete Google sign-in. Please try again.",
-    "safariOauthNote": "Google sign-in doesn't work in Safari due to Apple's privacy settings. Please use email and password below — it works the same way."
+    "safariOauthNote": "Google sign-in doesn't work in Safari due to Apple's privacy settings. Use the email link below — works the same.",
+    "sendMagicLink": "Email me a sign-in link",
+    "sendSignUpLink": "Email me a sign-up link",
+    "magicLinkHint": "We'll email you a one-tap link. No password needed.",
+    "checkEmailTitle": "Check your email",
+    "checkEmailBody": "We just sent a sign-in link to {email}. Tap it from your phone or computer to finish signing in.",
+    "emailNotArrivedHint": "Didn't get it?",
+    "tryAgain": "Try again",
+    "emailRequired": "Please enter your email.",
+    "requiredFields": "All fields are required.",
+    "noAccountForEmail": "No account found for that email. Please sign up first."
   },
   "ForClinics": {
     "heroEyebrow": "Cairo pilot · April 2026",
