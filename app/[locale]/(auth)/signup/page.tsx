@@ -1,23 +1,14 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { SignUpForm } from "@/components/auth/signup-form";
-import { GoogleSection } from "@/components/auth/google-section";
 
 export default async function SignUpPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { locale } = await params;
-  const { next, error } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("Auth");
-
-  const safeNext =
-    typeof next === "string" && next.startsWith("/") && !next.startsWith("//")
-      ? next
-      : undefined;
 
   return (
     <div>
@@ -30,20 +21,6 @@ export default async function SignUpPage({
       <p className="text-[15.5px] leading-[1.6] text-ink-500 mb-8 max-w-[38ch]">
         {t("signUpSubtitle")}
       </p>
-
-      {error === "oauth_failed" && (
-        <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900 mb-6">
-          {t("oauthFailed")}
-        </div>
-      )}
-
-      <GoogleSection
-        locale={locale}
-        label={t("googleSignUp")}
-        orContinueWith={t("orContinueWith")}
-        next={safeNext}
-        safariNote={t("safariOauthNote")}
-      />
 
       <SignUpForm />
     </div>

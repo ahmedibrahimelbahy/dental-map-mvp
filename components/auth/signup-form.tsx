@@ -2,28 +2,39 @@
 
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Loader2, Mail, ArrowLeft } from "lucide-react";
+import { Loader2, ArrowLeft, Mail } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * 6-digit OTP code sign-up. Same pattern as SignInForm but collects
- * full name + phone first, then sends a code to the email. The
- * handle_new_user trigger picks up name + phone from user_metadata
- * when the user is created on first verifyOtp.
+ * Two-stage sign-up:
+ *   Stage 1 (form)  → email + password + name + phone → supabase.auth.signUp
+ *                     creates an UNCONFIRMED user and emails a 6-digit OTP
+ *                     using the Confirm Signup template.
+ *   Stage 2 (otp)   → user enters the 6-digit code → verifyOtp({type:"signup"})
+ *                     confirms the email and returns a session in one shot.
+ *
+ * No magic link click → no cross-domain redirect chain → works in every
+ * browser including iOS Safari Private mode.
  */
 export function SignUpForm() {
   const t = useTranslations("Auth");
   const locale = useLocale();
   const [stage, setStage] = useState<"form" | "code">("form");
+
+  // Stage 1 state
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Stage 2 state
   const [code, setCode] = useState("");
+
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function sendCode(e: React.FormEvent<HTMLFormElement>) {
+  async function submitForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
     setBusy(true);
@@ -32,23 +43,33 @@ export function SignUpForm() {
     const cleanName = fullName.trim();
     const cleanPhone = phone.trim();
 
-    if (!cleanEmail || !cleanName || !cleanPhone) {
+    if (!cleanEmail || !password || !cleanName || !cleanPhone) {
       setError(t("requiredFields"));
+      setBusy(false);
+      return;
+    }
+    if (password.length < 8) {
+      setError(t("passwordTooShort"));
       setBusy(false);
       return;
     }
 
     const supabase = createClient();
-    const { error: otpErr } = await supabase.auth.signInWithOtp({
+    const { error: signUpErr } = await supabase.auth.signUp({
       email: cleanEmail,
+      password,
       options: {
-        shouldCreateUser: true,
         data: { full_name: cleanName, phone: cleanPhone },
       },
     });
 
-    if (otpErr) {
-      setError(otpErr.message);
+    if (signUpErr) {
+      const msg = signUpErr.message.toLowerCase();
+      if (msg.includes("already") || msg.includes("registered")) {
+        setError(t("emailAlreadyTaken"));
+      } else {
+        setError(signUpErr.message);
+      }
       setBusy(false);
       return;
     }
@@ -73,7 +94,7 @@ export function SignUpForm() {
     const { data, error: verifyErr } = await supabase.auth.verifyOtp({
       email: email.trim().toLowerCase(),
       token: cleanCode,
-      type: "email",
+      type: "signup",
     });
 
     if (verifyErr || !data.session) {
@@ -82,7 +103,24 @@ export function SignUpForm() {
       return;
     }
 
+    // Email confirmed + signed in. Hard reload.
     window.location.assign(`/${locale}`);
+  }
+
+  async function resendCode() {
+    setError(null);
+    setBusy(true);
+    const supabase = createClient();
+    const { error: resendErr } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim().toLowerCase(),
+    });
+    setBusy(false);
+    if (resendErr) {
+      setError(resendErr.message);
+      return;
+    }
+    setError(t("confirmationResent"));
   }
 
   if (stage === "code") {
@@ -98,7 +136,7 @@ export function SignUpForm() {
           className="inline-flex items-center gap-1.5 text-[13px] text-ink-500 hover:text-teal-700"
         >
           <ArrowLeft className="w-3.5 h-3.5 rtl:rotate-180" aria-hidden />
-          {t("changeEmail")}
+          {t("backToForm")}
         </button>
 
         <div className="rounded-xl bg-teal-50/40 border border-teal-200 p-4">
@@ -143,9 +181,7 @@ export function SignUpForm() {
           disabled={busy || code.length !== 6}
           className="btn-primary w-full mt-2 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
         >
-          {busy ? (
-            <Loader2 className="w-4 h-4 animate-spin" aria-hidden />
-          ) : null}
+          {busy ? <Loader2 className="w-4 h-4 animate-spin" aria-hidden /> : null}
           {t("verifyCodeAndCreate")}
         </button>
 
@@ -153,13 +189,11 @@ export function SignUpForm() {
           {t("emailNotArrivedHint")}{" "}
           <button
             type="button"
-            onClick={() => {
-              setStage("form");
-              setCode("");
-            }}
-            className="link-teal underline"
+            onClick={resendCode}
+            disabled={busy}
+            className="link-teal underline disabled:opacity-60"
           >
-            {t("tryAgain")}
+            {t("resendConfirmation")}
           </button>
         </p>
       </form>
@@ -167,7 +201,7 @@ export function SignUpForm() {
   }
 
   return (
-    <form onSubmit={sendCode} className="space-y-5">
+    <form onSubmit={submitForm} className="space-y-5">
       {error && (
         <div className="rounded-lg border border-coral-500/40 bg-coral-100/60 px-4 py-3 text-[13.5px] text-ink-900">
           {error}
@@ -203,7 +237,6 @@ export function SignUpForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="field-input"
-          placeholder="you@example.com"
         />
       </div>
 
@@ -228,6 +261,26 @@ export function SignUpForm() {
         </p>
       </div>
 
+      <div>
+        <label htmlFor="password" className="field-label">
+          {t("password")}
+        </label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          required
+          minLength={8}
+          autoComplete="new-password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="field-input"
+        />
+        <p className="mt-2 text-[12.5px] text-ink-500 leading-[1.5]">
+          {t("passwordHint")}
+        </p>
+      </div>
+
       <button
         type="submit"
         disabled={busy}
@@ -238,11 +291,11 @@ export function SignUpForm() {
         ) : (
           <Mail className="w-4 h-4" aria-hidden />
         )}
-        {t("sendCode")}
+        {t("createAccountAndSendCode")}
       </button>
 
       <p className="text-[12.5px] leading-[1.55] text-ink-500 text-center">
-        {t("codeHint")}
+        {t("verifyEmailHint")}
       </p>
 
       <div className="mt-10 text-[14px] text-ink-500 text-center">
