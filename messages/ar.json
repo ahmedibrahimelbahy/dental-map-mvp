@@ -214,7 +214,8 @@
     "googleSignIn": "تسجيل الدخول بـ Google",
     "googleSignUp": "إنشاء حساب بـ Google",
     "orContinueWith": "أو",
-    "oauthFailed": "تعذّر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى."
+    "oauthFailed": "تعذّر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى.",
+    "safariOauthNote": "تسجيل الدخول بـ Google لا يعمل على Safari بسبب إعدادات الخصوصية في آبل. استخدم البريد وكلمة المرور بالأسفل — يعمل بنفس الطريقة."
   },
   "ForClinics": {
     "heroEyebrow": "تجربة القاهرة · إبريل 2026",

@@ -214,7 +214,8 @@
     "googleSignIn": "Continue with Google",
     "googleSignUp": "Sign up with Google",
     "orContinueWith": "or",
-    "oauthFailed": "We couldn't complete Google sign-in. Please try again."
+    "oauthFailed": "We couldn't complete Google sign-in. Please try again.",
+    "safariOauthNote": "Google sign-in doesn't work in Safari due to Apple's privacy settings. Please use email and password below — it works the same way."
   },
   "ForClinics": {
     "heroEyebrow": "Cairo pilot · April 2026",

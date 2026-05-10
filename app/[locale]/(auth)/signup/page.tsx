@@ -1,6 +1,6 @@
 import { setRequestLocale, getTranslations } from "next-intl/server";
 import { SignUpForm } from "@/components/auth/signup-form";
-import { GoogleSignInButton } from "@/components/auth/google-sign-in-button";
+import { GoogleSection } from "@/components/auth/google-section";
 
 export default async function SignUpPage({
   params,
@@ -37,23 +37,13 @@ export default async function SignUpPage({
         </div>
       )}
 
-      <GoogleSignInButton
+      <GoogleSection
         locale={locale}
         label={t("googleSignUp")}
+        orContinueWith={t("orContinueWith")}
         next={safeNext}
+        safariNote={t("safariOauthNote")}
       />
-
-      <div
-        className="my-6 flex items-center gap-4 text-[12px] text-ink-400"
-        role="separator"
-        aria-label={t("orContinueWith")}
-      >
-        <span className="h-px flex-1 bg-ink-100" />
-        <span className="uppercase tracking-smallcaps">
-          {t("orContinueWith")}
-        </span>
-        <span className="h-px flex-1 bg-ink-100" />
-      </div>
 
       <SignUpForm />
     </div>
