@@ -364,7 +364,18 @@
     "errorNotFound": "مش لاقيين الحجز ده.",
     "errorTooLate": "فات الوقت — اتصل بالعيادة مباشرة.",
     "errorAlreadyCancelled": "الحجز ده ملغي بالفعل.",
-    "errorServer": "في مشكلة. حاول تاني."
+    "errorServer": "في مشكلة. حاول تاني.",
+    "deleteTitle": "حذف الحساب",
+    "deleteBody": "احذف حسابك في Dental Map نهائيًا. الحجوزات الجاية بتتلغي وبياناتك الشخصية بتنمسح. الحجوزات السابقة بتفضل في سجل العيادة بس من غير ما ترتبط بيك.",
+    "deleteButton": "احذف الحساب",
+    "deleteConfirmTitle": "ده مش هينفع يترجع.",
+    "deleteConfirmBody": "بعد الحذف، مش هتقدر ترجع تدخل بنفس الحساب. لو عايز تستخدم Dental Map تاني، هتحتاج تعمل حساب جديد.",
+    "deleteTypeEmail": "اكتب بريدك للتأكيد:",
+    "deleteConfirmYes": "أيوه، احذف حسابي",
+    "deleteConfirmCancel": "خلّي حسابي",
+    "deleteErrorMismatch": "البريد مش مطابق. اكتبه بالظبط زي اللي معروض.",
+    "deleteErrorServer": "ما قدرناش نحذف حسابك. حاول تاني أو ابعت إيميل لـ support@dentalmap.app.",
+    "deleting": "جاري الحذف…"
   },
   "Specialties": {
     "eyebrow": "تصفّح بالتخصص",

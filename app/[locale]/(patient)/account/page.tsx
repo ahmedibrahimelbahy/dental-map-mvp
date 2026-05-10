@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth/session";
 import { listPatientBookings } from "@/lib/patient/bookings";
 import { getPatientReviewMap } from "@/lib/reviews/list";
 import { AccountBookings } from "@/components/patient/account-bookings";
+import { DeleteAccountCard } from "@/components/patient/delete-account-card";
 import { User } from "lucide-react";
 import type { PatientBooking } from "@/lib/patient/bookings";
 
@@ -82,6 +83,23 @@ export default async function AccountPage({
         reviewsLabels={{
           leaveReviewCta: tr("leaveReviewCta"),
           youRated: (n: number) => tr("youRated", { n }),
+        }}
+      />
+
+      <DeleteAccountCard
+        userEmail={user.email ?? ""}
+        labels={{
+          title: t("deleteTitle"),
+          body: t("deleteBody"),
+          button: t("deleteButton"),
+          confirmTitle: t("deleteConfirmTitle"),
+          confirmBody: t("deleteConfirmBody"),
+          typeEmailLabel: t("deleteTypeEmail"),
+          confirmYes: t("deleteConfirmYes"),
+          confirmCancel: t("deleteConfirmCancel"),
+          errorMismatch: t("deleteErrorMismatch"),
+          errorServer: t("deleteErrorServer"),
+          deleting: t("deleting"),
         }}
       />
     </div>

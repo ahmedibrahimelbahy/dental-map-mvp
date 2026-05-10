@@ -364,7 +364,18 @@
     "errorNotFound": "We couldn't find this booking.",
     "errorTooLate": "Too late to cancel — please call the clinic directly.",
     "errorAlreadyCancelled": "This booking is already cancelled.",
-    "errorServer": "Something went wrong. Please try again."
+    "errorServer": "Something went wrong. Please try again.",
+    "deleteTitle": "Delete account",
+    "deleteBody": "Permanently remove your Dental Map account. Future bookings get cancelled and your personal info is erased. Past bookings stay in the clinic's records but with no link back to you.",
+    "deleteButton": "Delete account",
+    "deleteConfirmTitle": "This cannot be undone.",
+    "deleteConfirmBody": "Once deleted, you can't sign back in. To use Dental Map again you'd need to create a fresh account.",
+    "deleteTypeEmail": "Type your email to confirm:",
+    "deleteConfirmYes": "Yes, delete my account",
+    "deleteConfirmCancel": "Keep my account",
+    "deleteErrorMismatch": "Email doesn't match. Please type it exactly as shown.",
+    "deleteErrorServer": "We couldn't delete your account. Please try again or email support@dentalmap.app.",
+    "deleting": "Deleting…"
   },
   "Specialties": {
     "eyebrow": "Browse by specialty",
