@@ -3,6 +3,16 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import {
+  isValidPackage,
+  isValidTier,
+  isValidValidityMonths,
+  priceFor,
+  type Package,
+  type Tier,
+  type ValidityMonths,
+} from "@/lib/clinic/pricing";
+import { sendEmail, clinicOnboardOpsEmail } from "@/lib/email/resend";
 
 export type OnboardInput = {
   clinic: {
@@ -24,6 +34,11 @@ export type OnboardInput = {
     bioEn?: string;
     bioAr?: string;
   }>;
+  subscription: {
+    tier: Tier;
+    package: Package;
+    consultationValidityMonths: ValidityMonths;
+  };
 };
 
 export type OnboardResult =
@@ -112,17 +127,38 @@ export async function onboardClinicAction(
       return { ok: false, error: "invalid", message: "Each dentist needs a fee in EGP." };
     }
   }
+  if (
+    !isValidTier(input.subscription?.tier) ||
+    !isValidPackage(input.subscription?.package) ||
+    !isValidValidityMonths(input.subscription?.consultationValidityMonths)
+  ) {
+    return { ok: false, error: "invalid", message: "Pick a pricing package and validity window." };
+  }
+  // Trust-but-verify: recompute the monthly price server-side from the
+  // canonical pricing table so a tampered client can't underpay later.
+  const subscriptionMonthlyEgp = priceFor(
+    input.subscription.tier,
+    input.subscription.package
+  );
 
   const admin = createAdminClient();
 
-  // Resolve area
+  // Resolve area + tier (we re-check the tier from the DB so the price the
+  // client showed matches the area they actually picked).
   const { data: area } = await admin
     .from("areas")
-    .select("id")
+    .select("id, tier, name_en")
     .eq("slug", input.clinic.areaSlug)
-    .returns<{ id: string }[]>()
+    .returns<{ id: string; tier: number | null; name_en: string }[]>()
     .maybeSingle();
   if (!area) return { ok: false, error: "no_area" };
+  if (area.tier !== input.subscription.tier) {
+    return {
+      ok: false,
+      error: "invalid",
+      message: "Area pricing tier mismatch — please reload and try again.",
+    };
+  }
 
   // Resolve specialties (collect all needed slugs in one round-trip)
   const allSpecialtySlugs = Array.from(
@@ -142,7 +178,8 @@ export async function onboardClinicAction(
   // Slugify clinic
   const clinicSlug = await uniqueSlug("clinics", slugify(input.clinic.nameEn), admin);
 
-  // Insert clinic (unpublished — admin can publish from /dashboard/clinic)
+  // Insert clinic (unpublished, verification pending — ops flips both flags
+  // after reviewing the submission email).
   const { data: clinicRow, error: clinicErr } = await admin
     .from("clinics")
     .insert({
@@ -155,6 +192,12 @@ export async function onboardClinicAction(
       phone: input.clinic.phone.trim(),
       whatsapp: input.clinic.whatsapp?.trim() || null,
       is_published: false,
+      subscription_tier: input.subscription.tier,
+      subscription_package: input.subscription.package,
+      subscription_monthly_egp: subscriptionMonthlyEgp,
+      consultation_validity_months: input.subscription.consultationValidityMonths,
+      verification_status: "pending",
+      verification_submitted_at: new Date().toISOString(),
     } as never)
     .select("id, slug")
     .returns<{ id: string; slug: string }[]>()
@@ -244,6 +287,43 @@ export async function onboardClinicAction(
       .update({ role: "dentist_admin" } as never)
       .eq("id", auth.user.id);
     if (roleErr) console.error("[onboard] role promotion failed (non-fatal):", roleErr);
+  }
+
+  // Ops notification — async, non-blocking for the user. We send the full
+  // submission so ops can verify by phone and flip verification_status.
+  const opsTo = process.env.OPS_NOTIFY_EMAIL;
+  if (opsTo) {
+    const opsEmail = clinicOnboardOpsEmail({
+      submitterEmail: auth.user.email ?? "(no email)",
+      clinic: {
+        nameEn: input.clinic.nameEn.trim(),
+        nameAr: input.clinic.nameAr.trim(),
+        slug: clinicRow.slug,
+        areaSlug: input.clinic.areaSlug,
+        areaNameEn: area.name_en,
+        addressEn: input.clinic.addressEn?.trim() || null,
+        addressAr: input.clinic.addressAr?.trim() || null,
+        phone: input.clinic.phone.trim(),
+        whatsapp: input.clinic.whatsapp?.trim() || null,
+      },
+      subscription: {
+        tier: input.subscription.tier,
+        package: input.subscription.package,
+        monthlyEgp: subscriptionMonthlyEgp,
+        consultationValidityMonths: input.subscription.consultationValidityMonths,
+      },
+      dentists: input.dentists.map((d) => ({
+        nameEn: d.nameEn.trim(),
+        nameAr: d.nameAr.trim(),
+        title: d.title,
+        yearsExp: d.yearsExp,
+        feeEgp: d.feeEgp,
+        specialties: d.specialties,
+      })),
+    });
+    void sendEmail({ to: opsTo, ...opsEmail }).catch((e) =>
+      console.error("[onboard] ops email failed (non-fatal):", e)
+    );
   }
 
   revalidatePath("/", "layout");

@@ -26,9 +26,9 @@ export default async function OnboardPage({
   const [{ data: areasRaw }, { data: specialtiesRaw }] = await Promise.all([
     admin
       .from("areas")
-      .select("slug, name_ar, name_en")
-      .order("name_en")
-      .returns<{ slug: string; name_ar: string; name_en: string }[]>(),
+      .select("slug, name_ar, name_en, tier")
+      .order("tier")
+      .returns<{ slug: string; name_ar: string; name_en: string; tier: number | null }[]>(),
     admin
       .from("specialties")
       .select("slug, name_ar, name_en")
@@ -36,11 +36,16 @@ export default async function OnboardPage({
       .returns<{ slug: string; name_ar: string; name_en: string }[]>(),
   ]);
 
-  const areas = (areasRaw ?? []).map((a) => ({
-    slug: a.slug,
-    nameAr: a.name_ar,
-    nameEn: a.name_en,
-  }));
+  const areas = (areasRaw ?? [])
+    .filter((a): a is typeof a & { tier: number } =>
+      a.tier === 1 || a.tier === 2 || a.tier === 3 || a.tier === 4
+    )
+    .map((a) => ({
+      slug: a.slug,
+      nameAr: a.name_ar,
+      nameEn: a.name_en,
+      tier: a.tier as 1 | 2 | 3 | 4,
+    }));
   const specialties = (specialtiesRaw ?? []).map((s) => ({
     slug: s.slug,
     nameAr: s.name_ar,
@@ -103,6 +108,31 @@ export default async function OnboardPage({
           errorPrefix: t("errorPrefix"),
           workingHoursNote: t("workingHoursNote"),
           publishNote: t("publishNote"),
+          stepLabel: t("stepLabel"),
+          stepClinicTitle: t("stepClinicTitle"),
+          stepPricingTitle: t("stepPricingTitle"),
+          back: t("back"),
+          next: t("next"),
+          pricingHeader: t("pricingHeader"),
+          pricingSubheader: t("pricingSubheader"),
+          pricingAreaPrefix: t("pricingAreaPrefix"),
+          pricingMonthSuffix: t("pricingMonthSuffix"),
+          packageStandard: t("packageStandard"),
+          packageGrowth: t("packageGrowth"),
+          packagePremium: t("packagePremium"),
+          packageMostPopular: t("packageMostPopular"),
+          packageBest: t("packageBest"),
+          featuresStandard: t.raw("featuresStandard") as string[],
+          featuresGrowth: t.raw("featuresGrowth") as string[],
+          featuresPremium: t.raw("featuresPremium") as string[],
+          successFeeLabel: t("successFeeLabel"),
+          successFeeBody: t("successFeeBody"),
+          validityTitle: t("validityTitle"),
+          validityBody: t("validityBody"),
+          validity1: t("validity1"),
+          validity3: t("validity3"),
+          validity6: t("validity6"),
+          pricingSelectFirst: t("pricingSelectFirst"),
         }}
       />
     </div>

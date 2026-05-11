@@ -46,6 +46,7 @@ export function SignUpForm() {
     sendFd.set("password", password);
     sendFd.set("fullName", cleanName);
     sendFd.set("phone", cleanPhone);
+    sendFd.set("role", role ?? "patient");
 
     const created = await signUpAction(undefined, sendFd);
     if (!created.ok) {

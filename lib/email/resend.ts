@@ -221,6 +221,76 @@ export function reviewRequestEmail({
   };
 }
 
+export function clinicOnboardOpsEmail({
+  submitterEmail,
+  clinic,
+  subscription,
+  dentists,
+}: {
+  submitterEmail: string;
+  clinic: {
+    nameEn: string;
+    nameAr: string;
+    slug: string;
+    areaSlug: string;
+    areaNameEn: string;
+    addressEn: string | null;
+    addressAr: string | null;
+    phone: string;
+    whatsapp: string | null;
+  };
+  subscription: {
+    tier: number;
+    package: string;
+    monthlyEgp: number;
+    consultationValidityMonths: number;
+  };
+  dentists: Array<{
+    nameEn: string;
+    nameAr: string;
+    title: string;
+    yearsExp: number | null;
+    feeEgp: number;
+    specialties: string[];
+  }>;
+}): { subject: string; html: string; text: string } {
+  const dentistLines = dentists
+    .map(
+      (d, i) =>
+        `  ${i + 1}. ${d.nameEn} / ${d.nameAr} · ${d.title}` +
+        (d.yearsExp != null ? ` · ${d.yearsExp}y exp` : "") +
+        ` · ${d.feeEgp} EGP` +
+        (d.specialties.length ? ` · [${d.specialties.join(", ")}]` : "")
+    )
+    .join("\n");
+  const text =
+    `New clinic onboarding · pending review\n\n` +
+    `Submitter: ${submitterEmail}\n\n` +
+    `Clinic\n` +
+    `  Name (EN): ${clinic.nameEn}\n` +
+    `  Name (AR): ${clinic.nameAr}\n` +
+    `  Slug:      ${clinic.slug}\n` +
+    `  Area:      ${clinic.areaNameEn} (${clinic.areaSlug})\n` +
+    (clinic.addressEn ? `  Addr (EN): ${clinic.addressEn}\n` : "") +
+    (clinic.addressAr ? `  Addr (AR): ${clinic.addressAr}\n` : "") +
+    `  Phone:     ${clinic.phone}\n` +
+    (clinic.whatsapp ? `  WhatsApp:  ${clinic.whatsapp}\n` : "") +
+    `\nSubscription\n` +
+    `  Tier:      ${subscription.tier}\n` +
+    `  Package:   ${subscription.package}\n` +
+    `  Monthly:   ${subscription.monthlyEgp} EGP\n` +
+    `  Validity:  ${subscription.consultationValidityMonths} month(s)\n` +
+    `\nDentists (${dentists.length})\n${dentistLines}\n\n` +
+    `Next: call the clinic to verify, then flip verification_status from\n` +
+    `'pending' to 'approved' (or 'denied') in the clinics table.\n\n` +
+    `${SITE_URL}/en/dentist/${clinic.slug}`;
+  return {
+    subject: `[Ops] New clinic onboarded · ${clinic.nameEn} · Tier ${subscription.tier} ${subscription.package}`,
+    html: text.replace(/\n/g, "<br>"),
+    text,
+  };
+}
+
 export function bookingClinicEmail({
   patientName,
   patientPhone,

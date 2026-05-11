@@ -30,6 +30,8 @@ export async function signUpAction(
   const password = (formData.get("password") as string) || "";
   const fullName = ((formData.get("fullName") as string) || "").trim();
   const phone = ((formData.get("phone") as string) || "").trim();
+  const role = (formData.get("role") as string) || "patient";
+  const isClinicAdmin = role === "clinic_admin";
 
   if (!email || !password || !fullName || !phone) {
     return { ok: false, error: "All fields are required." };
@@ -54,7 +56,7 @@ export async function signUpAction(
   // bypassing Supabase's built-in SMTP rate limit. The handle_new_user
   // trigger creates the matching profiles row from user_metadata.
   const adminSupa = createAdminClient();
-  const { error: createErr } = await adminSupa.auth.admin.createUser({
+  const { data: created, error: createErr } = await adminSupa.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
@@ -71,6 +73,19 @@ export async function signUpAction(
       };
     }
     return { ok: false, error: createErr.message };
+  }
+
+  // Promote to dentist_admin immediately when the user picked the clinic
+  // role on the picker. Without this they stay 'patient' until the onboard
+  // form submits, and the topbar shows "My bookings" during onboarding.
+  if (isClinicAdmin && created?.user?.id) {
+    const { error: promoteErr } = await adminSupa
+      .from("profiles")
+      .update({ role: "dentist_admin" } as never)
+      .eq("id", created.user.id);
+    if (promoteErr) {
+      console.error("[signup] role promotion failed (non-fatal):", promoteErr);
+    }
   }
 
   // Send the welcome email — best-effort, never block sign-up on it.
