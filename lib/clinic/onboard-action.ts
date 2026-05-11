@@ -23,6 +23,8 @@ export type OnboardInput = {
     areaSlug: string;
     phone: string;
     whatsapp?: string;
+    lat: number;
+    lng: number;
   };
   dentists: Array<{
     nameEn: string;
@@ -39,6 +41,7 @@ export type OnboardInput = {
     package: Package;
     consultationValidityMonths: ValidityMonths;
   };
+  acceptedInsurance: string[]; // insurance provider slugs
 };
 
 export type OnboardResult =
@@ -116,6 +119,16 @@ export async function onboardClinicAction(
   if (!input.clinic.phone?.trim()) {
     return { ok: false, error: "invalid", message: "Phone number is required." };
   }
+  if (
+    !Number.isFinite(input.clinic.lat) ||
+    !Number.isFinite(input.clinic.lng) ||
+    input.clinic.lat < -90 ||
+    input.clinic.lat > 90 ||
+    input.clinic.lng < -180 ||
+    input.clinic.lng > 180
+  ) {
+    return { ok: false, error: "invalid", message: "Pin your clinic on the map." };
+  }
   if (input.dentists.length === 0) {
     return { ok: false, error: "invalid", message: "Add at least one dentist." };
   }
@@ -191,6 +204,8 @@ export async function onboardClinicAction(
       address_ar: input.clinic.addressAr?.trim() || null,
       phone: input.clinic.phone.trim(),
       whatsapp: input.clinic.whatsapp?.trim() || null,
+      lat: input.clinic.lat,
+      lng: input.clinic.lng,
       is_published: false,
       subscription_tier: input.subscription.tier,
       subscription_package: input.subscription.package,
@@ -265,6 +280,27 @@ export async function onboardClinicAction(
     }
   }
 
+  // Accepted insurance providers — resolve slugs to IDs in one round-trip,
+  // skip silently if any are unknown (clinic admins picked them from our
+  // list, so the only way this fails is a stale page).
+  if (input.acceptedInsurance && input.acceptedInsurance.length > 0) {
+    const { data: insRows } = await admin
+      .from("insurance_providers")
+      .select("id, slug")
+      .in("slug", input.acceptedInsurance)
+      .returns<{ id: string; slug: string }[]>();
+    const ciRows = (insRows ?? []).map((r) => ({
+      clinic_id: clinicRow.id,
+      insurance_id: r.id,
+    }));
+    if (ciRows.length > 0) {
+      const { error: ciErr } = await admin
+        .from("clinic_insurance")
+        .insert(ciRows as never);
+      if (ciErr) console.error("[onboard] clinic_insurance insert (non-fatal):", ciErr);
+    }
+  }
+
   // Link the current user as the clinic's admin
   const { error: caErr } = await admin
     .from("clinic_admins")
@@ -305,6 +341,9 @@ export async function onboardClinicAction(
         addressAr: input.clinic.addressAr?.trim() || null,
         phone: input.clinic.phone.trim(),
         whatsapp: input.clinic.whatsapp?.trim() || null,
+        lat: input.clinic.lat,
+        lng: input.clinic.lng,
+        acceptedInsurance: input.acceptedInsurance ?? [],
       },
       subscription: {
         tier: input.subscription.tier,

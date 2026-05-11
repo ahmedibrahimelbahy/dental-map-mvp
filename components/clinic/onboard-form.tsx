@@ -23,9 +23,15 @@ import {
   type Tier,
   type ValidityMonths,
 } from "@/lib/clinic/pricing";
+import {
+  LocationPicker,
+  type LocationValue,
+  type LocationPickerLabels,
+} from "@/components/clinic/location-picker";
 
 type Area = { slug: string; nameAr: string; nameEn: string; tier: Tier };
 type Specialty = { slug: string; nameAr: string; nameEn: string };
+type Insurance = { slug: string; nameAr: string; nameEn: string };
 
 const TITLES = ["professor", "consultant", "specialist", "resident"] as const;
 type Title = (typeof TITLES)[number];
@@ -51,8 +57,13 @@ const blankDentist = (): Dentist => ({
 export type OnboardFormProps = {
   areas: Area[];
   specialties: Specialty[];
+  insuranceProviders: Insurance[];
   locale: string;
   labels: {
+    location: LocationPickerLabels;
+    insuranceTitle: string;
+    insuranceBody: string;
+    locationRequired: string;
     sectionClinic: string;
     sectionDentists: string;
     sectionSubmit: string;
@@ -111,7 +122,13 @@ export type OnboardFormProps = {
   };
 };
 
-export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormProps) {
+export function OnboardForm({
+  areas,
+  specialties,
+  insuranceProviders,
+  locale,
+  labels,
+}: OnboardFormProps) {
   const router = useRouter();
   const isAr = locale === "ar";
   const [isPending, startTransition] = useTransition();
@@ -129,6 +146,9 @@ export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormP
     whatsapp: "",
   });
   const [dentists, setDentists] = useState<Dentist[]>([blankDentist()]);
+
+  const [location, setLocation] = useState<LocationValue>({ lat: null, lng: null });
+  const [acceptedInsurance, setAcceptedInsurance] = useState<string[]>([]);
 
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
   const [validity, setValidity] = useState<ValidityMonths>(3);
@@ -174,6 +194,7 @@ export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormP
   function clinicStepValid(): boolean {
     if (!clinic.nameEn.trim() || !clinic.nameAr.trim()) return false;
     if (!clinic.phone.trim()) return false;
+    if (location.lat == null || location.lng == null) return false;
     for (const d of dentists) {
       if (!d.nameEn.trim() || !d.nameAr.trim()) return false;
       const fee = parseInt(d.feeEgp, 10);
@@ -208,13 +229,21 @@ export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormP
       setError(labels.pricingSelectFirst);
       return;
     }
+    if (location.lat == null || location.lng == null) {
+      setError(labels.locationRequired);
+      return;
+    }
     if (!clinicStepValid()) {
       setError(labels.errorPrefix);
       return;
     }
     startTransition(async () => {
       const r = await onboardClinicAction({
-        clinic,
+        clinic: {
+          ...clinic,
+          lat: location.lat as number,
+          lng: location.lng as number,
+        },
         dentists: dentists.map((d) => ({
           nameEn: d.nameEn,
           nameAr: d.nameAr,
@@ -228,6 +257,7 @@ export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormP
           package: selectedPackage,
           consultationValidityMonths: validity,
         },
+        acceptedInsurance,
       });
       if (!r.ok) {
         if (r.error === "not_authenticated") {
@@ -289,6 +319,24 @@ export function OnboardForm({ areas, specialties, locale, labels }: OnboardFormP
             clinic={clinic}
             setClinic={setClinic}
             pickedArea={pickedArea ?? null}
+            isAr={isAr}
+            labels={labels}
+          />
+          <LocationPicker
+            value={location}
+            onChange={setLocation}
+            labels={labels.location}
+          />
+          <InsuranceSection
+            providers={insuranceProviders}
+            accepted={acceptedInsurance}
+            onToggle={(slug) =>
+              setAcceptedInsurance((prev) =>
+                prev.includes(slug)
+                  ? prev.filter((s) => s !== slug)
+                  : [...prev, slug]
+              )
+            }
             isAr={isAr}
             labels={labels}
           />
@@ -998,5 +1046,57 @@ function Field({
       {children}
       {hint && <span className="block text-[11.5px] text-ink-400 mt-1">{hint}</span>}
     </label>
+  );
+}
+
+function InsuranceSection({
+  providers,
+  accepted,
+  onToggle,
+  isAr,
+  labels,
+}: {
+  providers: Insurance[];
+  accepted: string[];
+  onToggle: (slug: string) => void;
+  isAr: boolean;
+  labels: OnboardFormProps["labels"];
+}) {
+  if (providers.length === 0) return null;
+  return (
+    <section className="rounded-2xl bg-white border border-ink-100 p-5 md:p-7 shadow-card">
+      <div className="flex items-start gap-3 mb-4">
+        <span className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 grid place-items-center shrink-0">
+          <Check className="w-5 h-5" aria-hidden />
+        </span>
+        <div className="min-w-0">
+          <h3 className="font-display text-[16px] md:text-[18px] font-bold text-ink-900">
+            {labels.insuranceTitle}
+          </h3>
+          <p className="text-[12.5px] md:text-[13px] leading-[1.55] text-ink-600 mt-1">
+            {labels.insuranceBody}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {providers.map((p) => {
+          const checked = accepted.includes(p.slug);
+          return (
+            <button
+              key={p.slug}
+              type="button"
+              onClick={() => onToggle(p.slug)}
+              className={`px-3 py-1.5 rounded-full text-[12.5px] font-semibold border transition-colors ${
+                checked
+                  ? "bg-teal-600 text-white border-teal-600"
+                  : "bg-white text-ink-700 border-ink-200 hover:border-teal-300"
+              }`}
+            >
+              {isAr ? p.nameAr : p.nameEn}
+            </button>
+          );
+        })}
+      </div>
+    </section>
   );
 }

@@ -238,6 +238,9 @@ export function clinicOnboardOpsEmail({
     addressAr: string | null;
     phone: string;
     whatsapp: string | null;
+    lat: number;
+    lng: number;
+    acceptedInsurance: string[];
   };
   subscription: {
     tier: number;
@@ -263,6 +266,7 @@ export function clinicOnboardOpsEmail({
         (d.specialties.length ? ` · [${d.specialties.join(", ")}]` : "")
     )
     .join("\n");
+  const mapsLink = `https://www.google.com/maps/?q=${clinic.lat},${clinic.lng}`;
   const text =
     `New clinic onboarding · pending review\n\n` +
     `Submitter: ${submitterEmail}\n\n` +
@@ -275,6 +279,11 @@ export function clinicOnboardOpsEmail({
     (clinic.addressAr ? `  Addr (AR): ${clinic.addressAr}\n` : "") +
     `  Phone:     ${clinic.phone}\n` +
     (clinic.whatsapp ? `  WhatsApp:  ${clinic.whatsapp}\n` : "") +
+    `  Pin:       ${clinic.lat.toFixed(6)}, ${clinic.lng.toFixed(6)}\n` +
+    `  Map:       ${mapsLink}\n` +
+    (clinic.acceptedInsurance.length
+      ? `  Insurance: ${clinic.acceptedInsurance.join(", ")}\n`
+      : "") +
     `\nSubscription\n` +
     `  Tier:      ${subscription.tier}\n` +
     `  Package:   ${subscription.package}\n` +

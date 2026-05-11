@@ -23,18 +23,24 @@ export default async function OnboardPage({
   }
 
   const admin = createAdminClient();
-  const [{ data: areasRaw }, { data: specialtiesRaw }] = await Promise.all([
-    admin
-      .from("areas")
-      .select("slug, name_ar, name_en, tier")
-      .order("tier")
-      .returns<{ slug: string; name_ar: string; name_en: string; tier: number | null }[]>(),
-    admin
-      .from("specialties")
-      .select("slug, name_ar, name_en")
-      .order("name_en")
-      .returns<{ slug: string; name_ar: string; name_en: string }[]>(),
-  ]);
+  const [{ data: areasRaw }, { data: specialtiesRaw }, { data: insuranceRaw }] =
+    await Promise.all([
+      admin
+        .from("areas")
+        .select("slug, name_ar, name_en, tier")
+        .order("tier")
+        .returns<{ slug: string; name_ar: string; name_en: string; tier: number | null }[]>(),
+      admin
+        .from("specialties")
+        .select("slug, name_ar, name_en")
+        .order("name_en")
+        .returns<{ slug: string; name_ar: string; name_en: string }[]>(),
+      admin
+        .from("insurance_providers")
+        .select("slug, name_ar, name_en")
+        .order("name_en")
+        .returns<{ slug: string; name_ar: string; name_en: string }[]>(),
+    ]);
 
   const areas = (areasRaw ?? [])
     .filter((a): a is typeof a & { tier: number } =>
@@ -50,6 +56,11 @@ export default async function OnboardPage({
     slug: s.slug,
     nameAr: s.name_ar,
     nameEn: s.name_en,
+  }));
+  const insuranceProviders = (insuranceRaw ?? []).map((p) => ({
+    slug: p.slug,
+    nameAr: p.name_ar,
+    nameEn: p.name_en,
   }));
 
   return (
@@ -71,8 +82,33 @@ export default async function OnboardPage({
       <OnboardForm
         areas={areas}
         specialties={specialties}
+        insuranceProviders={insuranceProviders}
         locale={locale}
         labels={{
+          location: {
+            title: t("locationTitle"),
+            body: t("locationBody"),
+            urlLabel: t("locationUrlLabel"),
+            urlHint: t("locationUrlHint"),
+            urlPlaceholder: t("locationUrlPlaceholder"),
+            resolveBtn: t("locationResolve"),
+            resolving: t("locationResolving"),
+            resolved: t("locationResolved"),
+            errorInvalid: t("locationErrorInvalid"),
+            errorNoCoords: t("locationErrorNoCoords"),
+            errorFetch: t("locationErrorFetch"),
+            manualToggle: t("locationManualToggle"),
+            manualLat: t("locationManualLat"),
+            manualLng: t("locationManualLng"),
+            previewLabel: t("locationPreview"),
+            outsideEgypt: t("locationOutsideEgypt"),
+            geocodeFallbackCta: t("locationGeocodeFallback"),
+            geocodeNotFound: t("locationGeocodeNotFound"),
+            required: t("locationRequired"),
+          },
+          insuranceTitle: t("insuranceTitle"),
+          insuranceBody: t("insuranceBody"),
+          locationRequired: t("locationRequired"),
           sectionClinic: t("sectionClinic"),
           sectionDentists: t("sectionDentists"),
           sectionSubmit: t("sectionSubmit"),
