@@ -25,6 +25,7 @@ export type OnboardInput = {
     whatsapp?: string;
     lat: number;
     lng: number;
+    googleMapsUrl?: string;
   };
   dentists: Array<{
     nameEn: string;
@@ -206,6 +207,7 @@ export async function onboardClinicAction(
       whatsapp: input.clinic.whatsapp?.trim() || null,
       lat: input.clinic.lat,
       lng: input.clinic.lng,
+      google_maps_url: input.clinic.googleMapsUrl?.trim() || null,
       is_published: false,
       subscription_tier: input.subscription.tier,
       subscription_package: input.subscription.package,

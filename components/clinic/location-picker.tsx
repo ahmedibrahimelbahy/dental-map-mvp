@@ -15,6 +15,10 @@ import {
 export type LocationValue = {
   lat: number | null;
   lng: number | null;
+  // The raw Google Maps URL the user pasted. Saved alongside lat/lng so the
+  // profile page can offer an "Open in Google Maps" link even when the
+  // resolved coords are approximate (Google sometimes CAPTCHAs the resolver).
+  googleMapsUrl?: string | null;
 };
 
 export type LocationPickerLabels = {
@@ -66,7 +70,7 @@ export function LocationPicker({
     // a network round-trip.
     const quick = parseGoogleMapsUrl(url);
     if (quick) {
-      onChange({ lat: quick.lat, lng: quick.lng });
+      onChange({ lat: quick.lat, lng: quick.lng, googleMapsUrl: url });
       setResolved(true);
       return;
     }
@@ -76,13 +80,15 @@ export function LocationPicker({
       // it as a freeform address via Nominatim.
       const r = await resolveGoogleMapsLocation(url);
       if (r.ok) {
-        onChange({ lat: r.lat, lng: r.lng });
+        onChange({ lat: r.lat, lng: r.lng, googleMapsUrl: url });
         setResolved(true);
         return;
       }
       const g = await geocodeAddress(url);
       if (g.ok) {
-        onChange({ lat: g.lat, lng: g.lng });
+        // Geocode came from a typed address, not a Maps URL — store the
+        // address as the URL too so "Open in Maps" still navigates there.
+        onChange({ lat: g.lat, lng: g.lng, googleMapsUrl: null });
         setResolved(true);
         return;
       }
@@ -195,7 +201,7 @@ export function LocationPicker({
                 value={value.lat ?? ""}
                 onChange={(e) => {
                   const v = e.target.value === "" ? null : parseFloat(e.target.value);
-                  onChange({ lat: v, lng: value.lng });
+                  onChange({ lat: v, lng: value.lng, googleMapsUrl: value.googleMapsUrl ?? null });
                   setResolved(false);
                 }}
                 placeholder="30.0444"
@@ -211,7 +217,7 @@ export function LocationPicker({
                 value={value.lng ?? ""}
                 onChange={(e) => {
                   const v = e.target.value === "" ? null : parseFloat(e.target.value);
-                  onChange({ lat: value.lat, lng: v });
+                  onChange({ lat: value.lat, lng: v, googleMapsUrl: value.googleMapsUrl ?? null });
                   setResolved(false);
                 }}
                 placeholder="31.2357"

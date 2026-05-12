@@ -483,17 +483,16 @@ for (let r = 0; r < rows.length; r++) {
 
   const slug = slugify(name);
 
-  // Upsert clinic
-  const fullAddress = pinIsExact
-    ? address
-    : `${address}${address ? " — " : ""}(Map: ${mapsUrl || "no link"})`;
+  // Upsert clinic — keep address clean now that google_maps_url stores
+  // the share link in its own column (migration 007).
   const clinicRow = {
     slug,
     name_en: name,
     name_ar: name, // Airtable doesn't have AR; ops can fill later
     area_id: areaIdBySlug.get(areaSlug),
-    address_en: fullAddress || null,
+    address_en: address || null,
     address_ar: null,
+    google_maps_url: mapsUrl || null,
     phone: phone || null,
     whatsapp: whatsapp || null,
     lat: coords.lat,

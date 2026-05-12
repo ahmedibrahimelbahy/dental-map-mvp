@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { getDentistBySlug } from "@/lib/dentists/list";
 import { SlotGrid } from "@/components/patient/slot-grid";
 import { ReviewsSection } from "@/components/patient/reviews-section";
-import { MapPin, Stethoscope, BadgeCheck } from "lucide-react";
+import { MapPin, Stethoscope, BadgeCheck, Navigation } from "lucide-react";
 
 const TITLE_LABEL: Record<string, { en: string; ar: string }> = {
   professor: { en: "Professor", ar: "أستاذ" },
@@ -153,7 +153,7 @@ export default async function DentistProfile({
           </div>
 
           {primary?.clinic && (
-            <div className="border-t border-ink-100 pt-4 text-[13px] text-ink-600 space-y-1">
+            <div className="border-t border-ink-100 pt-4 text-[13px] text-ink-600 space-y-2">
               <div className="font-semibold text-ink-800">
                 {isAr ? primary.clinic.name_ar : primary.clinic.name_en}
               </div>
@@ -168,6 +168,28 @@ export default async function DentistProfile({
                   </span>
                 </div>
               )}
+              {(() => {
+                // Prefer the clinic-supplied Google Maps share URL; fall back
+                // to a lat/lng query if we have coords but no URL. If we have
+                // neither, omit the link entirely.
+                const href =
+                  primary.clinic.google_maps_url ||
+                  (primary.clinic.lat != null && primary.clinic.lng != null
+                    ? `https://www.google.com/maps/?q=${primary.clinic.lat},${primary.clinic.lng}`
+                    : null);
+                if (!href) return null;
+                return (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-teal-50 text-teal-700 border border-teal-100 text-[12.5px] font-bold hover:bg-teal-100 transition-colors"
+                  >
+                    <Navigation className="w-3.5 h-3.5" aria-hidden />
+                    {isAr ? "افتح في خرائط جوجل" : "Open in Google Maps"}
+                  </a>
+                );
+              })()}
             </div>
           )}
         </div>

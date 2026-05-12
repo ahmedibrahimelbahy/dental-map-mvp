@@ -147,7 +147,7 @@ export function OnboardForm({
   });
   const [dentists, setDentists] = useState<Dentist[]>([blankDentist()]);
 
-  const [location, setLocation] = useState<LocationValue>({ lat: null, lng: null });
+  const [location, setLocation] = useState<LocationValue>({ lat: null, lng: null, googleMapsUrl: null });
   const [acceptedInsurance, setAcceptedInsurance] = useState<string[]>([]);
 
   const [selectedPackage, setSelectedPackage] = useState<Package | null>(null);
@@ -243,6 +243,7 @@ export function OnboardForm({
           ...clinic,
           lat: location.lat as number,
           lng: location.lng as number,
+          googleMapsUrl: location.googleMapsUrl ?? undefined,
         },
         dentists: dentists.map((d) => ({
           nameEn: d.nameEn,

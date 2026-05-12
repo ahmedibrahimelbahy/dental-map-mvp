@@ -238,6 +238,7 @@ export async function getDentistBySlug(slug: string) {
       address_en: string | null;
       lat: number | null;
       lng: number | null;
+      google_maps_url: string | null;
       area: { slug: string; name_ar: string; name_en: string } | null;
     } | null;
   };
@@ -248,7 +249,7 @@ export async function getDentistBySlug(slug: string) {
       `
       id, fee_egp, slot_minutes, calendar_mode,
       clinic:clinics!inner(
-        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, is_published,
+        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, google_maps_url, is_published,
         area:areas(slug, name_ar, name_en)
       )
     `
