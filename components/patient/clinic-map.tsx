@@ -129,7 +129,11 @@ export function ClinicMap({
   }
 
   return (
-    <div className="relative w-full h-full rounded-2xl overflow-hidden border border-ink-100 shadow-card">
+    // `isolate` creates a new stacking context so Leaflet's internal panes
+    // (marker-pane = z-index 600, popup-pane = 700) can't paint above the
+    // site header (sticky z-30). Without this, pins bleed over the top bar
+    // when the map is partially scrolled off screen.
+    <div className="relative isolate w-full h-full rounded-2xl overflow-hidden border border-ink-100 shadow-card">
       {mapped.length === 0 && (
         <div className="absolute inset-0 z-[1000] flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm gap-3">
           <svg className="w-10 h-10 text-ink-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
