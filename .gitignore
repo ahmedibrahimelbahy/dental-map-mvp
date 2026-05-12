@@ -30,3 +30,7 @@ Thumbs.db
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# Airtable / partner submissions — keep local only, contain clinic contact info
+/Clinic Submissions*.csv
+*.csv
