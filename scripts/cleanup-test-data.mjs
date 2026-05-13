@@ -28,7 +28,6 @@ const KEEP_AIRTABLE_SLUGS = new Set([
   "smile-craft-dental-clinic",
   "flawless-dental-clinic-by-dr-mirna-elmenshawy",
   "modern-dental-clinic",
-  "mos-clinic",
   "elan-dental-clinic",
   "nuvo-dental-clinic",
   "elbialy-dental-clinic",
