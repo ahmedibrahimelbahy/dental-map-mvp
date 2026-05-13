@@ -55,7 +55,9 @@ export function SignInForm() {
         .eq("id", auth.user.id)
         .returns<{ role: "patient" | "dentist_admin" | "ops" }[]>()
         .single();
-      if (profile?.role === "dentist_admin" || profile?.role === "ops") {
+      if (profile?.role === "ops") {
+        target = `/${locale}/admin`;
+      } else if (profile?.role === "dentist_admin") {
         target = `/${locale}/dashboard`;
       }
     }

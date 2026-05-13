@@ -36,17 +36,52 @@ export type OpsRecentBooking = {
   clinicSlug: string;
 };
 
+export type OpsPatientRow = {
+  id: string;
+  fullName: string | null;
+  phone: string | null;
+  email: string | null;
+  createdAt: string;
+  bookingCount: number;
+  lastBookingAt: string | null;
+};
+
+export type OpsRecentReview = {
+  id: string;
+  rating: number;
+  comment: string | null;
+  createdAt: string;
+  dentistNameEn: string;
+  clinicNameEn: string;
+  patientName: string;
+};
+
+export type OpsCalendarHealthRow = {
+  dentistId: string;
+  dentistName: string;
+  clinicName: string;
+  mode: "google" | "manual";
+  lastSyncedAt: string | null;
+};
+
 export type OpsSnapshot = {
   pending: OpsClinicRow[];
   others: OpsClinicRow[];
   recentBookings: OpsRecentBooking[];
+  patients: OpsPatientRow[];
+  recentReviews: OpsRecentReview[];
+  calendarHealth: OpsCalendarHealthRow[];
   counts: {
     totalClinics: number;
     pendingClinics: number;
     approvedClinics: number;
     publishedClinics: number;
+    totalDentists: number;
     totalPatients: number;
+    totalReviews: number;
     bookingsLast30: number;
+    revenueLast30Egp: number;
+    monthlyRecurringEgp: number;
   };
 };
 
@@ -228,6 +263,15 @@ export async function getOpsSnapshot(): Promise<OpsSnapshot> {
     .select("id", { head: true, count: "exact" })
     .eq("role", "patient");
 
+  const { count: totalDentists } = await admin
+    .from("dentists")
+    .select("id", { head: true, count: "exact" });
+
+  const { count: totalReviews } = await admin
+    .from("reviews")
+    .select("id", { head: true, count: "exact" })
+    .not("published_at", "is", null);
+
   const since = new Date();
   since.setDate(since.getDate() - 30);
   const { count: bookingsLast30 } = await admin
@@ -235,17 +279,161 @@ export async function getOpsSnapshot(): Promise<OpsSnapshot> {
     .select("id", { head: true, count: "exact" })
     .gte("created_at", since.toISOString());
 
+  // Revenue last 30 days — sum of fees on completed appointments (paid at
+  // clinic, but a useful directional metric for the marketplace's GMV).
+  const { data: feeRows } = await admin
+    .from("appointments")
+    .select("fee_at_booking_egp")
+    .eq("status", "completed")
+    .gte("slot_end", since.toISOString())
+    .returns<{ fee_at_booking_egp: number }[]>();
+  const revenueLast30Egp = (feeRows ?? []).reduce(
+    (s, r) => s + (r.fee_at_booking_egp ?? 0),
+    0
+  );
+
+  // Monthly recurring revenue — only counts approved+published clinics
+  // since pending ones aren't billable.
+  const monthlyRecurringEgp = allRows
+    .filter((r) => r.verificationStatus === "approved" && r.isPublished)
+    .reduce((s, r) => s + (r.subscriptionMonthlyEgp ?? 0), 0);
+
+  // Patients — top 50 by booking count (or recent signups if no bookings)
+  type PatientProfile = {
+    id: string;
+    full_name: string | null;
+    phone: string | null;
+    created_at: string;
+  };
+  const { data: patientProfiles } = await admin
+    .from("profiles")
+    .select("id, full_name, phone, created_at")
+    .eq("role", "patient")
+    .order("created_at", { ascending: false })
+    .limit(50)
+    .returns<PatientProfile[]>();
+
+  const patientIds = (patientProfiles ?? []).map((p) => p.id);
+  // Booking aggregates per patient
+  const { data: patientAppts } = await admin
+    .from("appointments")
+    .select("patient_id, slot_start")
+    .in("patient_id", patientIds.length ? patientIds : ["00000000-0000-0000-0000-000000000000"])
+    .returns<{ patient_id: string; slot_start: string }[]>();
+  const bookingCountByPatient = new Map<string, number>();
+  const lastBookingByPatient = new Map<string, string>();
+  for (const a of patientAppts ?? []) {
+    bookingCountByPatient.set(a.patient_id, (bookingCountByPatient.get(a.patient_id) ?? 0) + 1);
+    const prev = lastBookingByPatient.get(a.patient_id);
+    if (!prev || a.slot_start > prev) lastBookingByPatient.set(a.patient_id, a.slot_start);
+  }
+  // Resolve emails for these patients via auth admin (one per id — not
+  // ideal but fine at pilot scale; revisit with a batched query if it
+  // gets slow).
+  const patientEmailById = new Map<string, string>();
+  for (const id of patientIds) {
+    const { data } = await admin.auth.admin.getUserById(id);
+    if (data?.user?.email) patientEmailById.set(id, data.user.email);
+  }
+  const patients: OpsPatientRow[] = (patientProfiles ?? []).map((p) => ({
+    id: p.id,
+    fullName: p.full_name,
+    phone: p.phone,
+    email: patientEmailById.get(p.id) ?? null,
+    createdAt: p.created_at,
+    bookingCount: bookingCountByPatient.get(p.id) ?? 0,
+    lastBookingAt: lastBookingByPatient.get(p.id) ?? null,
+  }));
+
+  // Recent reviews — 10 most recent, with denormalised dentist + clinic + patient
+  type ReviewRow = {
+    id: string;
+    rating: number;
+    comment_en: string | null;
+    comment_ar: string | null;
+    published_at: string;
+    appointment: {
+      patient: { full_name: string | null } | null;
+      clinic_dentist: {
+        dentist: { name_en: string } | null;
+        clinic: { name_en: string } | null;
+      } | null;
+    } | null;
+  };
+  const { data: reviewRows } = await admin
+    .from("reviews")
+    .select(
+      `
+      id, rating, comment_en, comment_ar, published_at,
+      appointment:appointments!inner(
+        patient:profiles!appointments_patient_id_fkey(full_name),
+        clinic_dentist:clinic_dentists(
+          dentist:dentists(name_en),
+          clinic:clinics(name_en)
+        )
+      )
+    `
+    )
+    .not("published_at", "is", null)
+    .order("published_at", { ascending: false })
+    .limit(10)
+    .returns<ReviewRow[]>();
+
+  const recentReviews: OpsRecentReview[] = (reviewRows ?? []).map((r) => ({
+    id: r.id,
+    rating: r.rating,
+    comment: r.comment_en ?? r.comment_ar ?? null,
+    createdAt: r.published_at,
+    dentistNameEn: r.appointment?.clinic_dentist?.dentist?.name_en ?? "(unknown)",
+    clinicNameEn: r.appointment?.clinic_dentist?.clinic?.name_en ?? "(unknown)",
+    patientName: r.appointment?.patient?.full_name ?? "(unknown)",
+  }));
+
+  // Calendar health — per active clinic_dentist, what mode + last sync
+  type CalRow = {
+    dentist_id: string;
+    dentist: { name_en: string } | null;
+    clinic: { name_en: string } | null;
+    calendar_mode: "google" | "manual";
+  };
+  const { data: calRows } = await admin
+    .from("clinic_dentists")
+    .select(
+      `dentist_id, calendar_mode,
+       dentist:dentists(name_en),
+       clinic:clinics!inner(name_en, is_published)`
+    )
+    .eq("is_active", true)
+    .eq("clinic.is_published", true)
+    .returns<CalRow[]>();
+  const calendarHealth: OpsCalendarHealthRow[] = (calRows ?? [])
+    .filter((r) => r.dentist && r.clinic)
+    .map((r) => ({
+      dentistId: r.dentist_id,
+      dentistName: r.dentist!.name_en,
+      clinicName: r.clinic!.name_en,
+      mode: r.calendar_mode,
+      lastSyncedAt: null, // dentist_calendars table tracks this; punt for v1
+    }));
+
   return {
     pending,
     others,
     recentBookings,
+    patients,
+    recentReviews,
+    calendarHealth,
     counts: {
       totalClinics: allRows.length,
       pendingClinics: pending.length,
       approvedClinics: allRows.filter((r) => r.verificationStatus === "approved").length,
       publishedClinics: allRows.filter((r) => r.isPublished).length,
+      totalDentists: totalDentists ?? 0,
       totalPatients: totalPatients ?? 0,
+      totalReviews: totalReviews ?? 0,
       bookingsLast30: bookingsLast30 ?? 0,
+      revenueLast30Egp,
+      monthlyRecurringEgp,
     },
   };
 }
