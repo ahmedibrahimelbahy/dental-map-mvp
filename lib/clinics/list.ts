@@ -170,3 +170,109 @@ export async function listClinicsByArea(
 
   return items.slice(0, limit);
 }
+
+/**
+ * Single clinic profile with all its active dentists.
+ * Used by the /clinic/[slug] page.
+ */
+export async function getClinicBySlug(slug: string) {
+  const admin = createAdminClient();
+
+  type ClinicRow = {
+    id: string;
+    slug: string;
+    name_ar: string;
+    name_en: string;
+    address_ar: string | null;
+    address_en: string | null;
+    phone: string | null;
+    whatsapp: string | null;
+    lat: number | null;
+    lng: number | null;
+    logo_url: string | null;
+    hero_image_url: string | null;
+    google_maps_url: string | null;
+    is_published: boolean;
+    area: { slug: string; name_ar: string; name_en: string } | null;
+  };
+
+  const { data: clinic } = await admin
+    .from("clinics")
+    .select(
+      `
+      id, slug, name_ar, name_en, address_ar, address_en, phone, whatsapp,
+      lat, lng, logo_url, hero_image_url, google_maps_url, is_published,
+      area:areas(slug, name_ar, name_en)
+    `
+    )
+    .eq("slug", slug)
+    .eq("is_published", true)
+    .returns<ClinicRow[]>()
+    .maybeSingle();
+
+  if (!clinic) return null;
+
+  type CDRow = {
+    id: string;
+    fee_egp: number;
+    slot_minutes: number;
+    calendar_mode: "google" | "manual";
+    is_active: boolean;
+    dentist: {
+      id: string;
+      slug: string;
+      name_ar: string;
+      name_en: string;
+      title: string;
+      years_experience: number | null;
+      photo_url: string | null;
+      bio_ar: string | null;
+      bio_en: string | null;
+      is_published: boolean;
+    } | null;
+  };
+
+  const { data: linksRaw } = await admin
+    .from("clinic_dentists")
+    .select(
+      `
+      id, fee_egp, slot_minutes, calendar_mode, is_active,
+      dentist:dentists!inner(
+        id, slug, name_ar, name_en, title, years_experience, photo_url, bio_ar, bio_en, is_published
+      )
+    `
+    )
+    .eq("clinic_id", clinic.id)
+    .eq("is_active", true)
+    .eq("dentist.is_published", true)
+    .returns<CDRow[]>();
+
+  const links = (linksRaw ?? []).filter((l) => l.dentist);
+  if (links.length === 0) return null;
+
+  const dentistIds = links.map((l) => l.dentist!.id);
+  const { data: ds } = await admin
+    .from("dentist_specialties")
+    .select("dentist_id, specialty:specialties(slug, name_ar, name_en)")
+    .in("dentist_id", dentistIds)
+    .returns<{
+      dentist_id: string;
+      specialty: { slug: string; name_ar: string; name_en: string };
+    }[]>();
+
+  const specsByDentist = new Map<
+    string,
+    Array<{ slug: string; nameAr: string; nameEn: string }>
+  >();
+  for (const s of ds ?? []) {
+    const arr = specsByDentist.get(s.dentist_id) ?? [];
+    arr.push({
+      slug: s.specialty.slug,
+      nameAr: s.specialty.name_ar,
+      nameEn: s.specialty.name_en,
+    });
+    specsByDentist.set(s.dentist_id, arr);
+  }
+
+  return { clinic, links, specsByDentist };
+}

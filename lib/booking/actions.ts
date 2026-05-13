@@ -32,6 +32,7 @@ export async function createBookingAction(
   type CD = {
     id: string;
     dentist_id: string;
+    clinic_id: string;
     fee_egp: number;
     slot_minutes: number;
     calendar_mode: CalendarMode;
@@ -43,7 +44,7 @@ export async function createBookingAction(
     .from("clinic_dentists")
     .select(
       `
-      id, dentist_id, fee_egp, slot_minutes, calendar_mode, is_active,
+      id, dentist_id, clinic_id, fee_egp, slot_minutes, calendar_mode, is_active,
       dentist:dentists(name_ar, name_en),
       clinic:clinics(name_ar, name_en)
     `
@@ -184,10 +185,21 @@ export async function createBookingAction(
     }
   }
 
-  // Clinic admin notification — sent to CLINIC_NOTIFICATION_EMAIL env var.
-  // Pilot shortcut: one env var covers all clinics. Replace with per-clinic
-  // lookup once we have a clinic_admins table.
-  const clinicAdminEmail = process.env.CLINIC_NOTIFICATION_EMAIL ?? null;
+  // Clinic admin notification — look up the registered admin for this specific
+  // clinic so each clinic only gets notifications for their own bookings.
+  // Fall back to the CLINIC_NOTIFICATION_EMAIL env var as an ops catch-all.
+  let clinicAdminEmail: string | null = null;
+  const { data: adminRows } = await admin
+    .from("clinic_admins")
+    .select("profile:profiles(email)")
+    .eq("clinic_id", cd.clinic_id)
+    .returns<{ profile: { email: string | null } | null }[]>()
+    .limit(1);
+  clinicAdminEmail =
+    adminRows?.[0]?.profile?.email ??
+    process.env.CLINIC_NOTIFICATION_EMAIL ??
+    null;
+
   if (clinicAdminEmail) {
     try {
       await sendEmail({

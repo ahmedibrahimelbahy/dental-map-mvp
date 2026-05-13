@@ -35,11 +35,8 @@ export function ClinicCard({
       ? labels.feeRange(c.minFeeEgp, c.maxFeeEgp)
       : `EGP ${c.minFeeEgp}`;
 
-  // CTA target: route to the first dentist's profile for now (no clinic filter yet)
-  const firstDentistSlug = c.dentists[0]?.dentistSlug ?? "";
-
   return (
-    <article className="rounded-2xl bg-white border border-ink-100 overflow-hidden shadow-card hover:shadow-card-hover hover:border-teal-300 transition-[box-shadow,border-color]">
+    <article className="rounded-2xl bg-white border border-ink-100 overflow-hidden shadow-card hover:shadow-card-hover hover:border-teal-300 transition-[box-shadow,border-color]" id={`clinic-${c.clinicId}`}>
       {c.heroImageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -153,18 +150,16 @@ export function ClinicCard({
       </ul>
 
       <footer className="mt-4 pt-4 border-t border-ink-100 flex items-center justify-end">
-        {firstDentistSlug && (
-          <Link
-            href={`/dentist/${firstDentistSlug}`}
-            className="inline-flex items-center gap-1 text-[13px] font-semibold text-teal-600 hover:text-teal-700 transition-colors"
-          >
-            {labels.bookCta}
-            <ArrowRight
-              className="w-3.5 h-3.5 rtl:rotate-180"
-              aria-hidden
-            />
-          </Link>
-        )}
+        <Link
+          href={`/clinic/${c.clinicSlug}`}
+          className="inline-flex items-center gap-1 text-[13px] font-semibold text-teal-600 hover:text-teal-700 transition-colors"
+        >
+          {labels.bookCta}
+          <ArrowRight
+            className="w-3.5 h-3.5 rtl:rotate-180"
+            aria-hidden
+          />
+        </Link>
       </footer>
       </div>
     </article>
