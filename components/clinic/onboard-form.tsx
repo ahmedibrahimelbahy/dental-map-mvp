@@ -15,6 +15,9 @@ import {
   ArrowRight,
   Crown,
   TrendingUp,
+  Clock,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { onboardClinicAction } from "@/lib/clinic/onboard-action";
 import {
@@ -91,6 +94,10 @@ export type OnboardFormProps = {
     successTitle: string;
     successBody: string;
     successCta: string;
+    successPendingBadge: string;
+    successTimeframe: string;
+    successCallNote: string;
+    successEmailNote: string;
     errorPrefix: string;
     workingHoursNote: string;
     publishNote: string;
@@ -274,19 +281,36 @@ export function OnboardForm({
 
   if (success) {
     return (
-      <div className="rounded-2xl bg-white border border-teal-200 p-7 md:p-10 shadow-glow text-center max-w-[640px] mx-auto">
-        <span className="inline-flex w-14 h-14 rounded-2xl bg-teal-500 text-white items-center justify-center mb-5 shadow-glow">
-          <Check className="w-7 h-7" aria-hidden />
+      <div className="rounded-2xl bg-gradient-to-br from-amber-50 via-white to-white border-2 border-amber-200 p-7 md:p-10 shadow-glow text-center max-w-[640px] mx-auto">
+        <span className="inline-flex w-14 h-14 rounded-2xl bg-amber-500 text-white items-center justify-center mb-5 shadow-[0_8px_24px_-8px_rgba(245,158,11,0.55)]">
+          <Clock className="w-7 h-7" aria-hidden />
         </span>
+        <div className="inline-flex items-center gap-1.5 text-[11.5px] font-bold uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-200 rounded-full px-3 py-1 mb-4">
+          {labels.successPendingBadge}
+        </div>
         <h2 className="display-h2 text-[24px] md:text-[28px] text-ink-900 mb-3">
           {labels.successTitle}
         </h2>
-        <p className="text-[14.5px] leading-[1.65] text-ink-600 mb-6 max-w-[44ch] mx-auto">
+        <p className="text-[14.5px] leading-[1.65] text-ink-600 mb-5 max-w-[46ch] mx-auto">
           {labels.successBody}
         </p>
+        <div className="rounded-xl bg-white border border-ink-100 p-4 md:p-5 mb-6 text-start max-w-[460px] mx-auto space-y-2.5">
+          <div className="flex items-start gap-2.5 text-[13px] text-ink-700">
+            <Clock className="w-4 h-4 mt-0.5 text-amber-600 shrink-0" aria-hidden />
+            <span>{labels.successTimeframe}</span>
+          </div>
+          <div className="flex items-start gap-2.5 text-[13px] text-ink-700">
+            <Phone className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" aria-hidden />
+            <span>{labels.successCallNote}</span>
+          </div>
+          <div className="flex items-start gap-2.5 text-[13px] text-ink-700">
+            <Mail className="w-4 h-4 mt-0.5 text-teal-600 shrink-0" aria-hidden />
+            <span>{labels.successEmailNote}</span>
+          </div>
+        </div>
         <button
           type="button"
-          onClick={() => router.push("/dashboard")}
+          onClick={() => router.push("/")}
           className="btn-primary inline-flex items-center gap-2"
         >
           {labels.successCta}
