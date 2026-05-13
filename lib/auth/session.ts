@@ -50,3 +50,7 @@ export async function requireRole(
 export async function requireDentistAdmin(locale: string): Promise<CurrentUser> {
   return requireRole(["dentist_admin", "ops"], locale);
 }
+
+export async function requireOps(locale: string): Promise<CurrentUser> {
+  return requireRole("ops", locale);
+}

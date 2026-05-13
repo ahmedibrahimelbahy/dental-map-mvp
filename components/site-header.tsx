@@ -6,11 +6,12 @@ import { SignOutButton } from "./dashboard/sign-out-button";
 import { MobileNav } from "./mobile-nav";
 import { HeaderSearch } from "./header-search";
 import { getCurrentUser } from "@/lib/auth/session";
-import { LayoutDashboard, CalendarCheck } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, Shield } from "lucide-react";
 
 export async function SiteHeader() {
   const t = await getTranslations("Nav");
   const user = await getCurrentUser();
+  const isOps = user?.profile.role === "ops";
   const isDentistAdmin =
     user?.profile.role === "dentist_admin" || user?.profile.role === "ops";
   const firstName = user?.profile.full_name?.split(" ")[0] ?? "";
@@ -96,7 +97,16 @@ export async function SiteHeader() {
 
           {user && (
             <>
-              {isDentistAdmin ? (
+              {isOps && (
+                <Link
+                  href="/admin"
+                  className="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-100 text-amber-800 border border-amber-200 hover:bg-amber-200 transition-colors font-bold text-[12.5px]"
+                >
+                  <Shield className="w-3.5 h-3.5" aria-hidden />
+                  Admin
+                </Link>
+              )}
+              {isOps ? null : isDentistAdmin ? (
                 <Link
                   href="/dashboard"
                   className="hidden md:inline-flex items-center gap-1.5 btn-ghost"
@@ -114,7 +124,7 @@ export async function SiteHeader() {
                 </Link>
               )}
               <Link
-                href={isDentistAdmin ? "/dashboard" : "/account"}
+                href={isOps ? "/admin" : isDentistAdmin ? "/dashboard" : "/account"}
                 className="flex items-center gap-2 px-2 py-1 md:px-2.5 md:py-1.5 rounded-full bg-teal-50 border border-teal-100 hover:bg-teal-100 transition-colors"
                 title={user.profile.full_name}
               >

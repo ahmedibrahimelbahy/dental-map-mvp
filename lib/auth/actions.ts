@@ -133,7 +133,11 @@ export async function signInAction(
       .eq("id", auth.user.id)
       .returns<{ role: "patient" | "dentist_admin" | "ops" }[]>()
       .single();
-    if (profile?.role === "dentist_admin" || profile?.role === "ops") {
+    if (profile?.role === "ops") {
+      revalidatePath("/", "layout");
+      return { ok: true, redirectTo: `/${locale}/admin` };
+    }
+    if (profile?.role === "dentist_admin") {
       revalidatePath("/", "layout");
       return { ok: true, redirectTo: `/${locale}/dashboard` };
     }
