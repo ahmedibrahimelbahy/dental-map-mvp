@@ -4,10 +4,12 @@ import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
 import { LayoutGrid, Map, Users, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { usePathname, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { DentistCard } from "./dentist-card";
 import { ClinicCard } from "./clinic-card";
 import { groupDentistsByClinic } from "@/lib/clinics/list";
-import type { DentistListItem } from "@/lib/dentists/list";
+import type { DentistListItem, SortKey } from "@/lib/dentists/list";
 
 /* ── lazy-load the Leaflet map to avoid SSR issues ─────────────────────── */
 const ClinicMap = dynamic(
@@ -30,17 +32,32 @@ export function SearchResults({
   locale,
   emptyTitle,
   emptyBody,
+  currentSort,
 }: {
   dentists: DentistListItem[];
   locale: string;
   emptyTitle: string;
   emptyBody: string;
+  currentSort: SortKey;
 }) {
   const isAr = locale === "ar";
   const t = useTranslations("Search");
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [view, setView] = useState<View>("list");
   const [entity, setEntity] = useState<Entity>("dentists");
   const [activeId, setActiveId] = useState<string | null>(null);
+
+  function changeSort(next: SortKey) {
+    // Preserve every other filter; just swap `sort`. "recommended" is the
+    // default — drop it from the URL when picked so links stay clean.
+    const params = new URLSearchParams(searchParams.toString());
+    if (next === "recommended") params.delete("sort");
+    else params.set("sort", next);
+    const qs = params.toString();
+    router.push(qs ? `${pathname}?${qs}` : pathname);
+  }
 
   const hasMapped = dentists.some(
     (d) => d.clinic.lat != null && d.clinic.lng != null
@@ -92,6 +109,20 @@ export function SearchResults({
             {t("entityClinics")}
           </button>
         </div>
+
+        {/* sort dropdown — sits between the entity toggle and the view toggle */}
+        <label className="inline-flex items-center gap-2 text-[12.5px] text-ink-500">
+          <span className="hidden sm:inline">{t("sortLabel")}</span>
+          <select
+            value={currentSort}
+            onChange={(e) => changeSort(e.target.value as SortKey)}
+            className="rounded-lg border border-ink-150 bg-white px-2.5 py-1.5 text-[13px] text-ink-800 font-medium outline-none focus:border-teal-400 focus:ring-2 focus:ring-teal-200/60"
+          >
+            <option value="recommended">{t("sortRecommended")}</option>
+            <option value="rating">{t("sortRating")}</option>
+            <option value="price">{t("sortPrice")}</option>
+          </select>
+        </label>
 
         {/* view toggle: List / Map */}
         <div className="flex items-center gap-1">

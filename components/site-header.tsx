@@ -4,6 +4,7 @@ import { BrandMark } from "./brand-mark";
 import { LocaleSwitcher } from "./locale-switcher";
 import { SignOutButton } from "./dashboard/sign-out-button";
 import { MobileNav } from "./mobile-nav";
+import { HeaderSearch } from "./header-search";
 import { getCurrentUser } from "@/lib/auth/session";
 import { LayoutDashboard, CalendarCheck } from "lucide-react";
 
@@ -49,9 +50,6 @@ export async function SiteHeader() {
           />
           <BrandMark />
           <nav className="hidden lg:flex items-center gap-7 text-[14px] text-ink-700 font-medium">
-            <Link href="/search" className="hover:text-teal-600 transition-colors">
-              {t("search")}
-            </Link>
             <Link href="/specialties" className="hover:text-teal-600 transition-colors">
               {t("specialties")}
             </Link>
@@ -66,6 +64,16 @@ export async function SiteHeader() {
               </Link>
             )}
           </nav>
+        </div>
+
+        {/* MIDDLE: persistent search — replaces the standalone "Find a dentist"
+            link. Hidden on smallest screens to leave room for the brand mark
+            and right-side controls. */}
+        <div className="hidden md:flex flex-1 max-w-[420px] mx-2">
+          <HeaderSearch
+            placeholder={t("searchPlaceholder")}
+            ariaLabel={t("search")}
+          />
         </div>
 
         {/* END side: locale switcher + auth actions */}

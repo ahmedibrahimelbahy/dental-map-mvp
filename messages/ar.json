@@ -5,6 +5,7 @@
   },
   "Nav": {
     "search": "دور على طبيب",
+    "searchPlaceholder": "دور على طبيب أو عيادة",
     "specialties": "التخصصات",
     "areas": "المناطق",
     "forClinics": "للعيادات",
@@ -80,7 +81,11 @@
     "clinicCardSpecialtyCount": "{n, plural, =0 {بدون تخصصات} =1 {تخصص واحد} =2 {تخصصان} few {# تخصصات} many {# تخصصاً} other {# تخصص}}",
     "clinicCardFeeRange": "{min}–{max} ج.م",
     "clinicCardBookCta": "احجز في هذه العيادة",
-    "clinicCardDentistCount": "{n, plural, =0 {لا أطباء} =1 {طبيب واحد} =2 {طبيبان} few {# أطباء} many {# طبيباً} other {# طبيب}}"
+    "clinicCardDentistCount": "{n, plural, =0 {لا أطباء} =1 {طبيب واحد} =2 {طبيبان} few {# أطباء} many {# طبيباً} other {# طبيب}}",
+    "sortLabel": "ترتيب",
+    "sortRecommended": "موصى به",
+    "sortRating": "الأعلى تقييماً",
+    "sortPrice": "الأقل سعراً"
   },
   "Profile": {
     "fee": "السعر",

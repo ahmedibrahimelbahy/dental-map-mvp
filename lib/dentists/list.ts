@@ -12,6 +12,8 @@ export type DentistListItem = {
   yearsExperience: number | null;
   feeEgp: number;
   photoUrl: string | null;
+  ratingAvg: number; // 0 when no reviews
+  ratingCount: number;
   clinic: {
     nameAr: string;
     nameEn: string;
@@ -26,10 +28,14 @@ export type DentistListItem = {
   specialties: Array<{ slug: string; nameAr: string; nameEn: string }>;
 };
 
+export type SortKey = "recommended" | "rating" | "price";
+
 export type ListFilters = {
   specialtySlug?: string;
   areaSlug?: string;
   feeMax?: number;
+  q?: string;
+  sort?: SortKey;
 };
 
 /**
@@ -163,9 +169,56 @@ export async function listDentists(
     specsByDentist.set(s.dentist_id, arr);
   }
 
-  return rows
+  // Free-text filter: case-insensitive substring match on dentist + clinic
+  // names (both languages). Run in JS — the result set is bounded by area
+  // and specialty filters already, so this is cheap.
+  const qNorm = (filters.q ?? "").trim().toLowerCase();
+  const filtered = rows
     .filter((r) => r.clinic && r.dentist)
-    .map<DentistListItem>((r) => ({
+    .filter((r) => {
+      if (!qNorm) return true;
+      const hay = [
+        r.dentist!.name_en,
+        r.dentist!.name_ar,
+        r.clinic!.name_en,
+        r.clinic!.name_ar,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(qNorm);
+    });
+
+  // Rating aggregates — pull once for the result set so we can sort by
+  // average rating without N+1 round-trips. Reviews are stored per-dentist
+  // (not per-clinic_dentist), so we aggregate by dentist_id.
+  const visibleDentistIds = Array.from(new Set(filtered.map((r) => r.dentist!.id)));
+  const ratingByDentist = new Map<string, { avg: number; count: number }>();
+  if (visibleDentistIds.length > 0) {
+    const { data: reviewRows } = await admin
+      .from("reviews")
+      .select("dentist_id, rating")
+      .in("dentist_id", visibleDentistIds)
+      .not("published_at", "is", null)
+      .returns<{ dentist_id: string; rating: number }[]>();
+    const acc = new Map<string, { sum: number; n: number }>();
+    for (const r of reviewRows ?? []) {
+      const cur = acc.get(r.dentist_id) ?? { sum: 0, n: 0 };
+      cur.sum += r.rating;
+      cur.n += 1;
+      acc.set(r.dentist_id, cur);
+    }
+    for (const [id, { sum, n }] of acc) {
+      ratingByDentist.set(id, {
+        avg: Math.round((sum / n) * 10) / 10,
+        count: n,
+      });
+    }
+  }
+
+  const items = filtered.map<DentistListItem>((r) => {
+    const stats = ratingByDentist.get(r.dentist!.id) ?? { avg: 0, count: 0 };
+    return {
       clinicDentistId: r.id,
       dentistId: r.dentist!.id,
       clinicId: r.clinic!.id,
@@ -177,6 +230,8 @@ export async function listDentists(
       yearsExperience: r.dentist!.years_experience,
       feeEgp: r.fee_egp,
       photoUrl: r.dentist!.photo_url,
+      ratingAvg: stats.avg,
+      ratingCount: stats.count,
       clinic: {
         nameAr: r.clinic!.name_ar,
         nameEn: r.clinic!.name_en,
@@ -189,7 +244,37 @@ export async function listDentists(
         areaNameEn: r.clinic!.area?.name_en ?? null,
       },
       specialties: specsByDentist.get(r.dentist!.id) ?? [],
-    }));
+    };
+  });
+
+  // Sort. We do this in JS because the result set is bounded (<200 typical)
+  // and the rating-based ordering depends on the aggregate we just built.
+  const sort = filters.sort ?? "recommended";
+  if (sort === "price") {
+    items.sort((a, b) => a.feeEgp - b.feeEgp);
+  } else if (sort === "rating") {
+    items.sort((a, b) => {
+      // Bayesian-ish: require >=3 reviews to beat unrated, otherwise stay neutral
+      const aQual = a.ratingCount >= 3 ? a.ratingAvg : 0;
+      const bQual = b.ratingCount >= 3 ? b.ratingAvg : 0;
+      if (bQual !== aQual) return bQual - aQual;
+      // Tie-break by review count, then lower price
+      if (b.ratingCount !== a.ratingCount) return b.ratingCount - a.ratingCount;
+      return a.feeEgp - b.feeEgp;
+    });
+  } else {
+    // "recommended" — blend rating + count + (lower) price. Subscription
+    // tier weighting comes in once we plumb it through. For now this gives
+    // sensible default ordering that's better than the DB's natural order.
+    items.sort((a, b) => {
+      const aScore = (a.ratingAvg || 3) * Math.log10((a.ratingCount || 0) + 2);
+      const bScore = (b.ratingAvg || 3) * Math.log10((b.ratingCount || 0) + 2);
+      if (bScore !== aScore) return bScore - aScore;
+      return a.feeEgp - b.feeEgp;
+    });
+  }
+
+  return items;
 }
 
 /**

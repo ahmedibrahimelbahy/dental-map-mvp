@@ -11,6 +11,8 @@ type SP = {
   specialty?: string;
   area?: string;
   feeMax?: string;
+  q?: string;
+  sort?: "recommended" | "rating" | "price";
 };
 
 export default async function SearchPage({
@@ -43,6 +45,8 @@ export default async function SearchPage({
     specialtySlug: sp.specialty,
     areaSlug: sp.area,
     feeMax: sp.feeMax ? parseInt(sp.feeMax, 10) : undefined,
+    q: sp.q,
+    sort: sp.sort,
   });
 
   return (
@@ -82,6 +86,7 @@ export default async function SearchPage({
           locale={locale}
           emptyTitle={t("emptyTitle")}
           emptyBody={t("emptyBody")}
+          currentSort={sp.sort ?? "recommended"}
         />
       </div>
     </div>

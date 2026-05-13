@@ -5,6 +5,7 @@
   },
   "Nav": {
     "search": "Find a dentist",
+    "searchPlaceholder": "Find a dentist or clinic",
     "specialties": "Specialties",
     "areas": "Areas",
     "forClinics": "For clinics",
@@ -80,7 +81,11 @@
     "clinicCardSpecialtyCount": "{n, plural, =1 {1 specialty} other {# specialties}}",
     "clinicCardFeeRange": "EGP {min}–{max}",
     "clinicCardBookCta": "Book at this clinic",
-    "clinicCardDentistCount": "{n, plural, =1 {1 dentist} other {# dentists}}"
+    "clinicCardDentistCount": "{n, plural, =1 {1 dentist} other {# dentists}}",
+    "sortLabel": "Sort",
+    "sortRecommended": "Recommended",
+    "sortRating": "Highest rated",
+    "sortPrice": "Lowest price"
   },
   "Profile": {
     "fee": "Fee",
