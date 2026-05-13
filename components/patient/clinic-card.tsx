@@ -39,11 +39,32 @@ export function ClinicCard({
   const firstDentistSlug = c.dentists[0]?.dentistSlug ?? "";
 
   return (
-    <article className="rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:border-teal-300 transition-[box-shadow,border-color]">
+    <article className="rounded-2xl bg-white border border-ink-100 overflow-hidden shadow-card hover:shadow-card-hover hover:border-teal-300 transition-[box-shadow,border-color]">
+      {c.heroImageUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={c.heroImageUrl}
+          alt=""
+          className="w-full h-28 object-cover"
+          loading="lazy"
+          aria-hidden
+        />
+      )}
+      <div className="p-5 md:p-6">
       <header className="flex items-start gap-4">
-        <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-          <Building2 className="w-6 h-6" aria-hidden />
-        </span>
+        {c.logoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={c.logoUrl}
+            alt={name}
+            className="w-14 h-14 rounded-xl object-cover shrink-0 border border-ink-100"
+            loading="lazy"
+          />
+        ) : (
+          <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+            <Building2 className="w-6 h-6" aria-hidden />
+          </span>
+        )}
         <div className="flex-1 min-w-0">
           <h3 className="font-display text-[17px] md:text-[19px] font-bold text-ink-900 truncate mb-1">
             {name}
@@ -94,9 +115,19 @@ export function ClinicCard({
                 href={`/dentist/${d.dentistSlug}`}
                 className="flex items-center gap-3 px-2 py-2 -mx-2 rounded-lg hover:bg-teal-50/60 focus-visible:bg-teal-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300 transition-colors"
               >
-                <span className="w-9 h-9 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[13px] font-bold shrink-0">
-                  {initials}
-                </span>
+                {d.photoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={d.photoUrl}
+                    alt={d.nameEn}
+                    className="w-9 h-9 rounded-lg object-cover shrink-0 border border-ink-100"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="w-9 h-9 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[13px] font-bold shrink-0">
+                    {initials}
+                  </span>
+                )}
                 <span className="flex-1 min-w-0">
                   <span className="block text-[14px] font-semibold text-ink-900 truncate">
                     {dName}
@@ -135,6 +166,7 @@ export function ClinicCard({
           </Link>
         )}
       </footer>
+      </div>
     </article>
   );
 }

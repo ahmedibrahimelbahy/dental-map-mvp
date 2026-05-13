@@ -13,6 +13,8 @@ export type ClinicGroup = {
   areaNameEn: string | null;
   lat: number | null;
   lng: number | null;
+  logoUrl: string | null;
+  heroImageUrl: string | null;
   dentists: DentistListItem[];
   minFeeEgp: number;
   maxFeeEgp: number;
@@ -48,6 +50,8 @@ export function groupDentistsByClinic(
         areaNameEn: d.clinic.areaNameEn,
         lat: d.clinic.lat,
         lng: d.clinic.lng,
+        logoUrl: d.clinic.logoUrl,
+        heroImageUrl: d.clinic.heroImageUrl,
         dentists: [d],
         minFeeEgp: d.feeEgp,
         maxFeeEgp: d.feeEgp,

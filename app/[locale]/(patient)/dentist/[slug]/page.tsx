@@ -150,7 +150,18 @@ export default async function DentistProfile({
 
       {/* Right: fee + clinic info card */}
       <aside className="lg:sticky lg:top-24 self-start">
-        <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-card">
+        <div className="rounded-2xl border border-ink-100 bg-white overflow-hidden shadow-card">
+          {primary?.clinic?.hero_image_url && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={primary.clinic.hero_image_url}
+              alt=""
+              className="w-full h-28 object-cover"
+              loading="lazy"
+              aria-hidden
+            />
+          )}
+          <div className="p-6">
           <div className="small-caps text-ink-400 mb-2">{t("fee")}</div>
           <div className="font-display text-[36px] font-bold text-ink-900 leading-none mb-1">
             {primary?.fee_egp ?? "—"}
@@ -164,8 +175,20 @@ export default async function DentistProfile({
 
           {primary?.clinic && (
             <div className="border-t border-ink-100 pt-4 text-[13px] text-ink-600 space-y-2">
-              <div className="font-semibold text-ink-800">
-                {isAr ? primary.clinic.name_ar : primary.clinic.name_en}
+              <div className="flex items-center gap-2.5">
+                {primary.clinic.logo_url && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={primary.clinic.logo_url}
+                    alt=""
+                    className="w-8 h-8 rounded-lg object-cover border border-ink-100 shrink-0"
+                    loading="lazy"
+                    aria-hidden
+                  />
+                )}
+                <div className="font-semibold text-ink-800">
+                  {isAr ? primary.clinic.name_ar : primary.clinic.name_en}
+                </div>
               </div>
               {(isAr ? primary.clinic.address_ar : primary.clinic.address_en) && (
                 <div className="flex items-start gap-2">
@@ -202,6 +225,7 @@ export default async function DentistProfile({
               })()}
             </div>
           )}
+          </div>
         </div>
       </aside>
     </div>

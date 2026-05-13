@@ -10,6 +10,9 @@ const SHORT_HOSTS = new Set(["maps.app.goo.gl", "goo.gl", "g.co"]);
 
 // Resolve a Google Maps share URL (long or short) to lat/lng.
 // Short URLs need a network redirect to expand; long URLs we parse locally.
+// If we can't extract exact coords but can identify a place name, we
+// geocode it via Nominatim as a secondary fallback. Returns "no_coords"
+// only when both paths fail.
 export async function resolveGoogleMapsLocation(
   rawUrl: string
 ): Promise<ResolveResult> {
@@ -21,29 +24,44 @@ export async function resolveGoogleMapsLocation(
   const direct = parseGoogleMapsUrl(trimmed);
   if (direct) return { ok: true, ...direct };
 
-  // Short URL? Follow the redirect chain to get the long URL, then parse.
   let url: URL;
   try {
     url = new URL(trimmed);
   } catch {
     return { ok: false, error: "invalid_url" };
   }
-  if (!SHORT_HOSTS.has(url.hostname)) {
+
+  // For both short URLs (maps.app.goo.gl) AND long URLs without inline
+  // coords, follow the redirect chain — Google often serves a cleaner
+  // canonical URL via 302 to non-browser UAs.
+  const shouldFollow =
+    SHORT_HOSTS.has(url.hostname) || url.hostname.endsWith("google.com");
+  if (!shouldFollow) {
     return { ok: false, error: "no_coords" };
   }
 
   try {
-    // We have to handle redirects ourselves so we can read intermediate
-    // Location headers — fetch's redirect:'follow' would discard them and
-    // some Google share endpoints return HTML with the coords in canonical
-    // <link> tags instead of a redirect.
     const expanded = await followRedirects(trimmed);
     const parsed = parseGoogleMapsUrl(expanded.finalUrl);
     if (parsed) return { ok: true, ...parsed };
 
-    // Fallback: pull coords from any inline <meta>/<link> in the HTML body.
+    // HTML body sometimes carries coords inline.
     const coordsFromHtml = extractCoordsFromHtml(expanded.body);
     if (coordsFromHtml) return { ok: true, ...coordsFromHtml };
+
+    // Last attempt: lift the place name out of `q=` and Nominatim-geocode
+    // it. Less precise than the original pin but usually within ~50m for
+    // named businesses.
+    try {
+      const finalUrlParsed = new URL(expanded.finalUrl);
+      const placeName = finalUrlParsed.searchParams.get("q");
+      if (placeName) {
+        const geo = await geocodeAddress(`${placeName}, Cairo, Egypt`);
+        if (geo.ok) return { ok: true, lat: geo.lat, lng: geo.lng };
+      }
+    } catch {
+      // ignore — fall through to no_coords
+    }
 
     return { ok: false, error: "no_coords" };
   } catch (e) {
@@ -54,19 +72,18 @@ export async function resolveGoogleMapsLocation(
 
 async function followRedirects(
   startUrl: string,
-  maxHops = 5
+  maxHops = 6
 ): Promise<{ finalUrl: string; body: string }> {
+  // IMPORTANT: do NOT send a Safari User-Agent here. maps.app.goo.gl serves
+  // a JavaScript-only "Durable Deep Link" placeholder page to browser UAs
+  // and a real 302 redirect to a non-browser UA. Use a curl-style UA so we
+  // get the proper Location header chain to maps.google.com?q=...&ftid=...
   let currentUrl = startUrl;
   for (let i = 0; i < maxHops; i++) {
     const res = await fetch(currentUrl, {
       method: "GET",
       redirect: "manual",
-      headers: {
-        // Google sometimes serves a placeholder page to non-browser UAs.
-        "User-Agent":
-          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15",
-        "Accept-Language": "en-US,en;q=0.9",
-      },
+      headers: { "User-Agent": "curl/8.0" },
     });
     if (res.status >= 300 && res.status < 400) {
       const next = res.headers.get("location");

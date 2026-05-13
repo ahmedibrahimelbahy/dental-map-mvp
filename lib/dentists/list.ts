@@ -21,6 +21,8 @@ export type DentistListItem = {
     addressEn: string | null;
     lat: number | null;
     lng: number | null;
+    logoUrl: string | null;
+    heroImageUrl: string | null;
     areaSlug: string | null;
     areaNameAr: string | null;
     areaNameEn: string | null;
@@ -97,6 +99,8 @@ export async function listDentists(
       address_en: string | null;
       lat: number | null;
       lng: number | null;
+      logo_url: string | null;
+      hero_image_url: string | null;
       is_published: boolean;
       area: {
         slug: string;
@@ -122,7 +126,7 @@ export async function listDentists(
       `
       id, fee_egp, clinic_id, dentist_id, is_active,
       clinic:clinics!inner(
-        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, is_published,
+        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, logo_url, hero_image_url, is_published,
         area:areas(slug, name_ar, name_en)
       ),
       dentist:dentists!inner(
@@ -239,6 +243,8 @@ export async function listDentists(
         addressEn: r.clinic!.address_en,
         lat: r.clinic!.lat,
         lng: r.clinic!.lng,
+        logoUrl: r.clinic!.logo_url,
+        heroImageUrl: r.clinic!.hero_image_url,
         areaSlug: r.clinic!.area?.slug ?? null,
         areaNameAr: r.clinic!.area?.name_ar ?? null,
         areaNameEn: r.clinic!.area?.name_en ?? null,
@@ -323,6 +329,8 @@ export async function getDentistBySlug(slug: string) {
       address_en: string | null;
       lat: number | null;
       lng: number | null;
+      logo_url: string | null;
+      hero_image_url: string | null;
       google_maps_url: string | null;
       area: { slug: string; name_ar: string; name_en: string } | null;
     } | null;
@@ -334,7 +342,7 @@ export async function getDentistBySlug(slug: string) {
       `
       id, fee_egp, slot_minutes, calendar_mode,
       clinic:clinics!inner(
-        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, google_maps_url, is_published,
+        id, slug, name_ar, name_en, address_ar, address_en, lat, lng, logo_url, hero_image_url, google_maps_url, is_published,
         area:areas(slug, name_ar, name_en)
       )
     `
