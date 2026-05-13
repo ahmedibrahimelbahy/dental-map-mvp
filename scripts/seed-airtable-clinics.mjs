@@ -227,6 +227,8 @@ function inferArea(district, address) {
   // Explicit district matches first
   if (d.includes("nasr city")) return "nasr-city";
   if (d.includes("mostafa el nahas")) return "nasr-city";
+  if (d.includes("makram ebeid")) return "nasr-city";
+  if (d.includes("abbas el akkad") || d.includes("abbas akkad")) return "nasr-city";
   if (d.includes("shorouk")) return "el-shorouk";
   if (d.includes("5th settlement")) return "new-cairo";
   if (d.includes("zamalek")) return "zamalek";
@@ -385,6 +387,97 @@ function slugify(s) {
     .slice(0, 60);
 }
 
+const BUCKET = "clinic-media";
+const SUPA_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+function publicUrlFor(path) {
+  return `${SUPA_URL}/storage/v1/object/public/${BUCKET}/${path}`;
+}
+
+function parseAirtableAttachments(cell) {
+  if (!cell) return [];
+  const out = [];
+  const re = /([^,()]+?)\s*\((https:\/\/[^()\s]+)\)/g;
+  let m;
+  while ((m = re.exec(cell)) !== null) {
+    out.push({ filename: m[1].trim(), url: m[2].trim() });
+  }
+  return out;
+}
+
+function extOf(filename, fallback = "jpg") {
+  const m = filename.match(/\.([a-z0-9]+)$/i);
+  if (!m) return fallback;
+  let ext = m[1].toLowerCase();
+  if (ext === "jpeg") ext = "jpg";
+  return ext;
+}
+
+function contentTypeForExt(ext) {
+  const map = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    webp: "image/webp",
+    gif: "image/gif",
+    heic: "image/heic",
+  };
+  return map[ext.toLowerCase()] || "application/octet-stream";
+}
+
+async function downloadAndUpload(srcUrl, destPath) {
+  try {
+    const res = await fetch(srcUrl);
+    if (!res.ok) {
+      console.log(`    ⚠ download failed (${res.status})`);
+      return null;
+    }
+    const buf = Buffer.from(await res.arrayBuffer());
+    const ext = extOf(destPath);
+    const { error } = await supa.storage
+      .from(BUCKET)
+      .upload(destPath, buf, {
+        contentType: contentTypeForExt(ext),
+        upsert: true,
+        cacheControl: "31536000",
+      });
+    if (error) {
+      console.log(`    ⚠ upload failed: ${error.message}`);
+      return null;
+    }
+    return publicUrlFor(destPath);
+  } catch (e) {
+    console.log(`    ⚠ image error: ${e.message}`);
+    return null;
+  }
+}
+
+function matchPhotoToDentist(filename, dentistNames) {
+  const norm = (s) =>
+    s
+      .toLowerCase()
+      .replace(/\.[a-z0-9]+$/i, "")
+      .replace(/^dr\.?\s+/i, "")
+      .replace(/[._-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  const target = norm(filename);
+  if (!target) return -1;
+  let bestIdx = -1;
+  let bestScore = 0;
+  dentistNames.forEach((name, i) => {
+    const n = norm(name);
+    if (n && (n.includes(target) || target.includes(n))) {
+      const score = Math.min(n.length, target.length);
+      if (score > bestScore) {
+        bestScore = score;
+        bestIdx = i;
+      }
+    }
+  });
+  return bestIdx;
+}
+
 /* ─────────────────────────── Main ─────────────────────────── */
 
 const csvText = await readFile(pathResolve(process.cwd(), csvPath), "utf8");
@@ -437,6 +530,9 @@ for (let r = 0; r < rows.length; r++) {
   const about = (row[idx["About the Clinic"]] || "").trim();
   const phone = (row[idx["Phone (Calls)"]] || "").trim();
   const whatsapp = (row[idx["Phone (WhatsApp)"]] || "").trim();
+  const teamPhotosBlob = row[idx["Team Photos"]] || "";
+  const clinicLogoBlob = row[idx["Clinic Logo"]] || "";
+  const clinicPhotosBlob = row[idx["Clinic Photos"]] || "";
 
   console.log(`▶ ${name}`);
 
@@ -533,12 +629,49 @@ for (let r = 0; r < rows.length; r++) {
     console.log(`  ✓  inserted clinic ${slug}`);
   }
 
+  // ─── Images: clinic logo + hero ───
+  const logoAttachments = parseAirtableAttachments(clinicLogoBlob);
+  const clinicPhotos = parseAirtableAttachments(clinicPhotosBlob);
+  const teamPhotos = parseAirtableAttachments(teamPhotosBlob);
+
+  if (logoAttachments[0]) {
+    const ext = extOf(logoAttachments[0].filename);
+    const path = `${slug}/logo.${ext}`;
+    const publicUrl = await downloadAndUpload(logoAttachments[0].url, path);
+    if (publicUrl) {
+      await supa.from("clinics").update({ logo_url: publicUrl }).eq("id", clinicId);
+      console.log(`    ✓ logo uploaded`);
+    }
+  }
+  if (clinicPhotos[0]) {
+    const ext = extOf(clinicPhotos[0].filename);
+    const path = `${slug}/hero.${ext}`;
+    const publicUrl = await downloadAndUpload(clinicPhotos[0].url, path);
+    if (publicUrl) {
+      await supa.from("clinics").update({ hero_image_url: publicUrl }).eq("id", clinicId);
+      console.log(`    ✓ hero photo uploaded (${clinicPhotos.length} total in CSV)`);
+    }
+  }
+
   // Wipe existing clinic_dentists for this clinic — easiest way to keep
   // the seed idempotent when team rosters change.
   await supa.from("clinic_dentists").delete().eq("clinic_id", clinicId);
 
-  // Upsert dentists + links
-  for (const d of dentists) {
+  // Upsert dentists + links. We also try to match each team photo to a
+  // dentist by filename — keep track so we only spend one upload per match.
+  const dentistNames = dentists.map((d) => d.name_en);
+  const photoAssignments = teamPhotos
+    .map((p) => ({ ...p, dentistIdx: matchPhotoToDentist(p.filename, dentistNames) }))
+    .filter((p) => p.dentistIdx >= 0);
+  // If only one dentist + one team photo, force-match (covers single-dentist
+  // submissions where the filename is generic like "General Dentist.jpg").
+  if (photoAssignments.length === 0 && dentists.length === 1 && teamPhotos.length === 1) {
+    photoAssignments.push({ ...teamPhotos[0], dentistIdx: 0 });
+  }
+  const photoByIdx = new Map(photoAssignments.map((p) => [p.dentistIdx, p]));
+
+  for (let dIdx = 0; dIdx < dentists.length; dIdx++) {
+    const d = dentists[dIdx];
     let dentistSlug = slugify(d.name_en) || `dentist-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 
     // If a different dentist already owns the slug, suffix it.
@@ -580,6 +713,21 @@ for (let r = 0; r < rows.length; r++) {
         continue;
       }
       dentistId = data.id;
+    }
+
+    // Dentist photo upload — if we matched one
+    const photoMatch = photoByIdx.get(dIdx);
+    if (photoMatch) {
+      const ext = extOf(photoMatch.filename);
+      const path = `${slug}/dentists/${dentistSlug}.${ext}`;
+      const publicUrl = await downloadAndUpload(photoMatch.url, path);
+      if (publicUrl) {
+        await supa
+          .from("dentists")
+          .update({ photo_url: publicUrl })
+          .eq("id", dentistId);
+        console.log(`    ✓ photo for ${d.name_en}`);
+      }
     }
 
     // clinic_dentists link

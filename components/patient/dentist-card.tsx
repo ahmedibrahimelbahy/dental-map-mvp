@@ -28,9 +28,19 @@ export function DentistCard({
       className="block rounded-2xl bg-white border border-ink-100 p-5 md:p-6 shadow-card hover:shadow-card-hover hover:-translate-y-0.5 hover:border-teal-300 transition-[transform,box-shadow,border-color]"
     >
       <div className="flex items-start gap-4">
-        <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[18px] font-bold shrink-0">
-          {(d.nameEn ?? "").split(" ").slice(-2).map(s => s[0]).join("")}
-        </span>
+        {d.photoUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={d.photoUrl}
+            alt={d.nameEn}
+            className="w-14 h-14 rounded-xl object-cover shrink-0 border border-ink-100"
+            loading="lazy"
+          />
+        ) : (
+          <span className="w-14 h-14 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[18px] font-bold shrink-0">
+            {(d.nameEn ?? "").split(" ").slice(-2).map((s) => s[0]).join("")}
+          </span>
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 mb-1">
             <h3 className="font-display text-[17px] md:text-[19px] font-bold text-ink-900 truncate">

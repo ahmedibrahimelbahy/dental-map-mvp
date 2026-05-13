@@ -37,13 +37,23 @@ export default async function DentistProfile({
       <div className="space-y-8">
         <header>
           <div className="flex items-start gap-5 mb-5">
-            <span className="w-20 h-20 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[22px] font-bold shrink-0">
-              {(dentist.name_en ?? "")
-                .split(" ")
-                .slice(-2)
-                .map((s) => s[0])
-                .join("")}
-            </span>
+            {dentist.photo_url ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={dentist.photo_url}
+                alt={dentist.name_en}
+                className="w-20 h-20 rounded-2xl object-cover shrink-0 border border-ink-100 shadow-card"
+                loading="lazy"
+              />
+            ) : (
+              <span className="w-20 h-20 rounded-2xl bg-teal-50 text-teal-700 flex items-center justify-center font-display text-[22px] font-bold shrink-0">
+                {(dentist.name_en ?? "")
+                  .split(" ")
+                  .slice(-2)
+                  .map((s) => s[0])
+                  .join("")}
+              </span>
+            )}
             <div className="flex-1 min-w-0">
               <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-1">
                 <h1 className="display-h2 text-[28px] md:text-[36px] text-ink-900">
