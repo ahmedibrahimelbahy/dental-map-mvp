@@ -15,6 +15,7 @@ import {
   CalendarCheck,
   LayoutDashboard,
   LogOut,
+  Home,
 } from "lucide-react";
 import { createClient as createBrowserSupabaseClient } from "@/lib/supabase/client";
 
@@ -42,6 +43,7 @@ export function MobileNav({
     patientRole: string;
     adminRole: string;
     browse: string;
+    home: string;
   };
   authed: boolean;
   isDentistAdmin: boolean;
@@ -87,11 +89,13 @@ export function MobileNav({
   // anyone who's already signed in (patient or clinic admin alike).
   const browseItems: NavItem[] = authed
     ? [
+        { href: "/", label: labels.home, Icon: Home },
         { href: "/search", label: labels.search, Icon: Search },
         { href: "/specialties", label: labels.specialties, Icon: Sparkles },
         { href: "/areas", label: labels.areas, Icon: MapPin },
       ]
     : [
+        { href: "/", label: labels.home, Icon: Home },
         { href: "/search", label: labels.search, Icon: Search },
         { href: "/specialties", label: labels.specialties, Icon: Sparkles },
         { href: "/areas", label: labels.areas, Icon: MapPin },

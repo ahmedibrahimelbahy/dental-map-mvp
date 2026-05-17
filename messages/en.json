@@ -4,6 +4,7 @@
     "tagline": "Egypt's booking engine for dentists — live availability, verified reviews."
   },
   "Nav": {
+    "home": "Home",
     "search": "Find a dentist",
     "searchPlaceholder": "Find a dentist or clinic",
     "specialties": "Specialties",

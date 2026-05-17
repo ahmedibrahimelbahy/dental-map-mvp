@@ -6,7 +6,7 @@ import { SignOutButton } from "./dashboard/sign-out-button";
 import { MobileNav } from "./mobile-nav";
 import { HeaderSearch } from "./header-search";
 import { getCurrentUser } from "@/lib/auth/session";
-import { LayoutDashboard, CalendarCheck, Shield } from "lucide-react";
+import { LayoutDashboard, CalendarCheck, Shield, Home } from "lucide-react";
 
 export async function SiteHeader() {
   const t = await getTranslations("Nav");
@@ -45,11 +45,22 @@ export async function SiteHeader() {
               signOut: t("signOut"),
               menu: t("menu"),
               browse: t("browse"),
+              home: t("home"),
               patientRole: t("patientRole"),
               adminRole: t("adminRole"),
             }}
           />
           <BrandMark />
+          <Link
+            href="/"
+            aria-label={t("home")}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-ink-700 hover:text-teal-600 hover:bg-teal-50 transition-colors"
+          >
+            <Home className="w-[18px] h-[18px]" aria-hidden />
+            <span className="hidden lg:inline text-[14px] font-medium">
+              {t("home")}
+            </span>
+          </Link>
           <nav className="hidden lg:flex items-center gap-7 text-[14px] text-ink-700 font-medium">
             <Link href="/specialties" className="hover:text-teal-600 transition-colors">
               {t("specialties")}
