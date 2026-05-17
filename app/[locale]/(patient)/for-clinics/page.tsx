@@ -105,7 +105,7 @@ export default async function ForClinicsPage({
             </p>
           </div>
 
-          <div className="space-y-[26vh] md:space-y-[32vh] pb-[18vh] md:pb-[22vh]">
+          <div className="space-y-[11vh] md:space-y-[13vh] pb-[8vh] md:pb-[10vh]">
             {[
               { Icon: CalendarSync, titleKey: "why1Title", bodyKey: "why1Body" },
               { Icon: Star, titleKey: "why2Title", bodyKey: "why2Body" },
@@ -301,22 +301,22 @@ function WhyStackedCard({
   body: string;
 }) {
   return (
-    <article className="relative mx-auto max-w-[860px] rounded-3xl border border-ink-100 bg-white shadow-card-hover overflow-hidden">
+    <article className="relative mx-auto max-w-[680px] rounded-2xl border border-ink-100 bg-white shadow-card-hover overflow-hidden">
       {/* subtle teal wash in the corner for depth */}
       <div
         aria-hidden
-        className="absolute -top-24 -end-24 w-[320px] h-[320px] rounded-full bg-teal-100/50 blur-3xl pointer-events-none"
+        className="absolute -top-20 -end-20 w-[240px] h-[240px] rounded-full bg-teal-100/50 blur-3xl pointer-events-none"
       />
 
-      <div className="relative p-7 md:p-10 lg:p-12">
-        <span className="inline-flex w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-teal-gradient text-white items-center justify-center mb-5 md:mb-7 shadow-teal-glow">
-          <Icon className="w-6 h-6 md:w-7 md:h-7" aria-hidden />
+      <div className="relative p-5 md:p-7 lg:p-8">
+        <span className="inline-flex w-10 h-10 md:w-11 md:h-11 rounded-xl bg-teal-gradient text-white items-center justify-center mb-3.5 md:mb-4 shadow-teal-glow">
+          <Icon className="w-5 h-5" aria-hidden />
         </span>
 
-        <h3 className="display-h3 text-[22px] sm:text-[26px] md:text-[34px] lg:text-[40px] text-ink-900 mb-3 md:mb-4 max-w-[18ch]">
+        <h3 className="display-h3 text-[18px] sm:text-[20px] md:text-[24px] lg:text-[28px] text-ink-900 mb-2 md:mb-2.5 max-w-[20ch]">
           {title}
         </h3>
-        <p className="text-[15px] md:text-[16.5px] leading-[1.7] text-ink-600 max-w-[58ch]">
+        <p className="text-[13.5px] md:text-[14.5px] leading-[1.65] text-ink-600 max-w-[58ch]">
           {body}
         </p>
       </div>
