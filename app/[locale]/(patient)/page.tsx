@@ -203,8 +203,8 @@ export default async function HomePage({
 
           <div className="grid md:grid-cols-3 gap-5 md:gap-6">
             <StepCard num="01" title={t("howStep1Title")} body={t("howStep1Body")} />
-            <StepCard num="02" title={t("howStep2Title")} body={t("howStep2Body")} dark />
-            <StepCard num="03" title={t("howStep3Title")} body={t("howStep3Body")} />
+            <StepCard num="02" title={t("howStep2Title")} body={t("howStep2Body")} variant="green" />
+            <StepCard num="03" title={t("howStep3Title")} body={t("howStep3Body")} variant="darkGreen" />
           </div>
         </div>
       </section>
@@ -239,38 +239,44 @@ function StepCard({
   num,
   title,
   body,
-  dark = false,
+  variant = "light",
 }: {
   num: string;
   title: string;
   body: string;
-  dark?: boolean;
+  variant?: "light" | "green" | "darkGreen";
 }) {
+  const isTinted = variant === "green" || variant === "darkGreen";
+
+  const containerClass =
+    variant === "green"
+      ? "rounded-2xl text-white p-7 md:p-8 shadow-card bg-gradient-to-br from-emerald-400 via-emerald-500 to-emerald-700"
+      : variant === "darkGreen"
+      ? "rounded-2xl text-white p-7 md:p-8 shadow-card bg-gradient-to-br from-emerald-800 via-emerald-900 to-green-950"
+      : "rounded-2xl bg-white p-7 md:p-8 border border-ink-100 shadow-card";
+
+  const eyebrowClass =
+    variant === "green"
+      ? "text-white/85"
+      : variant === "darkGreen"
+      ? "text-emerald-300"
+      : "text-teal-600";
+
   return (
-    <div
-      className={
-        dark
-          ? "rounded-2xl bg-ink-900 text-white p-7 md:p-8 shadow-card"
-          : "rounded-2xl bg-white p-7 md:p-8 border border-ink-100 shadow-card"
-      }
-    >
-      <div
-        className={`small-caps mb-4 ${
-          dark ? "text-teal-300" : "text-teal-600"
-        }`}
-      >
+    <div className={containerClass}>
+      <div className={`small-caps mb-4 ${eyebrowClass}`}>
         Step · {num}
       </div>
       <div
         className={`font-display text-[22px] md:text-[26px] font-bold tracking-tight2 leading-tight mb-3 ${
-          dark ? "text-white" : "text-ink-900"
+          isTinted ? "text-white" : "text-ink-900"
         }`}
       >
         {title}
       </div>
       <p
         className={`text-[14.5px] leading-[1.65] ${
-          dark ? "text-white/75" : "text-ink-500"
+          isTinted ? "text-white/85" : "text-ink-500"
         }`}
       >
         {body}
