@@ -15,6 +15,8 @@ import {
   Stethoscope,
   Zap,
   HeartPulse,
+  Star,
+  ShieldCheck,
 } from "lucide-react";
 
 export default async function HomePage({
@@ -41,8 +43,8 @@ export default async function HomePage({
     <>
       {/* ═══ HERO ═══ */}
       <section className="hero-wash">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-14 md:pb-24">
-          <div className="max-w-[860px] animate-rise">
+        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-14 md:pb-24 grid xl:grid-cols-[minmax(0,1fr)_440px] gap-12 xl:gap-16 items-center">
+          <div className="max-w-[820px] animate-rise">
             <span className="chip mb-6">
               <span className="chip-dot"></span>
               {t("heroEyebrow")}
@@ -146,6 +148,8 @@ export default async function HomePage({
               </li>
             </ul>
           </div>
+
+          <HeroSlotPreview />
         </div>
       </section>
 
@@ -281,6 +285,110 @@ function StepCard({
       >
         {body}
       </p>
+    </div>
+  );
+}
+
+function HeroSlotPreview() {
+  return (
+    <div
+      className="hidden xl:block relative h-[480px] animate-rise"
+      aria-hidden
+    >
+      {/* Soft halo behind the cards */}
+      <div className="absolute inset-x-4 top-6 bottom-6 rounded-[36px] bg-gradient-to-br from-teal-100/70 via-white to-emerald-100/50 blur-2xl" />
+
+      {/* Live badge (top) */}
+      <div className="absolute -top-2 left-2 z-30 inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur border border-ink-100 px-3 py-1.5 shadow-card">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75 animate-ping" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
+        </span>
+        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink-700">
+          Live from clinic calendars
+        </span>
+      </div>
+
+      {/* Back card — tilted right */}
+      <article className="absolute top-10 left-16 right-2 rotate-[5deg] rounded-2xl bg-white border border-ink-100 shadow-card p-5">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 text-white flex items-center justify-center font-bold text-[14px] shadow-sm">
+            OH
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-display font-semibold text-[14.5px] text-ink-900 leading-tight">
+              Dr. Omar Hassan
+            </div>
+            <div className="text-[12px] text-ink-500 mt-0.5">
+              Orthodontics · Heliopolis
+            </div>
+          </div>
+          <div className="flex items-center gap-0.5 text-[12px] font-bold text-ink-700">
+            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+            4.8
+          </div>
+        </div>
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-ink-50 border border-ink-100 px-3.5 py-2.5">
+          <div>
+            <div className="text-[9.5px] uppercase tracking-[0.14em] text-ink-400 font-bold">
+              Next slot
+            </div>
+            <div className="text-[13.5px] font-semibold text-ink-900 mt-0.5">
+              Tomorrow · 11:00 AM
+            </div>
+          </div>
+          <ArrowRight className="w-4 h-4 text-teal-600" />
+        </div>
+      </article>
+
+      {/* Front card — tilted left, hover straightens */}
+      <article className="absolute top-32 left-0 right-14 -rotate-[3deg] rounded-2xl bg-white border border-ink-100 shadow-search p-5 hover:rotate-0 transition-transform duration-500 ease-out">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center font-bold text-[14px] shadow-sm">
+            MS
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="font-display font-semibold text-[14.5px] text-ink-900 leading-tight">
+              Dr. Mariam Salah
+            </div>
+            <div className="text-[12px] text-ink-500 mt-0.5">
+              Pediatric Dentist · Maadi
+            </div>
+          </div>
+          <div className="flex items-center gap-0.5 text-[12px] font-bold text-ink-700">
+            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
+            4.9
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between">
+          <div className="text-[10px] uppercase tracking-[0.14em] text-ink-400 font-bold">
+            Today · 3 slots open
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.14em] text-teal-600 font-bold">
+            Instant book
+          </div>
+        </div>
+        <div className="mt-2 grid grid-cols-3 gap-1.5">
+          <span className="rounded-lg border border-ink-100 px-2 py-2.5 text-[11.5px] font-semibold text-ink-600 text-center">
+            3:00 PM
+          </span>
+          <span className="rounded-lg bg-teal-500 text-white px-2 py-2.5 text-[11.5px] font-bold text-center shadow-sm ring-2 ring-teal-200">
+            4:30 PM
+          </span>
+          <span className="rounded-lg border border-ink-100 px-2 py-2.5 text-[11.5px] font-semibold text-ink-600 text-center">
+            6:15 PM
+          </span>
+        </div>
+      </article>
+
+      {/* Floating verified badge bottom-right */}
+      <div className="absolute -bottom-1 right-2 z-30 inline-flex items-center gap-2 rounded-full bg-ink-900 text-white px-3 py-1.5 shadow-card">
+        <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
+        <span className="text-[11px] font-bold uppercase tracking-[0.1em]">
+          Verified clinics only
+        </span>
+      </div>
     </div>
   );
 }
