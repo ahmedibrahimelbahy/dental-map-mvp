@@ -2,6 +2,7 @@ import { setRequestLocale, getTranslations } from "next-intl/server";
 import { requireDentistAdmin } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { PublishToggle } from "@/components/dashboard/publish-toggle";
+import { ClinicPhotosEditor } from "@/components/dashboard/clinic-photos-editor";
 import { Building2 } from "lucide-react";
 
 type ClinicRow = {
@@ -11,6 +12,18 @@ type ClinicRow = {
   is_published: boolean;
   address_en: string | null;
   address_ar: string | null;
+  logo_url: string | null;
+  hero_image_url: string | null;
+};
+
+type DentistLink = {
+  dentist_id: string;
+  dentists: {
+    id: string;
+    name_en: string;
+    name_ar: string;
+    photo_url: string | null;
+  } | null;
 };
 
 export default async function ClinicPage({
@@ -34,12 +47,59 @@ export default async function ClinicPage({
   const { data: clinics } = clinicIds.length
     ? await admin
         .from("clinics")
-        .select("id, name_en, name_ar, is_published, address_en, address_ar")
+        .select(
+          "id, name_en, name_ar, is_published, address_en, address_ar, logo_url, hero_image_url"
+        )
         .in("id", clinicIds)
         .returns<ClinicRow[]>()
     : { data: [] as ClinicRow[] };
 
   const primary = clinics?.[0];
+
+  // Linked dentists for the primary clinic — we render a photo slot per
+  // dentist so the admin can replace any headshot without touching code.
+  const { data: dentistLinks } = primary
+    ? await admin
+        .from("clinic_dentists")
+        .select(
+          "dentist_id, dentists(id, name_en, name_ar, photo_url)"
+        )
+        .eq("clinic_id", primary.id)
+        .returns<DentistLink[]>()
+    : { data: [] as DentistLink[] };
+
+  const dentists = (dentistLinks ?? [])
+    .map((l) => l.dentists)
+    .filter((d): d is NonNullable<typeof d> => !!d)
+    .map((d) => ({
+      id: d.id,
+      name: locale === "ar" ? d.name_ar : d.name_en,
+      photoUrl: d.photo_url,
+    }));
+
+  // Pull image-upload + photos-editor labels from the existing namespaces so
+  // we don't fork strings between onboarding and dashboard.
+  const onboard = await getTranslations("Onboard");
+  const photoLabels = {
+    sectionTitle: t("photosSectionTitle"),
+    sectionBody: t("photosSectionBody"),
+    logoLabel: onboard("clinicLogoLabel"),
+    logoHint: onboard("clinicLogoHint"),
+    heroLabel: onboard("clinicHeroLabel"),
+    heroHint: onboard("clinicHeroHint"),
+    dentistsTitle: t("photosDentistsTitle"),
+    saved: t("photosSaved"),
+    saveFailed: t("photosSaveFailed"),
+    imageUpload: {
+      add: onboard("imgUploadAdd"),
+      replace: onboard("imgUploadReplace"),
+      remove: onboard("imgUploadRemove"),
+      uploading: onboard("imgUploadUploading"),
+      tooLarge: onboard("imgUploadTooLarge"),
+      wrongType: onboard("imgUploadWrongType"),
+      failed: onboard("imgUploadFailed"),
+    },
+  };
 
   return (
     <div className="space-y-8">
@@ -74,9 +134,12 @@ export default async function ClinicPage({
             }}
           />
 
-          <p className="text-[13px] text-ink-500 max-w-[60ch]">
-            {t("clinicPlaceholder")}
-          </p>
+          <ClinicPhotosEditor
+            initialLogoUrl={primary.logo_url}
+            initialHeroUrl={primary.hero_image_url}
+            dentists={dentists}
+            labels={photoLabels}
+          />
         </>
       ) : (
         <div className="rounded-2xl border border-ink-100 bg-white p-6 md:p-7">
