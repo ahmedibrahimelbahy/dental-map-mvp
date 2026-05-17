@@ -16,6 +16,7 @@ import {
   Zap,
   HeartPulse,
 } from "lucide-react";
+import { getCurrentUser } from "@/lib/auth/session";
 
 export default async function HomePage({
   params,
@@ -26,6 +27,7 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations("Home");
+  const user = await getCurrentUser();
 
   const specialties = [
     { key: "specialtyAdult", slug: "adult", Icon: Stethoscope },
@@ -202,28 +204,33 @@ export default async function HomePage({
         </div>
       </section>
 
-      {/* ═══ FOR CLINICS ═══ */}
-      <section className="bg-surface">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-8 py-16 md:py-20">
-          <div className="rounded-3xl bg-teal-gradient text-white p-8 md:p-14 flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-teal-glow">
-            <div className="max-w-[56ch]">
-              <h2 className="display-h2 text-[28px] md:text-[38px] text-white">
-                {t("forClinicsTitle")}
-              </h2>
-              <p className="mt-3 text-[15.5px] md:text-[17px] text-white/85 leading-[1.55]">
-                {t("forClinicsBody")}
-              </p>
+      {/* ═══ FOR CLINICS ═══
+          Marketing CTA for prospective clinics — hidden once a user is
+          signed in (patient or clinic admin alike). Same rule the header
+          and mobile nav already apply to the "For clinics" link. */}
+      {!user && (
+        <section className="bg-surface">
+          <div className="max-w-[1240px] mx-auto px-5 md:px-8 py-16 md:py-20">
+            <div className="rounded-3xl bg-teal-gradient text-white p-8 md:p-14 flex flex-col md:flex-row md:items-center justify-between gap-8 shadow-teal-glow">
+              <div className="max-w-[56ch]">
+                <h2 className="display-h2 text-[28px] md:text-[38px] text-white">
+                  {t("forClinicsTitle")}
+                </h2>
+                <p className="mt-3 text-[15.5px] md:text-[17px] text-white/85 leading-[1.55]">
+                  {t("forClinicsBody")}
+                </p>
+              </div>
+              <Link
+                href="/for-clinics"
+                className="bg-white text-teal-700 font-semibold rounded-xl px-6 py-3.5 text-[15px] hover:bg-teal-50 transition-colors shadow-card whitespace-nowrap inline-flex items-center gap-2"
+              >
+                {t("forClinicsCta")}
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
+              </Link>
             </div>
-            <Link
-              href="/for-clinics"
-              className="bg-white text-teal-700 font-semibold rounded-xl px-6 py-3.5 text-[15px] hover:bg-teal-50 transition-colors shadow-card whitespace-nowrap inline-flex items-center gap-2"
-            >
-              {t("forClinicsCta")}
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-            </Link>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </>
   );
 }

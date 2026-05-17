@@ -1,18 +1,27 @@
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 import { BrandMark } from "./brand-mark";
+import { getCurrentUser } from "@/lib/auth/session";
 
-export function SiteFooter() {
-  const home = useTranslations("Home");
-  const brand = useTranslations("Brand");
-  const nav = useTranslations("Nav");
-  const legal = useTranslations("Legal");
+export async function SiteFooter() {
+  const home = await getTranslations("Home");
+  const brand = await getTranslations("Brand");
+  const nav = await getTranslations("Nav");
+  const legal = await getTranslations("Legal");
+  const user = await getCurrentUser();
   const year = new Date().getFullYear();
+
+  // "For clinics" and signed-out auth links are marketing for prospective
+  // users — drop them once the visitor is signed in (patient or clinic
+  // admin). Same rule the header and mobile nav already apply.
+  const gridCols = user
+    ? "sm:col-span-2 md:grid-cols-[1.5fr_1fr_1fr] md:gap-12"
+    : "md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr]";
 
   return (
     <footer className="border-t border-ink-100 bg-white">
       <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8 pt-12 md:pt-14 pb-8 md:pb-10">
-        <div className="grid sm:grid-cols-2 md:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] gap-8 md:gap-10 mb-10 md:mb-12">
+        <div className={`grid sm:grid-cols-2 gap-8 md:gap-10 mb-10 md:mb-12 ${gridCols}`}>
           <div className="sm:col-span-2 md:col-span-1">
             <BrandMark />
             <p className="mt-4 text-[14.5px] leading-[1.6] text-ink-500 max-w-[38ch]">
@@ -26,15 +35,19 @@ export function SiteFooter() {
             <FooterLink href="/search">{nav("search")}</FooterLink>
           </FooterCol>
 
-          <FooterCol label={nav("forClinics")}>
-            <FooterLink href="/for-clinics">{nav("forClinics")}</FooterLink>
-            <FooterLink href="/brief.html">Brief</FooterLink>
-          </FooterCol>
+          {!user && (
+            <FooterCol label={nav("forClinics")}>
+              <FooterLink href="/for-clinics">{nav("forClinics")}</FooterLink>
+              <FooterLink href="/brief.html">Brief</FooterLink>
+            </FooterCol>
+          )}
 
-          <FooterCol label={nav("account")}>
-            <FooterLink href="/signin">{nav("signIn")}</FooterLink>
-            <FooterLink href="/signup">{nav("signUp")}</FooterLink>
-          </FooterCol>
+          {!user && (
+            <FooterCol label={nav("account")}>
+              <FooterLink href="/signin">{nav("signIn")}</FooterLink>
+              <FooterLink href="/signup">{nav("signUp")}</FooterLink>
+            </FooterCol>
+          )}
 
           <FooterCol label="Legal">
             <FooterLink href="/privacy">{legal("navPrivacy")}</FooterLink>
