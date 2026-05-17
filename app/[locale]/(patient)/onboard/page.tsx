@@ -170,7 +170,6 @@ export default async function OnboardPage({
           validityBody: t("validityBody"),
           validity1: t("validity1"),
           validity3: t("validity3"),
-          validity6: t("validity6"),
           pricingSelectFirst: t("pricingSelectFirst"),
           betaBadge: t("betaBadge"),
           betaTitle: t("betaTitle"),

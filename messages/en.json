@@ -420,7 +420,6 @@
     "validityBody": "How long should a patient count as a returning patient before a new success fee applies?",
     "validity1": "1 month",
     "validity3": "3 months",
-    "validity6": "6 months",
     "pricingSelectFirst": "Please pick a package to continue.",
     "betaBadge": "Beta · limited time",
     "betaTitle": "Your first month is free — we're in beta, and clinics joining now don't pay anything until month 2.",

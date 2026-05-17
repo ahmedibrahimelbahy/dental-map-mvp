@@ -134,7 +134,6 @@ export type OnboardFormProps = {
     validityBody: string;
     validity1: string;
     validity3: string;
-    validity6: string;
     pricingSelectFirst: string;
     betaBadge: string;
     betaTitle: string;
@@ -970,8 +969,8 @@ function PricingStep({
         <p className="text-[13px] leading-[1.6] text-ink-600 mb-4">
           {labels.validityBody}
         </p>
-        <div className="grid grid-cols-3 gap-3">
-          {([1, 3, 6] as ValidityMonths[]).map((v) => (
+        <div className="grid grid-cols-2 gap-3">
+          {([1, 3] as ValidityMonths[]).map((v) => (
             <button
               key={v}
               type="button"
@@ -982,7 +981,7 @@ function PricingStep({
                   : "border-ink-150 bg-white text-ink-700 hover:border-teal-300"
               }`}
             >
-              {v === 1 ? labels.validity1 : v === 3 ? labels.validity3 : labels.validity6}
+              {v === 1 ? labels.validity1 : labels.validity3}
             </button>
           ))}
         </div>
@@ -1147,16 +1146,13 @@ function AreaSelect({
                     onChange(a.slug);
                     setOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-[14px] font-medium text-start transition-colors ${
+                  className={`w-full block px-4 py-2.5 text-[14px] font-medium text-start truncate transition-colors ${
                     isPicked
                       ? "bg-teal-50 text-teal-900"
                       : "text-ink-700 hover:bg-ink-50"
                   }`}
                 >
-                  <span className="truncate">{isAr ? a.nameAr : a.nameEn}</span>
-                  <span className="text-[10.5px] font-bold text-ink-400 tracking-wider uppercase shrink-0">
-                    Tier {a.tier}
-                  </span>
+                  {isAr ? a.nameAr : a.nameEn}
                 </button>
               );
             })}
