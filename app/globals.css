@@ -307,3 +307,48 @@
   }
 }
 
+/* ── scroll-driven "playing card" deal-in animation ────────────────────
+   Each stacked card slides into its sticky position from one side as it
+   enters the viewport, then settles flat once the next card stacks on
+   top. Falls back to no animation on browsers without scroll-driven
+   timelines (Firefox stable, older Safari) — cards just appear normally.
+*/
+@keyframes deal-from-right {
+  from {
+    transform: translateX(40%) rotate(5deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+}
+@keyframes deal-from-left {
+  from {
+    transform: translateX(-40%) rotate(-5deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) rotate(0);
+    opacity: 1;
+  }
+}
+@supports (animation-timeline: view()) {
+  .deal-right {
+    animation: deal-from-right linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+  .deal-left {
+    animation: deal-from-left linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 30%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deal-right,
+  .deal-left {
+    animation: none !important;
+  }
+}
+

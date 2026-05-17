@@ -116,7 +116,7 @@ export default async function ForClinicsPage({
             ].map((card, idx, arr) => (
               <div
                 key={card.titleKey}
-                className="sticky"
+                className={`sticky ${idx % 2 === 0 ? "deal-left" : "deal-right"}`}
                 style={{ top: `calc(76px + ${idx * 14}px)` }}
               >
                 <WhyStackedCard

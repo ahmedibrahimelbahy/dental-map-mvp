@@ -895,7 +895,7 @@ function PricingStep({
 
       {/* Pricing cards — sticky-stacked deck once an area is picked */}
       {pickedArea && prices ? (
-        <div className="space-y-[22vh] md:space-y-[26vh] pb-[16vh] md:pb-[20vh]">
+        <div className="space-y-[18vh] md:space-y-[22vh] pb-[12vh] md:pb-[16vh]">
           {[
             {
               key: "standard" as const,
@@ -927,7 +927,7 @@ function PricingStep({
           ].map((card, idx) => (
             <div
               key={card.key}
-              className="sticky"
+              className={`sticky ${idx % 2 === 0 ? "deal-left" : "deal-right"}`}
               style={{ top: `calc(80px + ${idx * 14}px)` }}
             >
               <PackageCard
@@ -1193,66 +1193,66 @@ function PackageCard({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`relative w-full max-w-[960px] mx-auto block text-start rounded-3xl border-2 p-6 md:p-9 lg:p-11 transition-colors shadow-card-hover overflow-hidden ${accentClasses}`}
+      className={`relative w-full max-w-[720px] mx-auto block text-start rounded-2xl border-2 p-5 md:p-6 lg:p-7 transition-colors shadow-card-hover overflow-hidden ${accentClasses}`}
     >
       {badge && (
         <span
-          className={`absolute top-5 end-6 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10.5px] font-bold uppercase tracking-wider ${badgeBg}`}
+          className={`absolute top-4 end-5 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${badgeBg}`}
         >
           {badgeIcon}
           {badge}
         </span>
       )}
 
-      <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-6 md:gap-10 lg:gap-14 items-start">
+      <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-5 md:gap-8 items-start">
         {/* Left: name + price */}
         <div className="min-w-0">
           <h3
-            className={`font-display text-[20px] md:text-[26px] lg:text-[30px] font-bold leading-tight mb-3 md:mb-5 ${titleColor}`}
+            className={`font-display text-[17px] md:text-[20px] font-bold leading-tight mb-2 md:mb-3 ${titleColor}`}
           >
             {name}
           </h3>
           <div className="flex items-baseline gap-1.5">
             <span
-              className={`font-display text-[44px] md:text-[60px] lg:text-[72px] font-bold leading-none tracking-tight ${priceColor}`}
+              className={`font-display text-[32px] md:text-[42px] font-bold leading-none tracking-tight ${priceColor}`}
             >
               {priceEgp.toLocaleString("en-US")}
             </span>
             <span
-              className={`font-display text-[18px] md:text-[22px] font-bold ${subPriceColor}`}
+              className={`font-display text-[15px] md:text-[17px] font-bold ${subPriceColor}`}
             >
               EGP
             </span>
           </div>
-          <div className={`text-[13px] md:text-[13.5px] mt-1.5 ${monthColor}`}>
+          <div className={`text-[12px] md:text-[12.5px] mt-1 ${monthColor}`}>
             {monthSuffix}
           </div>
 
           {selected && (
             <div
-              className={`mt-6 inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-[12.5px] font-bold ${
+              className={`mt-4 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[11.5px] font-bold ${
                 accent === "dark"
                   ? "bg-amber-400 text-ink-900"
                   : "bg-teal-600 text-white"
               }`}
             >
-              <Check className="w-3.5 h-3.5" aria-hidden />
+              <Check className="w-3 h-3" aria-hidden />
               Selected
             </div>
           )}
         </div>
 
         {/* Right: features */}
-        <ul className="space-y-2.5 md:space-y-3">
+        <ul className="space-y-2">
           {features.map((f) => (
             <li
               key={f}
-              className={`flex items-start gap-3 text-[13.5px] md:text-[14.5px] leading-[1.55] ${featureColor}`}
+              className={`flex items-start gap-2.5 text-[12.5px] md:text-[13px] leading-[1.5] ${featureColor}`}
             >
               <span
-                className={`inline-flex w-5 h-5 rounded-full items-center justify-center shrink-0 mt-0.5 ${checkBg}`}
+                className={`inline-flex w-4 h-4 rounded-full items-center justify-center shrink-0 mt-0.5 ${checkBg}`}
               >
-                <Check className="w-3 h-3" aria-hidden />
+                <Check className="w-2.5 h-2.5" aria-hidden />
               </span>
               <span>{f}</span>
             </li>
