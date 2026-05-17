@@ -13,11 +13,14 @@ import {
   MapPin,
   ArrowLeft,
   ArrowRight,
+  ArrowUp,
   Crown,
   TrendingUp,
   Clock,
   Phone,
   Mail,
+  ChevronDown,
+  Gift,
 } from "lucide-react";
 import { onboardClinicAction } from "@/lib/clinic/onboard-action";
 import {
@@ -132,6 +135,10 @@ export type OnboardFormProps = {
     validity3: string;
     validity6: string;
     pricingSelectFirst: string;
+    betaBadge: string;
+    betaTitle: string;
+    pricingEmptyTitle: string;
+    pricingEmptyBody: string;
     clinicLogoLabel: string;
     clinicLogoHint: string;
     clinicHeroLabel: string;
@@ -837,16 +844,11 @@ function PricingStep({
   error: string | null;
   onNext: () => void;
 }) {
-  // Until the user picks an area we can't show real prices. Default to
-  // Tier 1 numbers as a preview — visually communicates the structure
-  // while making it obvious the dropdown is gating the real pricing.
-  const previewTier: Tier = pickedArea?.tier ?? 1;
-  const prices = getTierPricing(previewTier);
-  const areaName = pickedArea ? (isAr ? pickedArea.nameAr : pickedArea.nameEn) : null;
+  const prices = pickedArea ? getTierPricing(pickedArea.tier) : null;
 
   return (
     <div className="space-y-6">
-      {/* Header strip — Partnership Pricing + Area */}
+      {/* Header strip — Partnership Pricing + inline area dropdown */}
       <section className="rounded-2xl bg-gradient-to-br from-ink-900 to-ink-800 p-6 md:p-8 text-white relative overflow-hidden">
         <div
           aria-hidden
@@ -865,78 +867,80 @@ function PricingStep({
               {labels.pricingSubheader}
             </p>
           </div>
-          {areaName && (
-            <div className="inline-flex items-center gap-2 rounded-xl bg-teal-500 text-white px-4 py-2.5 font-bold text-[14px] md:text-[15px] shadow-glow">
-              <MapPin className="w-4 h-4" aria-hidden />
-              {labels.pricingAreaPrefix} {areaName}
-            </div>
-          )}
+          <AreaSelect
+            value={areaSlug}
+            onChange={setAreaSlug}
+            areas={areas}
+            isAr={isAr}
+            placeholder={labels.areaPlaceholder}
+          />
         </div>
       </section>
 
-      {/* Area picker — gates the rest */}
-      <section className="rounded-2xl bg-white border border-ink-100 p-5 md:p-7 shadow-card">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 grid place-items-center">
-            <MapPin className="w-5 h-5" aria-hidden />
+      {/* Beta — first month free */}
+      <section className="rounded-2xl bg-gradient-to-br from-emerald-500 via-teal-500 to-teal-600 text-white p-4 md:p-5 flex items-center gap-3 md:gap-4 shadow-glow">
+        <span className="inline-flex w-10 h-10 md:w-11 md:h-11 shrink-0 rounded-xl bg-white/15 backdrop-blur items-center justify-center ring-1 ring-white/30">
+          <Gift className="w-5 h-5" aria-hidden />
+        </span>
+        <div className="min-w-0 flex-1">
+          <div className="inline-flex items-center gap-1.5 text-[10.5px] font-bold uppercase tracking-[0.14em] text-white/90 mb-0.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse" />
+            {labels.betaBadge}
+          </div>
+          <p className="font-display text-[14.5px] md:text-[16px] font-bold leading-snug">
+            {labels.betaTitle}
+          </p>
+        </div>
+      </section>
+
+      {/* Pricing cards — only rendered once an area is picked */}
+      {pickedArea && prices ? (
+        <div className="grid md:grid-cols-3 gap-4 md:gap-5">
+          <PackageCard
+            name={labels.packageStandard}
+            priceEgp={prices.standard}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresStandard}
+            selected={selectedPackage === "standard"}
+            onSelect={() => setSelectedPackage("standard")}
+            accent="neutral"
+          />
+          <PackageCard
+            name={labels.packageGrowth}
+            priceEgp={prices.growth}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresGrowth}
+            selected={selectedPackage === "growth"}
+            onSelect={() => setSelectedPackage("growth")}
+            accent="teal"
+            badge={labels.packageMostPopular}
+            badgeIcon={<TrendingUp className="w-3 h-3" aria-hidden />}
+          />
+          <PackageCard
+            name={labels.packagePremium}
+            priceEgp={prices.premium}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresPremium}
+            selected={selectedPackage === "premium"}
+            onSelect={() => setSelectedPackage("premium")}
+            accent="dark"
+            badge={labels.packageBest}
+            badgeIcon={<Crown className="w-3 h-3" aria-hidden />}
+          />
+        </div>
+      ) : (
+        <section className="rounded-2xl border-2 border-dashed border-ink-200 bg-white p-8 md:p-10 text-center">
+          <span className="inline-flex w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 items-center justify-center mb-3">
+            <ArrowUp className="w-6 h-6" aria-hidden />
           </span>
-          <h3 className="font-display text-[16px] md:text-[18px] font-bold text-ink-900">
-            {labels.area}
+          <h3 className="font-display text-[16px] md:text-[18px] font-bold text-ink-900 mb-1.5">
+            {labels.pricingEmptyTitle}
           </h3>
-        </div>
-        <select
-          value={areaSlug}
-          onChange={(e) => setAreaSlug(e.target.value)}
-          className="field-input w-full max-w-[420px]"
-        >
-          <option value="">{labels.areaPlaceholder}</option>
-          {areas.map((a) => (
-            <option key={a.slug} value={a.slug}>
-              {isAr ? a.nameAr : a.nameEn}
-            </option>
-          ))}
-        </select>
-      </section>
-
-      {/* Pricing cards — dimmed and non-interactive until an area is picked */}
-      <div
-        className={`grid md:grid-cols-3 gap-4 md:gap-5 ${
-          pickedArea ? "" : "opacity-50 pointer-events-none select-none"
-        }`}
-        aria-disabled={!pickedArea}
-      >
-        <PackageCard
-          name={labels.packageStandard}
-          priceEgp={prices.standard}
-          monthSuffix={labels.pricingMonthSuffix}
-          features={labels.featuresStandard}
-          selected={selectedPackage === "standard"}
-          onSelect={() => setSelectedPackage("standard")}
-          accent="neutral"
-        />
-        <PackageCard
-          name={labels.packageGrowth}
-          priceEgp={prices.growth}
-          monthSuffix={labels.pricingMonthSuffix}
-          features={labels.featuresGrowth}
-          selected={selectedPackage === "growth"}
-          onSelect={() => setSelectedPackage("growth")}
-          accent="teal"
-          badge={labels.packageMostPopular}
-          badgeIcon={<TrendingUp className="w-3 h-3" aria-hidden />}
-        />
-        <PackageCard
-          name={labels.packagePremium}
-          priceEgp={prices.premium}
-          monthSuffix={labels.pricingMonthSuffix}
-          features={labels.featuresPremium}
-          selected={selectedPackage === "premium"}
-          onSelect={() => setSelectedPackage("premium")}
-          accent="dark"
-          badge={labels.packageBest}
-          badgeIcon={<Crown className="w-3 h-3" aria-hidden />}
-        />
-      </div>
+          <p className="text-[13px] md:text-[13.5px] leading-[1.6] text-ink-500 max-w-[40ch] mx-auto">
+            {labels.pricingEmptyBody}
+          </p>
+        </section>
+      )}
 
       {/* Success fee strip */}
       <section className="rounded-2xl border-2 border-teal-200 bg-white p-5 md:p-6 flex items-center gap-4 md:gap-5 flex-wrap">
@@ -1009,6 +1013,59 @@ function PricingStep({
           )}
         </button>
       </section>
+    </div>
+  );
+}
+
+function AreaSelect({
+  value,
+  onChange,
+  areas,
+  isAr,
+  placeholder,
+}: {
+  value: string;
+  onChange: (slug: string) => void;
+  areas: Area[];
+  isAr: boolean;
+  placeholder: string;
+}) {
+  const hasValue = value !== "";
+  return (
+    <div className="relative inline-flex w-full sm:w-auto">
+      <MapPin
+        className={`pointer-events-none absolute top-1/2 -translate-y-1/2 w-4 h-4 ${
+          hasValue ? "text-teal-600" : "text-ink-400"
+        } start-3.5 rtl:start-auto rtl:end-3.5`}
+        aria-hidden
+      />
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={`
+          appearance-none cursor-pointer w-full sm:w-auto sm:min-w-[220px]
+          bg-white text-[14px] md:text-[15px] font-bold
+          ps-10 pe-10 py-2.5 md:py-3
+          rounded-xl shadow-glow
+          ring-1 ring-white/10
+          focus:outline-none focus:ring-2 focus:ring-amber-300/70
+          transition-shadow
+          ${hasValue ? "text-ink-900" : "text-ink-400"}
+        `}
+      >
+        <option value="" disabled>
+          {placeholder}
+        </option>
+        {areas.map((a) => (
+          <option key={a.slug} value={a.slug} className="text-ink-900">
+            {isAr ? a.nameAr : a.nameEn}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        className="pointer-events-none absolute top-1/2 -translate-y-1/2 w-4 h-4 text-ink-500 end-3.5 rtl:end-auto rtl:start-3.5"
+        aria-hidden
+      />
     </div>
   );
 }
