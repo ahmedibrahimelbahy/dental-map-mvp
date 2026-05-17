@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { isOwnedPendingUrl } from "@/lib/clinic/upload-action";
+import { isOwnedPendingUrl } from "@/lib/clinic/upload-shared";
 
 export type PhotosResult =
   | { ok: true }

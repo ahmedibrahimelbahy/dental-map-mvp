@@ -3,14 +3,14 @@
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { requestUploadTicketAction } from "@/lib/clinic/upload-action";
 import {
-  requestUploadTicketAction,
   STORAGE_BUCKET,
   ALLOWED_MIME,
   MAX_BYTES,
   type UploadKind,
   type AllowedMime,
-} from "@/lib/clinic/upload-action";
+} from "@/lib/clinic/upload-shared";
 
 export type ImageUploadLabels = {
   add: string;

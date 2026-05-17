@@ -12,7 +12,7 @@ import {
   type Tier,
   type ValidityMonths,
 } from "@/lib/clinic/pricing";
-import { isOwnedPendingUrl } from "@/lib/clinic/upload-action";
+import { isOwnedPendingUrl } from "@/lib/clinic/upload-shared";
 import { sendEmail, clinicOnboardOpsEmail } from "@/lib/email/resend";
 
 export type OnboardInput = {
