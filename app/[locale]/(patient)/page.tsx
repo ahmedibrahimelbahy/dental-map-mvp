@@ -278,105 +278,172 @@ function StepCard({
   );
 }
 
-function HeroSlotPreview() {
+function HeroCairoMap() {
+  const pulsePins = [
+    { x: 120, y: 178, delay: "0s" },
+    { x: 248, y: 128, delay: "0.6s" },
+    { x: 295, y: 232, delay: "1.2s" },
+    { x: 62, y: 222, delay: "1.8s" },
+    { x: 308, y: 295, delay: "0.3s" },
+  ];
+  const solidPins = [
+    { x: 180, y: 175 },
+    { x: 270, y: 165 },
+    { x: 200, y: 270 },
+    { x: 95, y: 260 },
+    { x: 280, y: 200 },
+    { x: 260, y: 350 },
+  ];
+
   return (
-    <div
-      className="hidden xl:block relative h-[480px] animate-rise"
-      aria-hidden
-    >
-      {/* Soft halo behind the cards */}
-      <div className="absolute inset-x-4 top-6 bottom-6 rounded-[36px] bg-gradient-to-br from-teal-100/70 via-white to-emerald-100/50 blur-2xl" />
+    <div className="hidden xl:block relative animate-rise" aria-hidden>
+      <div className="relative aspect-[360/460] w-full overflow-hidden rounded-3xl bg-[#fbfaf5] border border-ink-100 shadow-search">
+        <svg
+          viewBox="0 0 360 460"
+          className="absolute inset-0 w-full h-full"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <defs>
+            <pattern id="hero-map-dots" width="14" height="14" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="0.55" fill="rgba(15,118,110,0.13)" />
+            </pattern>
+            <linearGradient id="hero-nile" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#5eead4" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#0d9488" stopOpacity="0.55" />
+            </linearGradient>
+            <radialGradient id="hero-pin-halo" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor="#0d9488" stopOpacity="0.22" />
+              <stop offset="100%" stopColor="#0d9488" stopOpacity="0" />
+            </radialGradient>
+          </defs>
 
-      {/* Live badge (top) */}
-      <div className="absolute -top-2 left-2 z-30 inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur border border-ink-100 px-3 py-1.5 shadow-card">
-        <span className="relative flex h-2 w-2">
-          <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75 animate-ping" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
-        </span>
-        <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-ink-700">
-          Live from clinic calendars
-        </span>
-      </div>
+          <rect width="360" height="460" fill="url(#hero-map-dots)" />
 
-      {/* Back card — tilted right */}
-      <article className="absolute top-10 left-16 right-2 rotate-[5deg] rounded-2xl bg-white border border-ink-100 shadow-card p-5">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-amber-400 to-rose-500 text-white flex items-center justify-center font-bold text-[14px] shadow-sm">
-            OH
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="font-display font-semibold text-[14.5px] text-ink-900 leading-tight">
-              Dr. Omar Hassan
-            </div>
-            <div className="text-[12px] text-ink-500 mt-0.5">
-              Orthodontics · Heliopolis
-            </div>
-          </div>
-          <div className="flex items-center gap-0.5 text-[12px] font-bold text-ink-700">
-            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
-            4.8
-          </div>
-        </div>
-        <div className="mt-4 flex items-center justify-between rounded-xl bg-ink-50 border border-ink-100 px-3.5 py-2.5">
-          <div>
-            <div className="text-[9.5px] uppercase tracking-[0.14em] text-ink-400 font-bold">
-              Next slot
-            </div>
-            <div className="text-[13.5px] font-semibold text-ink-900 mt-0.5">
-              Tomorrow · 11:00 AM
-            </div>
-          </div>
-          <ArrowRight className="w-4 h-4 text-teal-600" />
-        </div>
-      </article>
+          {/* Subtle district washes */}
+          <ellipse cx="65" cy="220" rx="78" ry="55" fill="rgba(15,118,110,0.045)" />
+          <ellipse cx="120" cy="185" rx="45" ry="38" fill="rgba(15,118,110,0.045)" />
+          <ellipse cx="248" cy="125" rx="62" ry="42" fill="rgba(15,118,110,0.045)" />
+          <ellipse cx="295" cy="228" rx="55" ry="50" fill="rgba(15,118,110,0.045)" />
+          <ellipse cx="305" cy="295" rx="48" ry="45" fill="rgba(15,118,110,0.045)" />
+          <ellipse cx="225" cy="350" rx="62" ry="55" fill="rgba(15,118,110,0.07)" />
 
-      {/* Front card — tilted left, hover straightens */}
-      <article className="absolute top-32 left-0 right-14 -rotate-[3deg] rounded-2xl bg-white border border-ink-100 shadow-search p-5 hover:rotate-0 transition-transform duration-500 ease-out">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center font-bold text-[14px] shadow-sm">
-            MS
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="font-display font-semibold text-[14.5px] text-ink-900 leading-tight">
-              Dr. Mariam Salah
-            </div>
-            <div className="text-[12px] text-ink-500 mt-0.5">
-              Pediatric Dentist · Maadi
-            </div>
-          </div>
-          <div className="flex items-center gap-0.5 text-[12px] font-bold text-ink-700">
-            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-amber-400" />
-            4.9
-          </div>
-        </div>
+          {/* Nile river */}
+          <path
+            d="M 165 -10 Q 152 90 178 175 Q 200 260 172 350 Q 148 430 168 480"
+            stroke="url(#hero-nile)"
+            strokeWidth="30"
+            fill="none"
+            strokeLinecap="round"
+          />
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="text-[10px] uppercase tracking-[0.14em] text-ink-400 font-bold">
-            Today · 3 slots open
-          </div>
-          <div className="text-[10px] uppercase tracking-[0.14em] text-teal-600 font-bold">
-            Instant book
-          </div>
-        </div>
-        <div className="mt-2 grid grid-cols-3 gap-1.5">
-          <span className="rounded-lg border border-ink-100 px-2 py-2.5 text-[11.5px] font-semibold text-ink-600 text-center">
-            3:00 PM
+          {/* Zamalek island */}
+          <ellipse
+            cx="180"
+            cy="195"
+            rx="9"
+            ry="38"
+            fill="#fbfaf5"
+            stroke="rgba(13,148,136,0.35)"
+            strokeWidth="1"
+          />
+
+          {/* District labels */}
+          <g
+            fontFamily="ui-sans-serif, system-ui, sans-serif"
+            fontWeight="700"
+            letterSpacing="1.2"
+            fill="#475569"
+          >
+            <text x="58" y="225" textAnchor="middle" fontSize="8">6TH OCTOBER</text>
+            <text x="118" y="190" textAnchor="middle" fontSize="8">MOHANDESSIN</text>
+            <text x="248" y="120" textAnchor="middle" fontSize="8">HELIOPOLIS</text>
+            <text x="293" y="230" textAnchor="middle" fontSize="8">NASR CITY</text>
+            <text x="305" y="298" textAnchor="middle" fontSize="8">NEW CAIRO</text>
+            <text x="225" y="356" textAnchor="middle" fontSize="9" fill="#0f766e">MAADI</text>
+            <text
+              x="170"
+              y="430"
+              textAnchor="middle"
+              fontSize="7"
+              fontStyle="italic"
+              fontWeight="600"
+              letterSpacing="2"
+              fill="#0d9488"
+              opacity="0.7"
+            >
+              النيل · NILE
+            </text>
+          </g>
+
+          {/* Pulse pins */}
+          {pulsePins.map((p, i) => (
+            <g key={`pulse-${i}`}>
+              <circle cx={p.x} cy={p.y} r="14" fill="url(#hero-pin-halo)" />
+              <circle cx={p.x} cy={p.y} r="4" fill="#0d9488" opacity="0.45">
+                <animate attributeName="r" from="4" to="18" dur="2.6s" begin={p.delay} repeatCount="indefinite" />
+                <animate attributeName="opacity" from="0.45" to="0" dur="2.6s" begin={p.delay} repeatCount="indefinite" />
+              </circle>
+              <circle cx={p.x} cy={p.y} r="3.5" fill="#0d9488" stroke="white" strokeWidth="1.2" />
+            </g>
+          ))}
+
+          {/* Solid pins (no pulse) — adds density */}
+          {solidPins.map((p, i) => (
+            <circle
+              key={`solid-${i}`}
+              cx={p.x}
+              cy={p.y}
+              r="2.6"
+              fill="#0d9488"
+              stroke="white"
+              strokeWidth="1"
+              opacity="0.85"
+            />
+          ))}
+
+          {/* Active Maadi pin (larger, highlighted) */}
+          <g>
+            <circle cx="225" cy="340" r="26" fill="#0d9488" opacity="0.12" />
+            <circle cx="225" cy="340" r="18" fill="#0d9488" opacity="0.18" />
+            <circle cx="225" cy="340" r="7.5" fill="#0d9488" stroke="white" strokeWidth="2.2" />
+          </g>
+        </svg>
+
+        {/* Live-clinics badge top-left */}
+        <div className="absolute top-4 left-4 z-30 inline-flex items-center gap-2 rounded-full bg-white/95 backdrop-blur border border-ink-100 px-3 py-1.5 shadow-card">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75 animate-ping" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-teal-500" />
           </span>
-          <span className="rounded-lg bg-teal-500 text-white px-2 py-2.5 text-[11.5px] font-bold text-center shadow-sm ring-2 ring-teal-200">
-            4:30 PM
-          </span>
-          <span className="rounded-lg border border-ink-100 px-2 py-2.5 text-[11.5px] font-semibold text-ink-600 text-center">
-            6:15 PM
+          <span className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-ink-700">
+            Greater Cairo · 50+ clinics
           </span>
         </div>
-      </article>
 
-      {/* Floating verified badge bottom-right */}
-      <div className="absolute -bottom-1 right-2 z-30 inline-flex items-center gap-2 rounded-full bg-ink-900 text-white px-3 py-1.5 shadow-card">
-        <ShieldCheck className="w-3.5 h-3.5 text-teal-300" />
-        <span className="text-[11px] font-bold uppercase tracking-[0.1em]">
-          Verified clinics only
-        </span>
+        {/* Popup card anchored to Maadi pin */}
+        <div className="absolute z-30" style={{ left: "62.5%", top: "73.9%" }}>
+          <div className="relative -translate-x-1/2 -translate-y-full -mt-4 rounded-xl bg-white border border-ink-100 shadow-card-hover px-3.5 py-2.5 w-[164px]">
+            <div className="flex items-center justify-between">
+              <div className="font-display font-bold text-[14px] text-ink-900">Maadi</div>
+              <span className="text-[10px] uppercase tracking-[0.12em] font-bold text-teal-600">
+                Live
+              </span>
+            </div>
+            <div className="mt-1 flex items-center gap-1.5 text-[11.5px] text-ink-500">
+              <span className="inline-flex h-1.5 w-1.5 rounded-full bg-teal-500" />
+              12 dentists · 3 open today
+            </div>
+            <div className="absolute left-1/2 -bottom-1.5 -translate-x-1/2 w-3 h-3 rotate-45 bg-white border-r border-b border-ink-100" />
+          </div>
+        </div>
+
+        {/* Bottom-right live-map chip */}
+        <div className="absolute bottom-4 right-4 z-30 inline-flex items-center gap-2 rounded-full bg-ink-900/90 backdrop-blur text-white px-3 py-1.5 shadow-card">
+          <MapPin className="w-3 h-3 text-teal-300" />
+          <span className="text-[10.5px] font-bold uppercase tracking-[0.14em]">
+            Live map
+          </span>
+        </div>
       </div>
     </div>
   );
