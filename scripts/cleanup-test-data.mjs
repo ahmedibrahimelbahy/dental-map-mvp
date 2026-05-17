@@ -274,7 +274,7 @@ await supa.from("clinic_dentists").insert({
 const { data: specRows } = await supa
   .from("specialties")
   .select("id, slug")
-  .in("slug", ["adult", "cosmetic"]);
+  .in("slug", ["general", "cosmetic"]);
 await supa.from("dentist_specialties").delete().eq("dentist_id", testDentistId);
 if (specRows && specRows.length) {
   await supa.from("dentist_specialties").insert(

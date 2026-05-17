@@ -278,7 +278,6 @@ create policy "dentist_calendars by admin" on dentist_calendars for select
 -- SEED: specialties (slug · Arabic · English)
 -- ══════════════════════════════════════════════════════════════════════════
 insert into specialties (slug, name_ar, name_en) values
-  ('adult',              'كبار',                       'Adult dentistry'),
   ('pediatric',          'أطفال',                      'Pediatric'),
   ('orthodontics',       'تقويم',                      'Orthodontics'),
   ('fillings',           'حشو',                        'Fillings'),
@@ -291,7 +290,8 @@ insert into specialties (slug, name_ar, name_en) values
   ('implants',           'زراعة',                      'Implants'),
   ('surgery',            'جراحة',                      'Surgery'),
   ('general-anesthesia', 'بنج عام',                    'General anesthesia'),
-  ('emergency',          'طوارئ',                      'Emergency')
+  ('emergency',          'طوارئ',                      'Emergency'),
+  ('general',            'كشف عام',                    'General dentistry')
 on conflict (slug) do nothing;
 
 -- ══════════════════════════════════════════════════════════════════════════

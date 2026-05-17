@@ -30,13 +30,13 @@ export default async function HomePage({
   const user = await getCurrentUser();
 
   const specialties = [
-    { key: "specialtyAdult", slug: "adult", Icon: Stethoscope },
     { key: "specialtyPediatric", slug: "pediatric", Icon: Baby },
     { key: "specialtyOrtho", slug: "orthodontics", Icon: Smile },
     { key: "specialtyCosmetic", slug: "cosmetic", Icon: Sparkles },
     { key: "specialtyRootCanal", slug: "root-canal", Icon: HeartPulse },
     { key: "specialtyImplants", slug: "implants", Icon: Zap },
     { key: "specialtySurgery", slug: "surgery", Icon: Scissors },
+    { key: "specialtyGeneral", slug: "general", Icon: Stethoscope },
   ] as const;
 
   return (

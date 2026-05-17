@@ -118,7 +118,7 @@ const DENTISTS = [
     bio_en: "Endodontics and adult restorative dentistry.",
     bio_ar: "علاج جذور وحشوات تجميلية.",
     fee: 250,
-    specialties: ["root-canal", "adult"],
+    specialties: ["root-canal", "general"],
   },
   {
     clinic_slug: "perfect-teeth-maadi",

@@ -40,7 +40,7 @@
 
     "specialtiesTitle": "Every kind of dentistry",
     "specialtiesSubtitle": "Browse by what your teeth actually need.",
-    "specialtyAdult": "Adult dentistry",
+    "specialtyGeneral": "General dentistry",
     "specialtyPediatric": "Pediatric",
     "specialtyOrtho": "Orthodontics",
     "specialtyCosmetic": "Cosmetic",
@@ -514,7 +514,7 @@
     "viewAll": "View all {name} dentists",
     "feeLabel": "EGP",
     "desc": {
-      "adult": "Routine care for adult teeth — checkups, fillings, and extractions. Pick this if you're not sure which specialty fits.",
+      "general": "Routine dental care — checkups, fillings, and extractions. Pick this if you're not sure which specialty fits.",
       "pediatric": "Specialists in kids' teeth. Gentle, child-friendly care from the first tooth through the teen years, plus preventive guidance for parents.",
       "orthodontics": "Braces, clear aligners, and bite correction for kids, teens, and adults. Straighten misaligned teeth and fix overbites or crossbites.",
       "fillings": "Tooth-colored or amalgam fillings for cavities and chipped teeth. Usually done in a single visit by general dentists.",

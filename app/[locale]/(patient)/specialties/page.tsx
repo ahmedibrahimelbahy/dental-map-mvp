@@ -25,7 +25,6 @@ import { listDentists, type DentistListItem } from "@/lib/dentists/list";
 export const dynamic = "force-dynamic";
 
 const SPECIALTY_ORDER: Array<{ slug: string; Icon: LucideIcon }> = [
-  { slug: "adult", Icon: Stethoscope },
   { slug: "pediatric", Icon: Baby },
   { slug: "orthodontics", Icon: Smile },
   { slug: "fillings", Icon: Wrench },
@@ -39,6 +38,7 @@ const SPECIALTY_ORDER: Array<{ slug: string; Icon: LucideIcon }> = [
   { slug: "surgery", Icon: Scissors },
   { slug: "general-anesthesia", Icon: Moon },
   { slug: "emergency", Icon: Siren },
+  { slug: "general", Icon: Stethoscope },
 ];
 
 type SpecialtyRow = {

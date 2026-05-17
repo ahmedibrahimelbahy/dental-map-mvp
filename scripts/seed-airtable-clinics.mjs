@@ -274,7 +274,7 @@ function specialtyFromRole(role) {
   if (/emergency|طوارئ/.test(r)) out.add("emergency");
   if (/filling|حشو/.test(r) && !out.has("root-canal")) out.add("fillings");
   if (/scaling|hygien|تنظيف/.test(r)) out.add("scaling");
-  if (out.size === 0) out.add("adult");
+  if (out.size === 0) out.add("general");
   return [...out];
 }
 
