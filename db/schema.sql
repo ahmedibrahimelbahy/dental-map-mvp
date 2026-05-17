@@ -274,13 +274,20 @@ create policy "dentist_calendars by admin" on dentist_calendars for select
 -- SEED: specialties (slug · Arabic · English)
 -- ══════════════════════════════════════════════════════════════════════════
 insert into specialties (slug, name_ar, name_en) values
-  ('adult',        'أسنان الكبار',  'Adult dentistry'),
-  ('pediatric',    'أسنان الأطفال', 'Pediatric dentistry'),
-  ('orthodontics', 'تقويم',         'Orthodontics'),
-  ('cosmetic',     'تجميل',         'Cosmetic dentistry'),
-  ('endodontics',  'علاج جذور',     'Endodontics'),
-  ('implants',     'زراعة',         'Implants'),
-  ('oral-surgery', 'جراحة فم',      'Oral surgery')
+  ('adult',              'كبار',                       'Adult dentistry'),
+  ('pediatric',          'أطفال',                      'Pediatric'),
+  ('orthodontics',       'تقويم',                      'Orthodontics'),
+  ('fillings',           'حشو',                        'Fillings'),
+  ('scaling',            'تنظيف',                      'Scaling'),
+  ('root-canal',         'حشو عصب',                    'Root canal'),
+  ('periodontics',       'علاج لثة',                   'Periodontics'),
+  ('crowns-dentures',    'تركيبات ثابتة ومتحركة',     'Crowns & dentures'),
+  ('veneer',             'فينير',                      'Veneers'),
+  ('cosmetic',           'تجميل',                      'Cosmetic'),
+  ('implants',           'زراعة',                      'Implants'),
+  ('surgery',            'جراحة',                      'Surgery'),
+  ('general-anesthesia', 'بنج عام',                    'General anesthesia'),
+  ('emergency',          'طوارئ',                      'Emergency')
 on conflict (slug) do nothing;
 
 -- ══════════════════════════════════════════════════════════════════════════

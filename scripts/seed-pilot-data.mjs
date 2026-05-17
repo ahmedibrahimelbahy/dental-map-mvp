@@ -118,7 +118,7 @@ const DENTISTS = [
     bio_en: "Endodontics and adult restorative dentistry.",
     bio_ar: "علاج جذور وحشوات تجميلية.",
     fee: 250,
-    specialties: ["endodontics", "adult"],
+    specialties: ["root-canal", "adult"],
   },
   {
     clinic_slug: "perfect-teeth-maadi",
@@ -130,7 +130,7 @@ const DENTISTS = [
     bio_en: "Implantology professor. 1500+ implants placed.",
     bio_ar: "أستاذ زراعة الأسنان. أكثر من 1500 زراعة.",
     fee: 600,
-    specialties: ["implants", "oral-surgery"],
+    specialties: ["implants", "surgery"],
   },
   {
     clinic_slug: "dr-soliman-heliopolis",

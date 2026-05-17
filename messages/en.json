@@ -44,9 +44,9 @@
     "specialtyPediatric": "Pediatric",
     "specialtyOrtho": "Orthodontics",
     "specialtyCosmetic": "Cosmetic",
-    "specialtyEndo": "Endodontics",
+    "specialtyRootCanal": "Root canal",
     "specialtyImplants": "Implants",
-    "specialtySurgery": "Oral surgery",
+    "specialtySurgery": "Surgery",
 
     "howItWorksTitle": "How it works",
     "howItWorksSubtitle": "Three steps. No calls. No confusion.",
@@ -501,13 +501,20 @@
     "viewAll": "View all {name} dentists",
     "feeLabel": "EGP",
     "desc": {
-      "adult": "Routine care for adult teeth — checkups, cleanings, fillings, and extractions. Your starting point if you haven't seen a dentist in a while.",
+      "adult": "Routine care for adult teeth — checkups, fillings, and extractions. Pick this if you're not sure which specialty fits.",
       "pediatric": "Specialists in kids' teeth. Gentle, child-friendly care from the first tooth through the teen years, plus preventive guidance for parents.",
       "orthodontics": "Braces, clear aligners, and bite correction for kids, teens, and adults. Straighten misaligned teeth and fix overbites or crossbites.",
-      "cosmetic": "Veneers, whitening, bonding, and smile makeovers. For when the goal is how your smile looks, not just how it works.",
-      "endodontics": "Root canal treatment and saving badly damaged teeth. The specialists you want when an infection has reached the nerve.",
+      "fillings": "Tooth-colored or amalgam fillings for cavities and chipped teeth. Usually done in a single visit by general dentists.",
+      "scaling": "Professional cleaning to remove tartar and plaque buildup. Recommended every six months — even if your teeth feel fine.",
+      "root-canal": "Root canal treatment to save badly damaged teeth. The specialists you want when an infection has reached the nerve.",
+      "periodontics": "Treatment for bleeding, swollen, or receding gums. Specialists in gum disease — caught early, before it becomes tooth loss.",
+      "crowns-dentures": "Fixed crowns and bridges plus removable dentures to replace damaged or missing teeth. Restores both function and appearance.",
+      "veneer": "Thin porcelain shells bonded to the front of teeth to change shape, color, or alignment. The fastest path to a brand-new smile.",
+      "cosmetic": "Whitening, bonding, and smile makeovers. For when the goal is how your smile looks, not just how it works.",
       "implants": "Replacing missing teeth with permanent, surgically placed implants. A long-term alternative to bridges and dentures.",
-      "oral-surgery": "Wisdom teeth, complex extractions, and jaw surgery. Done by surgeons trained for procedures general dentists refer out."
+      "surgery": "Wisdom teeth, complex extractions, and jaw surgery. Done by surgeons trained for procedures general dentists refer out.",
+      "general-anesthesia": "Complex procedures done while you sleep, supervised by a trained anesthesiologist. Used for long surgeries or anxious patients.",
+      "emergency": "Same-day urgent care for severe pain, broken or knocked-out teeth, and facial swelling. Clinics that take walk-ins."
     }
   },
   "Areas": {

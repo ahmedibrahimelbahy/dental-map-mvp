@@ -34,9 +34,9 @@ export default async function HomePage({
     { key: "specialtyPediatric", slug: "pediatric", Icon: Baby },
     { key: "specialtyOrtho", slug: "orthodontics", Icon: Smile },
     { key: "specialtyCosmetic", slug: "cosmetic", Icon: Sparkles },
-    { key: "specialtyEndo", slug: "endodontics", Icon: HeartPulse },
+    { key: "specialtyRootCanal", slug: "root-canal", Icon: HeartPulse },
     { key: "specialtyImplants", slug: "implants", Icon: Zap },
-    { key: "specialtySurgery", slug: "oral-surgery", Icon: Scissors },
+    { key: "specialtySurgery", slug: "surgery", Icon: Scissors },
   ] as const;
 
   return (
@@ -156,22 +156,13 @@ export default async function HomePage({
       {/* ═══ SPECIALTIES ═══ */}
       <section className="bg-surface">
         <div className="max-w-[1240px] mx-auto px-5 md:px-8 py-16 md:py-24">
-          <div className="flex items-end justify-between gap-6 mb-10">
-            <div>
-              <h2 className="display-h2 text-[30px] md:text-[44px] text-ink-900">
-                {t("specialtiesTitle")}
-              </h2>
-              <p className="mt-2 text-[15.5px] text-ink-500 max-w-[48ch]">
-                {t("specialtiesSubtitle")}
-              </p>
-            </div>
-            <Link
-              href="/search"
-              className="hidden md:inline-flex items-center gap-1.5 text-[14px] font-semibold text-teal-600 hover:text-teal-700 transition-colors"
-            >
-              {t("searchSubmit")}
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
-            </Link>
+          <div className="mb-10">
+            <h2 className="display-h2 text-[30px] md:text-[44px] text-ink-900">
+              {t("specialtiesTitle")}
+            </h2>
+            <p className="mt-2 text-[15.5px] text-ink-500 max-w-[48ch]">
+              {t("specialtiesSubtitle")}
+            </p>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 md:gap-4">

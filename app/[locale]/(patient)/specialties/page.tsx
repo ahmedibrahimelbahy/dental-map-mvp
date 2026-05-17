@@ -8,6 +8,13 @@ import {
   HeartPulse,
   Zap,
   Scissors,
+  Wrench,
+  Droplets,
+  Leaf,
+  Crown,
+  Layers,
+  Moon,
+  Siren,
   ArrowRight,
   MapPin,
 } from "lucide-react";
@@ -21,10 +28,17 @@ const SPECIALTY_ORDER: Array<{ slug: string; Icon: LucideIcon }> = [
   { slug: "adult", Icon: Stethoscope },
   { slug: "pediatric", Icon: Baby },
   { slug: "orthodontics", Icon: Smile },
+  { slug: "fillings", Icon: Wrench },
+  { slug: "scaling", Icon: Droplets },
+  { slug: "root-canal", Icon: HeartPulse },
+  { slug: "periodontics", Icon: Leaf },
+  { slug: "crowns-dentures", Icon: Crown },
+  { slug: "veneer", Icon: Layers },
   { slug: "cosmetic", Icon: Sparkles },
-  { slug: "endodontics", Icon: HeartPulse },
   { slug: "implants", Icon: Zap },
-  { slug: "oral-surgery", Icon: Scissors },
+  { slug: "surgery", Icon: Scissors },
+  { slug: "general-anesthesia", Icon: Moon },
+  { slug: "emergency", Icon: Siren },
 ];
 
 type SpecialtyRow = {

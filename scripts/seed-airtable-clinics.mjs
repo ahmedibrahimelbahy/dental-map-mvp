@@ -262,16 +262,18 @@ function specialtyFromRole(role) {
   const r = (role || "").toLowerCase();
   const out = new Set();
   if (/orthodont|تقويم/.test(r)) out.add("orthodontics");
-  if (/endodont|root canal|عصب/.test(r)) out.add("endodontics");
+  if (/endodont|root canal|عصب/.test(r)) out.add("root-canal");
   if (/implant|زراعة/.test(r)) out.add("implants");
   if (/pediatric|pedodont|أطفال/.test(r)) out.add("pediatric");
-  if (/surgeon|oral surgery|maxillofacial|جراحة/.test(r)) out.add("oral-surgery");
+  if (/surgeon|oral surgery|maxillofacial|جراحة/.test(r)) out.add("surgery");
   if (/cosmetic|esthetic|aesthetic|تجميل/.test(r)) out.add("cosmetic");
-  // Restorative / prosthodontics / periodontics → general adult dentistry
-  // (we don't have separate slugs for these in v1).
-  if (/restorative|prosthodont|periodont|general/.test(r) && out.size === 0) {
-    out.add("adult");
-  }
+  if (/prosthodont|crown|denture|تركيب/.test(r)) out.add("crowns-dentures");
+  if (/periodont|gum|لثة/.test(r)) out.add("periodontics");
+  if (/veneer|فينير/.test(r)) out.add("veneer");
+  if (/anesthesi|بنج/.test(r)) out.add("general-anesthesia");
+  if (/emergency|طوارئ/.test(r)) out.add("emergency");
+  if (/filling|حشو/.test(r) && !out.has("root-canal")) out.add("fillings");
+  if (/scaling|hygien|تنظيف/.test(r)) out.add("scaling");
   if (out.size === 0) out.add("adult");
   return [...out];
 }
