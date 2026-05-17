@@ -6,7 +6,6 @@ import {
   Star,
   Globe,
   BadgeDollarSign,
-  Headphones,
   Languages,
   ArrowRight,
   CheckCircle2,
@@ -111,7 +110,6 @@ export default async function ForClinicsPage({
               { Icon: Star, titleKey: "why2Title", bodyKey: "why2Body" },
               { Icon: Globe, titleKey: "why3Title", bodyKey: "why3Body" },
               { Icon: BadgeDollarSign, titleKey: "why4Title", bodyKey: "why4Body" },
-              { Icon: Headphones, titleKey: "why5Title", bodyKey: "why5Body" },
               { Icon: Languages, titleKey: "why6Title", bodyKey: "why6Body" },
             ].map((card, idx) => (
               <div
