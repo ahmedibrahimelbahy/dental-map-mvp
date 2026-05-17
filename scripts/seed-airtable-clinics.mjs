@@ -329,23 +329,41 @@ function parseConsultationFee(pricingBlob) {
   return 400;
 }
 
+// 1:1 area → tier mapping (migration 008). Areas not listed here are not
+// part of the priced grid; the seeder falls back to tier 4 (El Shorouk) so
+// legacy rows still insert, but new areas should be added here explicitly.
 const TIER_BY_AREA = {
   "new-cairo": 1,
-  zamalek: 1,
-  maadi: 1,
   heliopolis: 2,
-  mohandessin: 2,
   "nasr-city": 3,
-  "6-october": 4,
   "el-shorouk": 4,
-  // Anything else: defaulted to 4 per migration 006
+  zamalek: 5,
+  "sheikh-zayed": 6,
+  maadi: 7,
+  mohandessin: 8,
+  "6-october": 9,
+  "10-ramadan": 10,
+  madinaty: 11,
+  "el-rehab": 12,
+  "el-obour": 13,
+  "administrative-capital": 14,
 };
 
 const PRICE_BY_TIER_PACKAGE = {
-  1: { standard: 999, growth: 1499, premium: 2199 },
-  2: { standard: 899, growth: 1399, premium: 1999 },
-  3: { standard: 699, growth: 1099, premium: 1699 },
-  4: { standard: 599, growth: 899, premium: 1399 },
+  1:  { standard:  999, growth: 1499, premium: 2199 },
+  2:  { standard:  899, growth: 1399, premium: 1999 },
+  3:  { standard:  699, growth: 1099, premium: 1699 },
+  4:  { standard:  599, growth:  899, premium: 1399 },
+  5:  { standard: 1199, growth: 1799, premium: 2599 },
+  6:  { standard: 1099, growth: 1699, premium: 2499 },
+  7:  { standard:  999, growth: 1499, premium: 2199 },
+  8:  { standard:  899, growth: 1399, premium: 1999 },
+  9:  { standard:  799, growth: 1299, premium: 1899 },
+  10: { standard:  499, growth:  799, premium: 1299 },
+  11: { standard:  899, growth: 1399, premium: 1999 },
+  12: { standard:  999, growth: 1499, premium: 2199 },
+  13: { standard:  599, growth:  999, premium: 1499 },
+  14: { standard: 1199, growth: 1899, premium: 2799 },
 };
 
 const DEFAULT_WORKING_HOURS = [0, 1, 2, 3, 4].map((day) => ({
@@ -360,19 +378,20 @@ const DEFAULT_WORKING_HOURS = [0, 1, 2, 3, 4].map((day) => ({
 // drag the pin in the dashboard later. These come from Google Maps spot-
 // checks on each area's commercial core, ±500m accuracy.
 const AREA_CENTROID = {
-  maadi:        { lat: 29.9603, lng: 31.2569 },
-  heliopolis:   { lat: 30.0973, lng: 31.3284 },
-  "nasr-city":  { lat: 30.0599, lng: 31.3475 },
-  "new-cairo":  { lat: 30.0271, lng: 31.4775 },
-  "el-shorouk": { lat: 30.1306, lng: 31.6135 },
-  "6-october":  { lat: 29.9696, lng: 30.9272 },
-  dokki:        { lat: 30.0386, lng: 31.2103 },
-  mohandessin:  { lat: 30.0594, lng: 31.2014 },
-  zamalek:      { lat: 30.0617, lng: 31.2189 },
-  "sheikh-zayed":{ lat: 30.0444, lng: 30.9706 },
-  downtown:     { lat: 30.0444, lng: 31.2357 },
-  shoubra:      { lat: 30.1106, lng: 31.2417 },
-  "ain-shams":  { lat: 30.1305, lng: 31.3294 },
+  "new-cairo":              { lat: 30.0271, lng: 31.4775 },
+  heliopolis:               { lat: 30.0973, lng: 31.3284 },
+  "nasr-city":              { lat: 30.0599, lng: 31.3475 },
+  "el-shorouk":             { lat: 30.1306, lng: 31.6135 },
+  zamalek:                  { lat: 30.0617, lng: 31.2189 },
+  "sheikh-zayed":           { lat: 30.0444, lng: 30.9706 },
+  maadi:                    { lat: 29.9603, lng: 31.2569 },
+  mohandessin:              { lat: 30.0594, lng: 31.2014 },
+  "6-october":              { lat: 29.9696, lng: 30.9272 },
+  "10-ramadan":             { lat: 30.2989, lng: 31.7411 },
+  madinaty:                 { lat: 30.1078, lng: 31.6432 },
+  "el-rehab":               { lat: 30.0639, lng: 31.4906 },
+  "el-obour":               { lat: 30.2167, lng: 31.4833 },
+  "administrative-capital": { lat: 30.0166, lng: 31.7407 },
 };
 
 function slugify(s) {

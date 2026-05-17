@@ -146,7 +146,7 @@ if (DRY_RUN) {
   process.exit(0);
 }
 
-// 3a. Resolve Zamalek area (tier 1)
+// 3a. Resolve Zamalek area (tier 5 — see migration 008)
 const { data: zamalek } = await supa
   .from("areas")
   .select("id, tier")
@@ -198,9 +198,9 @@ const clinicRow = {
   lat: 30.0617,
   lng: 31.2189,
   is_published: true,
-  subscription_tier: 1,
+  subscription_tier: 5,
   subscription_package: "growth",
-  subscription_monthly_egp: 1499,
+  subscription_monthly_egp: 1799,
   consultation_validity_months: 3,
   verification_status: "approved",
   verification_submitted_at: new Date().toISOString(),
@@ -290,6 +290,6 @@ console.log(`  Email:    ${TEST_ADMIN_EMAIL}`);
 console.log(`  Password: ${TEST_ADMIN_PASSWORD}`);
 console.log("─".repeat(60));
 console.log(`  Clinic:   Test Dental Clinic (slug: ${TEST_CLINIC_SLUG})`);
-console.log(`  Area:     Zamalek (Tier 1)`);
+console.log(`  Area:     Zamalek (Tier 5)`);
 console.log(`  Dentist:  ${TEST_DENTIST_NAME} — 500 EGP / consultation`);
 console.log("─".repeat(60));

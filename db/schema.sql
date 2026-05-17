@@ -286,19 +286,22 @@ on conflict (slug) do nothing;
 -- ══════════════════════════════════════════════════════════════════════════
 -- SEED: Greater Cairo areas
 -- ══════════════════════════════════════════════════════════════════════════
+-- 14 priced areas. Tier numbers are seeded in migration 008.
 insert into areas (slug, name_ar, name_en) values
-  ('nasr-city',      'مدينة نصر',       'Nasr City'),
-  ('heliopolis',     'مصر الجديدة',     'Heliopolis'),
-  ('maadi',          'المعادي',         'Maadi'),
-  ('zamalek',        'الزمالك',         'Zamalek'),
-  ('new-cairo',      'القاهرة الجديدة', 'New Cairo'),
-  ('6-october',      '6 أكتوبر',         '6th of October'),
-  ('sheikh-zayed',   'الشيخ زايد',      'Sheikh Zayed'),
-  ('mohandessin',    'المهندسين',       'Mohandessin'),
-  ('dokki',          'الدقي',            'Dokki'),
-  ('downtown',       'وسط البلد',        'Downtown'),
-  ('shoubra',        'شبرا',             'Shoubra'),
-  ('ain-shams',      'عين شمس',          'Ain Shams')
+  ('new-cairo',              'القاهرة الجديدة',  'New Cairo'),
+  ('heliopolis',             'مصر الجديدة',      'Heliopolis'),
+  ('nasr-city',              'مدينة نصر',        'Nasr City'),
+  ('el-shorouk',             'الشروق',           'El Shorouk'),
+  ('zamalek',                'الزمالك',          'Zamalek'),
+  ('sheikh-zayed',           'الشيخ زايد',       'Sheikh Zayed'),
+  ('maadi',                  'المعادي',          'Maadi'),
+  ('mohandessin',            'المهندسين',        'Mohandessin'),
+  ('6-october',              '6 أكتوبر',          '6th of October'),
+  ('10-ramadan',             'العاشر من رمضان',  '10th of Ramadan'),
+  ('madinaty',               'مدينتي',            'Madinaty'),
+  ('el-rehab',               'الرحاب',            'El Rehab'),
+  ('el-obour',               'العبور',            'El Obour'),
+  ('administrative-capital', 'العاصمة الإدارية', 'Administrative Capital')
 on conflict (slug) do nothing;
 
 -- ══════════════════════════════════════════════════════════════════════════

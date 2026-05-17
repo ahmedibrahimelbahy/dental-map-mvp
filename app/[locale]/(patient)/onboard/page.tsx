@@ -3,6 +3,7 @@ import { redirect } from "@/i18n/routing";
 import { getCurrentUser } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { OnboardForm } from "@/components/clinic/onboard-form";
+import { isValidTier, type Tier } from "@/lib/clinic/pricing";
 import { Building2 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -43,14 +44,12 @@ export default async function OnboardPage({
     ]);
 
   const areas = (areasRaw ?? [])
-    .filter((a): a is typeof a & { tier: number } =>
-      a.tier === 1 || a.tier === 2 || a.tier === 3 || a.tier === 4
-    )
+    .filter((a): a is typeof a & { tier: Tier } => isValidTier(a.tier))
     .map((a) => ({
       slug: a.slug,
       nameAr: a.name_ar,
       nameEn: a.name_en,
-      tier: a.tier as 1 | 2 | 3 | 4,
+      tier: a.tier,
     }));
   const specialties = (specialtiesRaw ?? []).map((s) => ({
     slug: s.slug,
