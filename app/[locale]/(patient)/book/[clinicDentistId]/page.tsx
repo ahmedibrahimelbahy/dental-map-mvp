@@ -12,8 +12,13 @@ type CDRow = {
   fee_egp: number;
   slot_minutes: number;
   is_active: boolean;
-  dentist: { slug: string; name_ar: string; name_en: string } | null;
-  clinic: { name_ar: string; name_en: string } | null;
+  dentist: { slug: string; name_ar: string; name_en: string; is_published: boolean } | null;
+  clinic: {
+    name_ar: string;
+    name_en: string;
+    is_published: boolean;
+    verification_status: "pending" | "approved" | "denied";
+  } | null;
 };
 
 export default async function BookPage({
@@ -44,15 +49,23 @@ export default async function BookPage({
     .select(
       `
       id, fee_egp, slot_minutes, is_active,
-      dentist:dentists(slug, name_ar, name_en),
-      clinic:clinics(name_ar, name_en)
+      dentist:dentists(slug, name_ar, name_en, is_published),
+      clinic:clinics(name_ar, name_en, is_published, verification_status)
     `
     )
     .eq("id", clinicDentistId)
     .returns<CDRow[]>()
     .maybeSingle();
 
-  if (!cd || !cd.is_active) notFound();
+  if (
+    !cd ||
+    !cd.is_active ||
+    !cd.dentist?.is_published ||
+    !cd.clinic?.is_published ||
+    cd.clinic.verification_status !== "approved"
+  ) {
+    notFound();
+  }
 
   const startDate = new Date(start);
   if (Number.isNaN(startDate.getTime())) notFound();

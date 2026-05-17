@@ -6,7 +6,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createBookingEvent } from "@/lib/gcal/events";
 import { sendEmail, bookingPatientEmail, bookingClinicEmail } from "@/lib/email/resend";
 import { generateBookingIcs } from "@/lib/booking/ics";
-import type { CalendarMode } from "@/lib/supabase/types";
+import type { CalendarMode, ChiefComplaint } from "@/lib/supabase/types";
 
 export type BookingResult =
   | { ok: true; appointmentId: string }
@@ -16,6 +16,7 @@ type CreateInput = {
   clinicDentistId: string;
   slotStartIso: string;
   patientPhone: string;
+  chiefComplaint?: ChiefComplaint;
   patientNote?: string;
   locale: string;
 };
@@ -37,23 +38,36 @@ export async function createBookingAction(
     slot_minutes: number;
     calendar_mode: CalendarMode;
     is_active: boolean;
-    dentist: { name_ar: string; name_en: string } | null;
-    clinic: { name_ar: string; name_en: string } | null;
+    dentist: { name_ar: string; name_en: string; is_published: boolean } | null;
+    clinic: {
+      name_ar: string;
+      name_en: string;
+      is_published: boolean;
+      verification_status: "pending" | "approved" | "denied";
+    } | null;
   };
   const { data: cd } = await admin
     .from("clinic_dentists")
     .select(
       `
       id, dentist_id, clinic_id, fee_egp, slot_minutes, calendar_mode, is_active,
-      dentist:dentists(name_ar, name_en),
-      clinic:clinics(name_ar, name_en)
+      dentist:dentists(name_ar, name_en, is_published),
+      clinic:clinics(name_ar, name_en, is_published, verification_status)
     `
     )
     .eq("id", input.clinicDentistId)
     .returns<CD[]>()
     .single();
 
-  if (!cd || !cd.is_active) return { ok: false, error: "invalid" };
+  if (
+    !cd ||
+    !cd.is_active ||
+    !cd.dentist?.is_published ||
+    !cd.clinic?.is_published ||
+    cd.clinic.verification_status !== "approved"
+  ) {
+    return { ok: false, error: "invalid" };
+  }
 
   const start = new Date(input.slotStartIso);
   if (Number.isNaN(start.getTime())) return { ok: false, error: "invalid" };
@@ -94,6 +108,7 @@ export async function createBookingAction(
       status: "confirmed",
       patient_phone: input.patientPhone,
       patient_note: input.patientNote ?? null,
+      chief_complaint: input.chiefComplaint ?? null,
     } as never)
     .select("id")
     .returns<{ id: string }[]>()
@@ -130,6 +145,7 @@ export async function createBookingAction(
           endIso: end.toISOString(),
           patientName: profile?.full_name ?? "Patient",
           patientPhone: input.patientPhone,
+          chiefComplaint: input.chiefComplaint,
           note: input.patientNote,
         });
         await admin
@@ -212,6 +228,7 @@ export async function createBookingAction(
           clinicName: clinicNameEn,
           slotIso: start.toISOString(),
           feeEgp: cd.fee_egp,
+          chiefComplaint: input.chiefComplaint,
           patientNote: input.patientNote,
         }),
       });

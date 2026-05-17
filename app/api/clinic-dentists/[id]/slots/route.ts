@@ -30,16 +30,32 @@ export async function GET(
     working_hours: WorkingHoursDay[];
     calendar_mode: CalendarMode;
     is_active: boolean;
+    dentist: { is_published: boolean } | null;
+    clinic: {
+      is_published: boolean;
+      verification_status: "pending" | "approved" | "denied";
+    } | null;
   };
 
   const { data, error } = await admin
     .from("clinic_dentists")
-    .select("id, dentist_id, slot_minutes, working_hours, calendar_mode, is_active")
+    .select(
+      `id, dentist_id, slot_minutes, working_hours, calendar_mode, is_active,
+       dentist:dentists(is_published),
+       clinic:clinics(is_published, verification_status)`
+    )
     .eq("id", id)
     .returns<Row[]>()
     .maybeSingle();
 
-  if (error || !data || !data.is_active) {
+  if (
+    error ||
+    !data ||
+    !data.is_active ||
+    !data.dentist?.is_published ||
+    !data.clinic?.is_published ||
+    data.clinic.verification_status !== "approved"
+  ) {
     return NextResponse.json({ slots: [] }, { status: 200 });
   }
 

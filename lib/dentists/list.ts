@@ -136,6 +136,7 @@ export async function listDentists(
     )
     .eq("is_active", true)
     .eq("clinic.is_published", true)
+    .eq("clinic.verification_status", "approved")
     .eq("dentist.is_published", true);
 
   if (areaId) q = q.eq("clinic.area_id", areaId);
@@ -350,6 +351,7 @@ export async function getDentistBySlug(slug: string) {
     .eq("dentist_id", dentist.id)
     .eq("is_active", true)
     .eq("clinic.is_published", true)
+    .eq("clinic.verification_status", "approved")
     .returns<CD[]>();
 
   const { data: ds } = await admin

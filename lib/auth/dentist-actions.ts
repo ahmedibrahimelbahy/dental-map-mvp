@@ -147,6 +147,21 @@ export async function setClinicPublishedAction(input: {
     .single();
   if (!ca && me?.role !== "ops") throw new Error("Forbidden");
 
+  // A clinic admin cannot publish their own clinic until ops has approved
+  // it — that's the verification gate. Ops can still publish (e.g. during
+  // backfill of pre-verification pilots) and either role can un-publish.
+  if (input.published && me?.role !== "ops") {
+    const { data: clinic } = await admin
+      .from("clinics")
+      .select("verification_status")
+      .eq("id", input.clinicId)
+      .returns<{ verification_status: "pending" | "approved" | "denied" }[]>()
+      .single();
+    if (clinic?.verification_status !== "approved") {
+      throw new Error("Clinic must be approved before going live");
+    }
+  }
+
   const { error } = await admin
     .from("clinics")
     .update({ is_published: input.published } as never)

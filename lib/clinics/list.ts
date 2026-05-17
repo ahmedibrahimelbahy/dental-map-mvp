@@ -141,6 +141,7 @@ export async function listClinicsByArea(
     )
     .eq("area_id", area.id)
     .eq("is_published", true)
+    .eq("verification_status", "approved")
     .returns<Row[]>();
 
   if (!clinics) return [];
@@ -207,6 +208,7 @@ export async function getClinicBySlug(slug: string) {
     )
     .eq("slug", slug)
     .eq("is_published", true)
+    .eq("verification_status", "approved")
     .returns<ClinicRow[]>()
     .maybeSingle();
 
