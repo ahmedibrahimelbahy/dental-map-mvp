@@ -3,26 +3,30 @@
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { revalidatePath } from "next/cache";
+import type { Gender } from "@/lib/supabase/types";
 
 export type ProfileUpdateResult =
   | { ok: true }
-  | { ok: false; error: string; field?: "fullName" | "phone" | "password" };
+  | { ok: false; error: string; field?: "fullName" | "phone" | "gender" | "password" };
 
 function isValidPhone(phone: string): boolean {
   const digits = phone.replace(/\D/g, "");
   return digits.length >= 10 && digits.length <= 15;
 }
 
-/** Update full_name and/or phone on the patient's profile. */
+const ALLOWED_GENDERS: ReadonlyArray<Gender> = ["male", "female", "unspecified"];
+
+/** Update full_name, phone, and/or gender on the patient's profile. */
 export async function updateProfileAction(input: {
   fullName?: string;
   phone?: string;
+  gender?: Gender | null;
 }): Promise<ProfileUpdateResult> {
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) return { ok: false, error: "Not signed in." };
 
-  const updates: { full_name?: string; phone?: string } = {};
+  const updates: { full_name?: string; phone?: string; gender?: Gender | null } = {};
   if (input.fullName !== undefined) {
     const cleanName = input.fullName.trim();
     if (!cleanName) {
@@ -40,6 +44,12 @@ export async function updateProfileAction(input: {
       };
     }
     updates.phone = cleanPhone;
+  }
+  if (input.gender !== undefined) {
+    if (input.gender !== null && !ALLOWED_GENDERS.includes(input.gender)) {
+      return { ok: false, error: "Invalid gender value.", field: "gender" };
+    }
+    updates.gender = input.gender;
   }
 
   if (Object.keys(updates).length === 0) {

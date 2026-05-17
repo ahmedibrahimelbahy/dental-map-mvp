@@ -68,6 +68,7 @@ export default async function AccountPage({
       <AccountSettingsCard
         initialFullName={user.profile.full_name ?? ""}
         initialPhone={user.profile.phone ?? ""}
+        initialGender={user.profile.gender ?? null}
         email={user.email ?? ""}
         locale={locale}
         labels={{
@@ -77,6 +78,11 @@ export default async function AccountPage({
           emailField: t("settingsEmail"),
           emailReadOnlyHint: t("settingsEmailHint"),
           passwordField: t("settingsPassword"),
+          genderField: t("settingsGender"),
+          genderMale: t("settingsGenderMale"),
+          genderFemale: t("settingsGenderFemale"),
+          genderUnspecified: t("settingsGenderUnspecified"),
+          genderNotSet: t("settingsGenderNotSet"),
           edit: t("settingsEdit"),
           save: t("settingsSave"),
           saving: t("settingsSaving"),

@@ -15,8 +15,6 @@ import {
   Stethoscope,
   Zap,
   HeartPulse,
-  Star,
-  ShieldCheck,
 } from "lucide-react";
 
 export default async function HomePage({
@@ -43,7 +41,7 @@ export default async function HomePage({
     <>
       {/* ═══ HERO ═══ */}
       <section className="hero-wash">
-        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-14 md:pb-24 grid xl:grid-cols-[minmax(0,1fr)_440px] gap-12 xl:gap-16 items-center">
+        <div className="max-w-[1240px] mx-auto px-5 md:px-8 pt-10 md:pt-20 pb-14 md:pb-24 grid xl:grid-cols-[minmax(0,1fr)_380px] gap-12 xl:gap-10 items-center">
           <div className="max-w-[820px] animate-rise">
             <span className="chip mb-6">
               <span className="chip-dot"></span>
@@ -149,7 +147,7 @@ export default async function HomePage({
             </ul>
           </div>
 
-          <HeroSlotPreview />
+          <HeroCairoMap />
         </div>
       </section>
 

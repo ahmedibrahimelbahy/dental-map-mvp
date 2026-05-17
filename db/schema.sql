@@ -12,6 +12,8 @@ create extension if not exists "citext";
 create type user_role as enum ('patient', 'dentist_admin', 'ops');
 create type dentist_title as enum ('professor', 'consultant', 'specialist', 'resident');
 create type appointment_status as enum ('pending', 'confirmed', 'completed', 'cancelled', 'no_show');
+create type chief_complaint as enum ('cleaning', 'pain', 'cosmetic', 'ortho', 'emergency', 'other');
+create type gender as enum ('male', 'female', 'unspecified');
 
 -- ───── PROFILES ───────────────────────────────────────────────────────────
 -- Extends auth.users.
@@ -21,6 +23,7 @@ create table profiles (
   full_name text not null,
   phone text,                              -- required on patient signup (enforced at app layer)
   email citext,                            -- mirror of auth.users.email for convenience
+  gender gender,                           -- optional; surfaced in patient "My account" settings
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -174,6 +177,7 @@ create table appointments (
   status appointment_status not null default 'pending',
   patient_phone text not null,             -- copied at booking in case patient updates profile later
   patient_note text,
+  chief_complaint chief_complaint,         -- structured reason for visit, captured at booking
   gcal_event_id text,                      -- filled once the event is pushed to Google Calendar
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),

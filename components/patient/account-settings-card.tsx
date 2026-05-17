@@ -8,6 +8,7 @@ import {
   updateProfileAction,
   changePasswordAction,
 } from "@/lib/auth/profile-actions";
+import type { Gender } from "@/lib/supabase/types";
 
 export type AccountSettingsLabels = {
   title: string;
@@ -16,6 +17,11 @@ export type AccountSettingsLabels = {
   emailField: string;
   emailReadOnlyHint: string;
   passwordField: string;
+  genderField: string;
+  genderMale: string;
+  genderFemale: string;
+  genderUnspecified: string;
+  genderNotSet: string;
   edit: string;
   save: string;
   saving: string;
@@ -35,28 +41,41 @@ export type AccountSettingsLabels = {
 export function AccountSettingsCard({
   initialFullName,
   initialPhone,
+  initialGender,
   email,
   locale,
   labels,
 }: {
   initialFullName: string;
   initialPhone: string;
+  initialGender: Gender | null;
   email: string;
   locale: string;
   labels: AccountSettingsLabels;
 }) {
   const [fullName, setFullName] = useState(initialFullName);
   const [phone, setPhone] = useState(initialPhone);
+  const [gender, setGender] = useState<Gender | null>(initialGender);
   const [editingName, setEditingName] = useState(false);
   const [editingPhone, setEditingPhone] = useState(false);
+  const [editingGender, setEditingGender] = useState(false);
   const [draftName, setDraftName] = useState(initialFullName);
   const [draftPhone, setDraftPhone] = useState(initialPhone);
+  const [draftGender, setDraftGender] = useState<Gender | "">(initialGender ?? "");
   const [pendingName, startNameTransition] = useTransition();
   const [pendingPhone, startPhoneTransition] = useTransition();
-  const [savedFlash, setSavedFlash] = useState<null | "name" | "phone">(null);
+  const [pendingGender, startGenderTransition] = useTransition();
+  const [savedFlash, setSavedFlash] = useState<null | "name" | "phone" | "gender">(null);
   const [fieldError, setFieldError] = useState<{ field: string; msg: string } | null>(null);
 
   const [passwordOpen, setPasswordOpen] = useState(false);
+
+  const genderLabel = (g: Gender | null): string => {
+    if (g === "male") return labels.genderMale;
+    if (g === "female") return labels.genderFemale;
+    if (g === "unspecified") return labels.genderUnspecified;
+    return labels.genderNotSet;
+  };
 
   function saveName() {
     if (!draftName.trim()) {
@@ -92,6 +111,22 @@ export function AccountSettingsCard({
       setPhone(draftPhone.trim());
       setEditingPhone(false);
       setSavedFlash("phone");
+      setTimeout(() => setSavedFlash(null), 1800);
+    });
+  }
+
+  function saveGender() {
+    setFieldError(null);
+    const next: Gender | null = draftGender === "" ? null : draftGender;
+    startGenderTransition(async () => {
+      const r = await updateProfileAction({ gender: next });
+      if (!r.ok) {
+        setFieldError({ field: "gender", msg: r.error });
+        return;
+      }
+      setGender(next);
+      setEditingGender(false);
+      setSavedFlash("gender");
       setTimeout(() => setSavedFlash(null), 1800);
     });
   }
@@ -171,6 +206,52 @@ export function AccountSettingsCard({
               locale={locale}
               required
             />
+          }
+        />
+
+        {/* ── Gender ───────────────────────────────────────────── */}
+        <FieldRow
+          label={labels.genderField}
+          editing={editingGender}
+          editLabel={labels.edit}
+          cancelLabel={labels.cancel}
+          saveLabel={pendingGender ? labels.saving : labels.save}
+          savedFlash={savedFlash === "gender" ? labels.saved : null}
+          onEdit={() => {
+            setDraftGender(gender ?? "");
+            setEditingGender(true);
+            setEditingName(false);
+            setEditingPhone(false);
+            setFieldError(null);
+          }}
+          onCancel={() => {
+            setEditingGender(false);
+            setFieldError(null);
+          }}
+          onSave={saveGender}
+          saveDisabled={pendingGender || draftGender === (gender ?? "")}
+          error={fieldError?.field === "gender" ? fieldError.msg : null}
+          view={
+            <span
+              className={`text-[14px] font-medium ${
+                gender ? "text-ink-900" : "text-ink-400"
+              }`}
+            >
+              {genderLabel(gender)}
+            </span>
+          }
+          edit={
+            <select
+              value={draftGender}
+              onChange={(e) => setDraftGender(e.target.value as Gender | "")}
+              autoFocus
+              className="field-input cursor-pointer"
+            >
+              <option value="">{labels.genderNotSet}</option>
+              <option value="male">{labels.genderMale}</option>
+              <option value="female">{labels.genderFemale}</option>
+              <option value="unspecified">{labels.genderUnspecified}</option>
+            </select>
           }
         />
 

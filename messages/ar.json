@@ -108,6 +108,14 @@
     "patientName": "اسمك",
     "patientPhone": "رقم الموبايل",
     "patientPhoneHint": "العيادة بتستخدمه عشان توصلك.",
+    "patientReason": "سبب الزيارة",
+    "patientReasonPlaceholder": "اختار السبب…",
+    "complaint_cleaning": "تنظيف أو كشف",
+    "complaint_pain": "ألم",
+    "complaint_cosmetic": "تجميل",
+    "complaint_ortho": "تقويم",
+    "complaint_emergency": "طوارئ",
+    "complaint_other": "غير ذلك",
     "patientNote": "ملاحظة للدكتور (اختياري)",
     "submit": "أكّد الحجز",
     "successTitle": "تمام، الحجز اتأكّد.",
@@ -490,7 +498,12 @@
     "settingsPasswordsMismatch": "كلمتين السر مش زي بعض.",
     "settingsPasswordChanged": "كلمة السر اتحدّثت.",
     "settingsInvalidName": "اكتب اسمك من فضلك.",
-    "settingsInvalidPhone": "اكتب رقم تليفون صحيح."
+    "settingsInvalidPhone": "اكتب رقم تليفون صحيح.",
+    "settingsGender": "النوع",
+    "settingsGenderMale": "ذكر",
+    "settingsGenderFemale": "أنثى",
+    "settingsGenderUnspecified": "أفضّل عدم الإفصاح",
+    "settingsGenderNotSet": "غير محدد"
   },
   "Specialties": {
     "eyebrow": "اتفرّج بالتخصص",

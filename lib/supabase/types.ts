@@ -17,6 +17,14 @@ export type AppointmentStatus =
   | "cancelled"
   | "no_show";
 export type CalendarMode = "google" | "manual";
+export type ChiefComplaint =
+  | "cleaning"
+  | "pain"
+  | "cosmetic"
+  | "ortho"
+  | "emergency"
+  | "other";
+export type Gender = "male" | "female" | "unspecified";
 
 export type WorkingHoursDay = {
   day: number; // 0 = Sunday, 6 = Saturday
@@ -35,6 +43,7 @@ export type Database = {
           full_name: string;
           phone: string | null;
           email: string | null;
+          gender: Gender | null;
           created_at: string;
           updated_at: string;
         };
@@ -44,6 +53,7 @@ export type Database = {
           full_name: string;
           phone?: string | null;
           email?: string | null;
+          gender?: Gender | null;
         };
         Update: Partial<Database["public"]["Tables"]["profiles"]["Insert"]>;
       };
@@ -155,6 +165,7 @@ export type Database = {
           status: AppointmentStatus;
           patient_phone: string;
           patient_note: string | null;
+          chief_complaint: ChiefComplaint | null;
           gcal_event_id: string | null;
           reminder_sent_at: string | null;
           review_request_sent_at: string | null;
@@ -239,6 +250,8 @@ export type Database = {
       user_role: UserRole;
       dentist_title: DentistTitle;
       appointment_status: AppointmentStatus;
+      chief_complaint: ChiefComplaint;
+      gender: Gender;
     };
   };
 };

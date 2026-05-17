@@ -1,4 +1,14 @@
 import { Resend } from "resend";
+import type { ChiefComplaint } from "@/lib/supabase/types";
+
+const COMPLAINT_LABEL_EN: Record<ChiefComplaint, string> = {
+  cleaning: "Cleaning / checkup",
+  pain: "Pain",
+  cosmetic: "Cosmetic",
+  ortho: "Orthodontics",
+  emergency: "Emergency",
+  other: "Other",
+};
 
 function getClient(): Resend | null {
   const key = process.env.RESEND_API_KEY;
@@ -308,6 +318,7 @@ export function bookingClinicEmail({
   clinicName,
   slotIso,
   feeEgp,
+  chiefComplaint,
   patientNote,
 }: {
   patientName: string;
@@ -317,6 +328,7 @@ export function bookingClinicEmail({
   clinicName: string;
   slotIso: string;
   feeEgp: number;
+  chiefComplaint?: ChiefComplaint | null;
   patientNote?: string | null;
 }): { subject: string; html: string; text: string } {
   const when = new Date(slotIso).toLocaleString("en", {
@@ -328,8 +340,11 @@ export function bookingClinicEmail({
     minute: "2-digit",
     timeZone: "Africa/Cairo",
   });
+  const reasonLine = chiefComplaint
+    ? `\n  Reason:  ${COMPLAINT_LABEL_EN[chiefComplaint]}`
+    : "";
   const noteLine = patientNote ? `\n  Note:    ${patientNote}` : "";
-  const text = `New booking via Dental Map\n\n  Dentist: ${dentistName}\n  Clinic:  ${clinicName}\n  When:    ${when}\n  Fee:     ${feeEgp} EGP\n\nPatient details\n  Name:    ${patientName}\n  Phone:   ${patientPhone}\n  Email:   ${patientEmail}${noteLine}\n\nLog in to your dashboard to manage this appointment.\nhttps://dentalmap.app/dashboard`;
+  const text = `New booking via Dental Map\n\n  Dentist: ${dentistName}\n  Clinic:  ${clinicName}\n  When:    ${when}\n  Fee:     ${feeEgp} EGP\n\nPatient details\n  Name:    ${patientName}\n  Phone:   ${patientPhone}\n  Email:   ${patientEmail}${reasonLine}${noteLine}\n\nLog in to your dashboard to manage this appointment.\nhttps://dentalmap.app/dashboard`;
   return {
     subject: `New booking · ${patientName} · ${when}`,
     html: text.replace(/\n/g, "<br>"),

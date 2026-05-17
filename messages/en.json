@@ -108,6 +108,14 @@
     "patientName": "Your name",
     "patientPhone": "Phone number",
     "patientPhoneHint": "The clinic uses this to reach you.",
+    "patientReason": "Reason for visit",
+    "patientReasonPlaceholder": "Select a reason…",
+    "complaint_cleaning": "Cleaning / checkup",
+    "complaint_pain": "Pain",
+    "complaint_cosmetic": "Cosmetic",
+    "complaint_ortho": "Orthodontics",
+    "complaint_emergency": "Emergency",
+    "complaint_other": "Other",
     "patientNote": "Note for the dentist (optional)",
     "submit": "Confirm booking",
     "successTitle": "Booking confirmed.",
@@ -490,7 +498,12 @@
     "settingsPasswordsMismatch": "Passwords don't match.",
     "settingsPasswordChanged": "Password updated.",
     "settingsInvalidName": "Please enter your name.",
-    "settingsInvalidPhone": "Please enter a valid phone number."
+    "settingsInvalidPhone": "Please enter a valid phone number.",
+    "settingsGender": "Gender",
+    "settingsGenderMale": "Male",
+    "settingsGenderFemale": "Female",
+    "settingsGenderUnspecified": "Prefer not to say",
+    "settingsGenderNotSet": "Not set"
   },
   "Specialties": {
     "eyebrow": "Browse by specialty",

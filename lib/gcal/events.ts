@@ -1,6 +1,16 @@
 import { calendar as calendarModule } from "@googleapis/calendar";
 import { getAuthorizedClient } from "./client";
 import { createAdminClient } from "@/lib/supabase/admin";
+import type { ChiefComplaint } from "@/lib/supabase/types";
+
+const COMPLAINT_LABEL_EN: Record<ChiefComplaint, string> = {
+  cleaning: "Cleaning / checkup",
+  pain: "Pain",
+  cosmetic: "Cosmetic",
+  ortho: "Orthodontics",
+  emergency: "Emergency",
+  other: "Other",
+};
 
 type BookingEventInput = {
   dentistId: string;
@@ -8,6 +18,7 @@ type BookingEventInput = {
   endIso: string;
   patientName: string;
   patientPhone: string;
+  chiefComplaint?: ChiefComplaint;
   note?: string;
 };
 
@@ -36,6 +47,9 @@ export async function createBookingEvent(
       description: [
         `Patient: ${input.patientName}`,
         `Phone: ${input.patientPhone}`,
+        input.chiefComplaint
+          ? `Reason: ${COMPLAINT_LABEL_EN[input.chiefComplaint]}`
+          : null,
         input.note ? `Note: ${input.note}` : null,
         "Booked via Dental Map.",
       ]

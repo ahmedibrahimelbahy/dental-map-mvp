@@ -4,6 +4,16 @@ import { useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { createBookingAction } from "@/lib/booking/actions";
+import type { ChiefComplaint } from "@/lib/supabase/types";
+
+const COMPLAINT_OPTIONS: ChiefComplaint[] = [
+  "cleaning",
+  "pain",
+  "cosmetic",
+  "ortho",
+  "emergency",
+  "other",
+];
 
 export function BookingForm({
   clinicDentistId,
@@ -21,6 +31,7 @@ export function BookingForm({
   const router = useRouter();
 
   const [phone, setPhone] = useState(initialPhone);
+  const [complaint, setComplaint] = useState<ChiefComplaint | "">("");
   const [note, setNote] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -33,6 +44,7 @@ export function BookingForm({
         clinicDentistId,
         slotStartIso,
         patientPhone: phone,
+        chiefComplaint: complaint || undefined,
         patientNote: note || undefined,
         locale,
       });
@@ -84,6 +96,28 @@ export function BookingForm({
         <p className="mt-2 text-[12.5px] text-ink-500">
           {t("patientPhoneHint")}
         </p>
+      </div>
+
+      <div>
+        <label className="field-label" htmlFor="reason">
+          {t("patientReason")}
+        </label>
+        <select
+          id="reason"
+          value={complaint}
+          required
+          onChange={(e) => setComplaint(e.target.value as ChiefComplaint | "")}
+          className="field-input cursor-pointer"
+        >
+          <option value="" disabled>
+            {t("patientReasonPlaceholder")}
+          </option>
+          {COMPLAINT_OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {t(`complaint_${opt}` as const)}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
