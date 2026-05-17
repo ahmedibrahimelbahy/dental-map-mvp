@@ -24,18 +24,18 @@ if (exists) {
   // Update it to be public + set MIME types
   const { error } = await supa.storage.updateBucket(BUCKET, {
     public: true,
-    fileSizeLimit: 10 * 1024 * 1024, // 10 MB per asset
+    fileSizeLimit: 5 * 1024 * 1024, // 5 MB per asset (matches server action)
     allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
   });
   if (error) {
     console.error("❌ updateBucket failed:", error.message);
     process.exit(1);
   }
-  console.log(`✓ Bucket updated (public, 10MB limit, image MIME only)`);
+  console.log(`✓ Bucket updated (public, 5MB limit, image MIME only)`);
 } else {
   const { error } = await supa.storage.createBucket(BUCKET, {
     public: true,
-    fileSizeLimit: 10 * 1024 * 1024,
+    fileSizeLimit: 5 * 1024 * 1024,
     allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
   });
   if (error) {
