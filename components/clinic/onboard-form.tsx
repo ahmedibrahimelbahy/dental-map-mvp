@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition, useMemo, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "@/i18n/routing";
 import {
   Building2,
@@ -893,56 +894,44 @@ function PricingStep({
         </div>
       </section>
 
-      {/* Pricing cards — sticky-stacked deck once an area is picked */}
+      {/* Pricing cards — clean 3-column grid once an area is picked.
+          We deliberately keep the cards side-by-side (vs. a stacked scroll
+          deck) so all three packages stay comparable at a glance — the
+          decision moment for a clinic admin is "which plan", not "scroll
+          through plans one at a time". */}
       {pickedArea && prices ? (
-        <div className="space-y-[18vh] md:space-y-[22vh] pb-[12vh] md:pb-[16vh]">
-          {[
-            {
-              key: "standard" as const,
-              name: labels.packageStandard,
-              price: prices.standard,
-              features: labels.featuresStandard,
-              accent: "neutral" as const,
-              badge: undefined as string | undefined,
-              badgeIcon: undefined as React.ReactNode,
-            },
-            {
-              key: "growth" as const,
-              name: labels.packageGrowth,
-              price: prices.growth,
-              features: labels.featuresGrowth,
-              accent: "teal" as const,
-              badge: labels.packageMostPopular,
-              badgeIcon: <TrendingUp className="w-3 h-3" aria-hidden />,
-            },
-            {
-              key: "premium" as const,
-              name: labels.packagePremium,
-              price: prices.premium,
-              features: labels.featuresPremium,
-              accent: "dark" as const,
-              badge: labels.packageBest,
-              badgeIcon: <Crown className="w-3 h-3" aria-hidden />,
-            },
-          ].map((card, idx) => (
-            <div
-              key={card.key}
-              className={`sticky ${idx % 2 === 0 ? "deal-left" : "deal-right"}`}
-              style={{ top: `calc(80px + ${idx * 14}px)` }}
-            >
-              <PackageCard
-                name={card.name}
-                priceEgp={card.price}
-                monthSuffix={labels.pricingMonthSuffix}
-                features={card.features}
-                selected={selectedPackage === card.key}
-                onSelect={() => setSelectedPackage(card.key)}
-                accent={card.accent}
-                badge={card.badge}
-                badgeIcon={card.badgeIcon}
-              />
-            </div>
-          ))}
+        <div className="grid md:grid-cols-3 gap-4 md:gap-5 items-stretch">
+          <PackageCard
+            name={labels.packageStandard}
+            priceEgp={prices.standard}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresStandard}
+            selected={selectedPackage === "standard"}
+            onSelect={() => setSelectedPackage("standard")}
+            accent="neutral"
+          />
+          <PackageCard
+            name={labels.packageGrowth}
+            priceEgp={prices.growth}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresGrowth}
+            selected={selectedPackage === "growth"}
+            onSelect={() => setSelectedPackage("growth")}
+            accent="teal"
+            badge={labels.packageMostPopular}
+            badgeIcon={<TrendingUp className="w-3 h-3" aria-hidden />}
+          />
+          <PackageCard
+            name={labels.packagePremium}
+            priceEgp={prices.premium}
+            monthSuffix={labels.pricingMonthSuffix}
+            features={labels.featuresPremium}
+            selected={selectedPackage === "premium"}
+            onSelect={() => setSelectedPackage("premium")}
+            accent="dark"
+            badge={labels.packageBest}
+            badgeIcon={<Crown className="w-3 h-3" aria-hidden />}
+          />
         </div>
       ) : (
         <section className="rounded-2xl border-2 border-dashed border-ink-200 bg-white p-8 md:p-10 text-center">
@@ -1047,13 +1036,42 @@ function AreaSelect({
   placeholder: string;
 }) {
   const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const [portalReady, setPortalReady] = useState(false);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const popRef = useRef<HTMLDivElement>(null);
   const picked = areas.find((a) => a.slug === value);
 
+  // SSR-safe portal target — only available after mount.
+  useEffect(() => {
+    setPortalReady(true);
+  }, []);
+
+  // Recompute popover position on open + on scroll/resize so it stays glued
+  // to the trigger even when the parent <section> has overflow-hidden.
+  useEffect(() => {
+    if (!open) return;
+    function measure() {
+      if (wrapperRef.current) setRect(wrapperRef.current.getBoundingClientRect());
+    }
+    measure();
+    window.addEventListener("scroll", measure, true);
+    window.addEventListener("resize", measure);
+    return () => {
+      window.removeEventListener("scroll", measure, true);
+      window.removeEventListener("resize", measure);
+    };
+  }, [open]);
+
+  // Click-outside + Escape — checks BOTH the trigger and the portaled popover
+  // (portal sits outside wrapperRef so we have to include popRef explicitly).
   useEffect(() => {
     if (!open) return;
     function onDocClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const target = e.target as Node;
+      if (wrapperRef.current?.contains(target)) return;
+      if (popRef.current?.contains(target)) return;
+      setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
@@ -1066,8 +1084,24 @@ function AreaSelect({
     };
   }, [open]);
 
+  // Anchor the popover to the trigger. We use viewport coords (fixed) because
+  // the trigger lives inside an overflow-hidden gradient section — a portaled
+  // absolutely-positioned popover would be unanchored on scroll.
+  const popoverStyle: React.CSSProperties | undefined = rect
+    ? {
+        position: "fixed",
+        top: rect.bottom + 8,
+        ...(isAr
+          ? { left: rect.left }
+          : { left: Math.max(8, rect.right - 300) }),
+        width: 300,
+        maxHeight: 360,
+        zIndex: 50,
+      }
+    : undefined;
+
   return (
-    <div ref={ref} className="relative w-full sm:w-auto">
+    <div ref={wrapperRef} className="relative w-full sm:w-auto">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
@@ -1091,38 +1125,44 @@ function AreaSelect({
         />
       </button>
 
-      {open && (
-        <div
-          role="listbox"
-          className="absolute top-full mt-2 end-0 w-[300px] max-h-[360px] overflow-y-auto rounded-xl bg-white border border-ink-100 shadow-card-hover z-40 py-2"
-        >
-          {areas.map((a) => {
-            const isPicked = a.slug === value;
-            return (
-              <button
-                key={a.slug}
-                type="button"
-                role="option"
-                aria-selected={isPicked}
-                onClick={() => {
-                  onChange(a.slug);
-                  setOpen(false);
-                }}
-                className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-[14px] font-medium text-start transition-colors ${
-                  isPicked
-                    ? "bg-teal-50 text-teal-900"
-                    : "text-ink-700 hover:bg-ink-50"
-                }`}
-              >
-                <span className="truncate">{isAr ? a.nameAr : a.nameEn}</span>
-                <span className="text-[10.5px] font-bold text-ink-400 tracking-wider uppercase shrink-0">
-                  Tier {a.tier}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      )}
+      {open &&
+        portalReady &&
+        popoverStyle &&
+        createPortal(
+          <div
+            ref={popRef}
+            role="listbox"
+            style={popoverStyle}
+            className="overflow-y-auto rounded-xl bg-white border border-ink-100 shadow-card-hover py-2"
+          >
+            {areas.map((a) => {
+              const isPicked = a.slug === value;
+              return (
+                <button
+                  key={a.slug}
+                  type="button"
+                  role="option"
+                  aria-selected={isPicked}
+                  onClick={() => {
+                    onChange(a.slug);
+                    setOpen(false);
+                  }}
+                  className={`w-full flex items-center justify-between gap-3 px-4 py-2.5 text-[14px] font-medium text-start transition-colors ${
+                    isPicked
+                      ? "bg-teal-50 text-teal-900"
+                      : "text-ink-700 hover:bg-ink-50"
+                  }`}
+                >
+                  <span className="truncate">{isAr ? a.nameAr : a.nameEn}</span>
+                  <span className="text-[10.5px] font-bold text-ink-400 tracking-wider uppercase shrink-0">
+                    Tier {a.tier}
+                  </span>
+                </button>
+              );
+            })}
+          </div>,
+          document.body
+        )}
     </div>
   );
 }
@@ -1155,7 +1195,7 @@ function PackageCard({
         : "border-teal-200 bg-white hover:border-teal-400"
       : accent === "dark"
         ? selected
-          ? "border-amber-400 bg-ink-900 text-white ring-2 ring-amber-400/40"
+          ? "border-amber-400 bg-ink-900 text-white ring-2 ring-amber-400/40 shadow-glow"
           : "border-ink-800 bg-ink-900 text-white hover:border-amber-400"
         : selected
           ? "border-teal-500 bg-white ring-2 ring-teal-400/30"
@@ -1167,20 +1207,9 @@ function PackageCard({
       : accent === "dark"
         ? "text-amber-400"
         : "text-ink-900";
-  const subPriceColor =
-    accent === "teal"
-      ? "text-teal-600"
-      : accent === "dark"
-        ? "text-amber-300"
-        : "text-ink-500";
-  const monthColor = isDark ? "text-white/60" : "text-ink-400";
   const titleColor = isDark ? "text-white" : "text-ink-900";
   const featureColor = isDark ? "text-white/85" : "text-ink-700";
-  const checkBg = isDark
-    ? "bg-amber-400/20 text-amber-300"
-    : accent === "teal"
-      ? "bg-teal-100 text-teal-700"
-      : "bg-ink-100 text-ink-600";
+  const checkColor = isDark ? "text-amber-400" : "text-teal-600";
   const badgeBg =
     accent === "teal"
       ? "bg-teal-600 text-white"
@@ -1193,72 +1222,53 @@ function PackageCard({
       type="button"
       onClick={onSelect}
       aria-pressed={selected}
-      className={`relative w-full max-w-[720px] mx-auto block text-start rounded-2xl border-2 p-5 md:p-6 lg:p-7 transition-colors shadow-card-hover overflow-hidden ${accentClasses}`}
+      className={`relative h-full flex flex-col text-start rounded-2xl border-2 p-5 md:p-6 transition-colors ${accentClasses}`}
     >
       {badge && (
         <span
-          className={`absolute top-4 end-5 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${badgeBg}`}
+          className={`absolute -top-2.5 left-1/2 -translate-x-1/2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10.5px] font-bold uppercase tracking-wider ${badgeBg}`}
         >
           {badgeIcon}
           {badge}
         </span>
       )}
-
-      <div className="grid md:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] gap-5 md:gap-8 items-start">
-        {/* Left: name + price */}
-        <div className="min-w-0">
-          <h3
-            className={`font-display text-[17px] md:text-[20px] font-bold leading-tight mb-2 md:mb-3 ${titleColor}`}
-          >
-            {name}
-          </h3>
-          <div className="flex items-baseline gap-1.5">
-            <span
-              className={`font-display text-[32px] md:text-[42px] font-bold leading-none tracking-tight ${priceColor}`}
-            >
-              {priceEgp.toLocaleString("en-US")}
-            </span>
-            <span
-              className={`font-display text-[15px] md:text-[17px] font-bold ${subPriceColor}`}
-            >
-              EGP
-            </span>
-          </div>
-          <div className={`text-[12px] md:text-[12.5px] mt-1 ${monthColor}`}>
-            {monthSuffix}
-          </div>
-
-          {selected && (
-            <div
-              className={`mt-4 inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-[11.5px] font-bold ${
-                accent === "dark"
-                  ? "bg-amber-400 text-ink-900"
-                  : "bg-teal-600 text-white"
-              }`}
-            >
-              <Check className="w-3 h-3" aria-hidden />
-              Selected
-            </div>
-          )}
-        </div>
-
-        {/* Right: features */}
-        <ul className="space-y-2">
-          {features.map((f) => (
-            <li
-              key={f}
-              className={`flex items-start gap-2.5 text-[12.5px] md:text-[13px] leading-[1.5] ${featureColor}`}
-            >
-              <span
-                className={`inline-flex w-4 h-4 rounded-full items-center justify-center shrink-0 mt-0.5 ${checkBg}`}
-              >
-                <Check className="w-2.5 h-2.5" aria-hidden />
-              </span>
-              <span>{f}</span>
-            </li>
-          ))}
-        </ul>
+      <h3
+        className={`font-display text-[18px] md:text-[20px] font-bold text-center mb-2 ${titleColor}`}
+      >
+        {name}
+      </h3>
+      <div className={`text-center mb-4 ${priceColor}`}>
+        <span className="font-display text-[26px] md:text-[30px] font-bold">
+          {priceEgp.toLocaleString("en-US")}
+        </span>
+        <span className="font-display text-[16px] md:text-[18px] font-bold"> EGP</span>
+        <span className={`block text-[12px] mt-0.5 ${isDark ? "text-white/60" : "text-ink-400"}`}>
+          {monthSuffix}
+        </span>
       </div>
+      <ul className="space-y-1.5 flex-1">
+        {features.map((f) => (
+          <li
+            key={f}
+            className={`flex items-start gap-2 text-[12.5px] md:text-[13px] leading-[1.5] ${featureColor}`}
+          >
+            <Check className={`w-3.5 h-3.5 shrink-0 mt-0.5 ${checkColor}`} aria-hidden />
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+      {selected && (
+        <div
+          className={`mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-lg py-2 text-[12.5px] font-bold ${
+            accent === "dark"
+              ? "bg-amber-400 text-ink-900"
+              : "bg-teal-600 text-white"
+          }`}
+        >
+          <Check className="w-3.5 h-3.5" aria-hidden />
+          Selected
+        </div>
+      )}
     </button>
   );
 }
