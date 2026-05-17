@@ -92,7 +92,7 @@ export default async function ForClinicsPage({
         </div>
       </section>
 
-      {/* ═══ WHY ═══ */}
+      {/* ═══ WHY (stacked scroll deck) ═══ */}
       <section className="bg-white py-14 md:py-20">
         <div className="max-w-[1240px] mx-auto px-4 sm:px-5 md:px-8">
           <div className="max-w-[680px] mb-10 md:mb-14">
@@ -105,13 +105,29 @@ export default async function ForClinicsPage({
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
-            <WhyTile Icon={CalendarSync} title={t("why1Title")} body={t("why1Body")} accent />
-            <WhyTile Icon={Star} title={t("why2Title")} body={t("why2Body")} />
-            <WhyTile Icon={Globe} title={t("why3Title")} body={t("why3Body")} />
-            <WhyTile Icon={BadgeDollarSign} title={t("why4Title")} body={t("why4Body")} />
-            <WhyTile Icon={Headphones} title={t("why5Title")} body={t("why5Body")} />
-            <WhyTile Icon={Languages} title={t("why6Title")} body={t("why6Body")} />
+          <div className="space-y-[26vh] md:space-y-[32vh] pb-[18vh] md:pb-[22vh]">
+            {[
+              { Icon: CalendarSync, titleKey: "why1Title", bodyKey: "why1Body" },
+              { Icon: Star, titleKey: "why2Title", bodyKey: "why2Body" },
+              { Icon: Globe, titleKey: "why3Title", bodyKey: "why3Body" },
+              { Icon: BadgeDollarSign, titleKey: "why4Title", bodyKey: "why4Body" },
+              { Icon: Headphones, titleKey: "why5Title", bodyKey: "why5Body" },
+              { Icon: Languages, titleKey: "why6Title", bodyKey: "why6Body" },
+            ].map((card, idx, arr) => (
+              <div
+                key={card.titleKey}
+                className="sticky"
+                style={{ top: `calc(76px + ${idx * 14}px)` }}
+              >
+                <WhyStackedCard
+                  Icon={card.Icon}
+                  title={t(card.titleKey as "why1Title")}
+                  body={t(card.bodyKey as "why1Body")}
+                  index={idx}
+                  total={arr.length}
+                />
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -276,38 +292,46 @@ export default async function ForClinicsPage({
   );
 }
 
-/* ── tile ─────────────────────────────────────────────────────────────── */
-function WhyTile({
+/* ── stacked deck card ────────────────────────────────────────────────── */
+function WhyStackedCard({
   Icon,
   title,
   body,
-  accent = false,
+  index,
+  total,
 }: {
   Icon: typeof CalendarSync;
   title: string;
   body: string;
-  accent?: boolean;
+  index: number;
+  total: number;
 }) {
   return (
-    <div
-      className={`rounded-2xl border p-5 md:p-6 transition-shadow ${
-        accent
-          ? "bg-gradient-to-br from-teal-50 to-white border-teal-200 shadow-glow"
-          : "bg-white border-ink-100 shadow-card hover:shadow-tile"
-      }`}
-    >
-      <span
-        className={`inline-flex w-10 h-10 rounded-xl items-center justify-center mb-3 ${
-          accent ? "bg-teal-600 text-white" : "bg-teal-50 text-teal-600"
-        }`}
-      >
-        <Icon className="w-5 h-5" aria-hidden />
-      </span>
-      <h3 className="font-display text-[16px] md:text-[17px] font-bold text-ink-900 mb-2 leading-tight">
-        {title}
-      </h3>
-      <p className="text-[13.5px] md:text-[14px] leading-[1.65] text-ink-600">{body}</p>
-    </div>
+    <article className="relative mx-auto max-w-[860px] rounded-3xl border border-ink-100 bg-white shadow-card-hover overflow-hidden">
+      {/* subtle teal wash in the corner for depth */}
+      <div
+        aria-hidden
+        className="absolute -top-24 -end-24 w-[320px] h-[320px] rounded-full bg-teal-100/50 blur-3xl pointer-events-none"
+      />
+
+      <div className="relative p-7 md:p-10 lg:p-12">
+        {/* index in corner */}
+        <span className="absolute top-5 end-6 small-caps text-ink-300 tabular-nums">
+          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
+        </span>
+
+        <span className="inline-flex w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-teal-gradient text-white items-center justify-center mb-5 md:mb-7 shadow-teal-glow">
+          <Icon className="w-6 h-6 md:w-7 md:h-7" aria-hidden />
+        </span>
+
+        <h3 className="display-h3 text-[22px] sm:text-[26px] md:text-[34px] lg:text-[40px] text-ink-900 mb-3 md:mb-4 max-w-[18ch]">
+          {title}
+        </h3>
+        <p className="text-[15px] md:text-[16.5px] leading-[1.7] text-ink-600 max-w-[58ch]">
+          {body}
+        </p>
+      </div>
+    </article>
   );
 }
 
