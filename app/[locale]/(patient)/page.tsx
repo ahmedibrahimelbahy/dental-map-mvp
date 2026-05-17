@@ -126,7 +126,8 @@ export default async function HomePage({
 
               <button
                 type="submit"
-                className="btn-primary !rounded-none md:!rounded-tl-none md:!rounded-bl-none rtl:md:!rounded-tr-none rtl:md:!rounded-br-none h-auto md:min-w-[180px] justify-center gap-2"
+                className="btn-primary h-auto md:min-w-[180px] justify-center gap-2"
+                style={{ borderRadius: 0 }}
               >
                 {t("searchSubmit")}
                 <ArrowRight className="w-4 h-4 rtl:rotate-180" aria-hidden />
