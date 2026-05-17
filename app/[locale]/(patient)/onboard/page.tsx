@@ -172,6 +172,21 @@ export default async function OnboardPage({
           validity3: t("validity3"),
           validity6: t("validity6"),
           pricingSelectFirst: t("pricingSelectFirst"),
+          clinicLogoLabel: t("clinicLogoLabel"),
+          clinicLogoHint: t("clinicLogoHint"),
+          clinicHeroLabel: t("clinicHeroLabel"),
+          clinicHeroHint: t("clinicHeroHint"),
+          dentistPhotoLabel: t("dentistPhotoLabel"),
+          dentistPhotoHint: t("dentistPhotoHint"),
+          imageUpload: {
+            add: t("imgUploadAdd"),
+            replace: t("imgUploadReplace"),
+            remove: t("imgUploadRemove"),
+            uploading: t("imgUploadUploading"),
+            tooLarge: t("imgUploadTooLarge"),
+            wrongType: t("imgUploadWrongType"),
+            failed: t("imgUploadFailed"),
+          },
         }}
       />
     </div>

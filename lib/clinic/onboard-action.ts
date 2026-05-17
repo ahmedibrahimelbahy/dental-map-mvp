@@ -12,6 +12,7 @@ import {
   type Tier,
   type ValidityMonths,
 } from "@/lib/clinic/pricing";
+import { isOwnedPendingUrl } from "@/lib/clinic/upload-action";
 import { sendEmail, clinicOnboardOpsEmail } from "@/lib/email/resend";
 
 export type OnboardInput = {
@@ -26,6 +27,8 @@ export type OnboardInput = {
     lat: number;
     lng: number;
     googleMapsUrl?: string;
+    logoUrl?: string;
+    heroImageUrl?: string;
   };
   dentists: Array<{
     nameEn: string;
@@ -36,6 +39,7 @@ export type OnboardInput = {
     specialties: string[]; // slugs
     bioEn?: string;
     bioAr?: string;
+    photoUrl?: string;
   }>;
   subscription: {
     tier: Tier;
@@ -155,6 +159,25 @@ export async function onboardClinicAction(
     input.subscription.package
   );
 
+  // Validate uploaded photo URLs: they must point to a path this user's
+  // signed-upload ticket would have produced. Anyone forging a URL into
+  // someone else's pending/ folder (or into another bucket entirely) is
+  // rejected silently — we just drop the URL and continue.
+  const sanitizedLogoUrl =
+    input.clinic.logoUrl && isOwnedPendingUrl(input.clinic.logoUrl, auth.user.id)
+      ? input.clinic.logoUrl
+      : null;
+  const sanitizedHeroUrl =
+    input.clinic.heroImageUrl &&
+    isOwnedPendingUrl(input.clinic.heroImageUrl, auth.user.id)
+      ? input.clinic.heroImageUrl
+      : null;
+  const sanitizedDentistPhotos = input.dentists.map((d) =>
+    d.photoUrl && isOwnedPendingUrl(d.photoUrl, auth.user!.id)
+      ? d.photoUrl
+      : null
+  );
+
   const admin = createAdminClient();
 
   // Resolve area + tier (we re-check the tier from the DB so the price the
@@ -208,6 +231,8 @@ export async function onboardClinicAction(
       lat: input.clinic.lat,
       lng: input.clinic.lng,
       google_maps_url: input.clinic.googleMapsUrl?.trim() || null,
+      logo_url: sanitizedLogoUrl,
+      hero_image_url: sanitizedHeroUrl,
       is_published: false,
       subscription_tier: input.subscription.tier,
       subscription_package: input.subscription.package,
@@ -226,7 +251,8 @@ export async function onboardClinicAction(
   }
 
   // For each dentist: insert dentist, clinic_dentists, dentist_specialties
-  for (const d of input.dentists) {
+  for (let i = 0; i < input.dentists.length; i++) {
+    const d = input.dentists[i];
     const dentistSlug = await uniqueSlug("dentists", slugify(d.nameEn), admin);
 
     const { data: dentistRow, error: dentistErr } = await admin
@@ -239,6 +265,7 @@ export async function onboardClinicAction(
         years_experience: d.yearsExp ?? null,
         bio_en: d.bioEn?.trim() || null,
         bio_ar: d.bioAr?.trim() || null,
+        photo_url: sanitizedDentistPhotos[i],
         // Dentists start published — the clinic.is_published flag is the
         // single visibility gate. Search requires both true.
         is_published: true,

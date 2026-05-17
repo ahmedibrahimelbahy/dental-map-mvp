@@ -31,6 +31,10 @@ import {
   type LocationValue,
   type LocationPickerLabels,
 } from "@/components/clinic/location-picker";
+import {
+  ImageUpload,
+  type ImageUploadLabels,
+} from "@/components/clinic/image-upload";
 
 type Area = { slug: string; nameAr: string; nameEn: string; tier: Tier };
 type Specialty = { slug: string; nameAr: string; nameEn: string };
@@ -46,6 +50,7 @@ type Dentist = {
   yearsExp: string;
   feeEgp: string;
   specialties: string[];
+  photoUrl: string | null;
 };
 
 const blankDentist = (): Dentist => ({
@@ -55,6 +60,7 @@ const blankDentist = (): Dentist => ({
   yearsExp: "",
   feeEgp: "",
   specialties: [],
+  photoUrl: null,
 });
 
 export type OnboardFormProps = {
@@ -126,6 +132,13 @@ export type OnboardFormProps = {
     validity3: string;
     validity6: string;
     pricingSelectFirst: string;
+    clinicLogoLabel: string;
+    clinicLogoHint: string;
+    clinicHeroLabel: string;
+    clinicHeroHint: string;
+    dentistPhotoLabel: string;
+    dentistPhotoHint: string;
+    imageUpload: ImageUploadLabels;
   };
 };
 
@@ -151,6 +164,8 @@ export function OnboardForm({
     areaSlug: "",
     phone: "",
     whatsapp: "",
+    logoUrl: null as string | null,
+    heroImageUrl: null as string | null,
   });
   const [dentists, setDentists] = useState<Dentist[]>([blankDentist()]);
 
@@ -251,6 +266,8 @@ export function OnboardForm({
           lat: location.lat as number,
           lng: location.lng as number,
           googleMapsUrl: location.googleMapsUrl ?? undefined,
+          logoUrl: clinic.logoUrl ?? undefined,
+          heroImageUrl: clinic.heroImageUrl ?? undefined,
         },
         dentists: dentists.map((d) => ({
           nameEn: d.nameEn,
@@ -259,6 +276,7 @@ export function OnboardForm({
           yearsExp: d.yearsExp ? parseInt(d.yearsExp, 10) : null,
           feeEgp: d.feeEgp ? parseInt(d.feeEgp, 10) : 0,
           specialties: d.specialties,
+          photoUrl: d.photoUrl ?? undefined,
         })),
         subscription: {
           tier: pickedArea.tier,
@@ -487,6 +505,8 @@ function ClinicSection({
     areaSlug: string;
     phone: string;
     whatsapp: string;
+    logoUrl: string | null;
+    heroImageUrl: string | null;
   };
   setClinic: React.Dispatch<React.SetStateAction<typeof clinic>>;
   pickedArea: Area | null;
@@ -510,6 +530,35 @@ function ClinicSection({
             {isAr ? pickedArea.nameAr : pickedArea.nameEn}
           </span>
         )}
+      </div>
+
+      <div className="grid md:grid-cols-[auto_1fr] gap-5 md:gap-7 mb-6">
+        <div className="space-y-1.5">
+          <div className="field-label">{labels.clinicLogoLabel}</div>
+          <ImageUpload
+            kind="clinic_logo"
+            value={clinic.logoUrl}
+            onChange={(url) => setClinic({ ...clinic, logoUrl: url })}
+            shape="square"
+            labels={labels.imageUpload}
+          />
+          <p className="text-[11.5px] text-ink-500 leading-[1.5] max-w-[14ch]">
+            {labels.clinicLogoHint}
+          </p>
+        </div>
+        <div className="space-y-1.5 min-w-0">
+          <div className="field-label">{labels.clinicHeroLabel}</div>
+          <ImageUpload
+            kind="clinic_hero"
+            value={clinic.heroImageUrl}
+            onChange={(url) => setClinic({ ...clinic, heroImageUrl: url })}
+            shape="wide"
+            labels={labels.imageUpload}
+          />
+          <p className="text-[11.5px] text-ink-500 leading-[1.5]">
+            {labels.clinicHeroHint}
+          </p>
+        </div>
       </div>
 
       <div className="grid sm:grid-cols-2 gap-4">
@@ -641,6 +690,24 @@ function DentistsSection({
                   {labels.removeDentist}
                 </button>
               )}
+            </div>
+
+            <div className="grid grid-cols-[auto_1fr] gap-4 mb-4">
+              <ImageUpload
+                kind="dentist_photo"
+                value={d.photoUrl}
+                onChange={(url) => updateDentist(idx, { photoUrl: url })}
+                shape="square"
+                labels={labels.imageUpload}
+              />
+              <div className="min-w-0 self-center">
+                <div className="text-[13px] font-bold text-ink-700">
+                  {labels.dentistPhotoLabel}
+                </div>
+                <p className="text-[12px] text-ink-500 leading-[1.5] mt-1">
+                  {labels.dentistPhotoHint}
+                </p>
+              </div>
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3">
