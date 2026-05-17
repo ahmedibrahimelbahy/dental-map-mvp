@@ -113,7 +113,7 @@ export default async function ForClinicsPage({
               { Icon: BadgeDollarSign, titleKey: "why4Title", bodyKey: "why4Body" },
               { Icon: Headphones, titleKey: "why5Title", bodyKey: "why5Body" },
               { Icon: Languages, titleKey: "why6Title", bodyKey: "why6Body" },
-            ].map((card, idx, arr) => (
+            ].map((card, idx) => (
               <div
                 key={card.titleKey}
                 className={`sticky ${idx % 2 === 0 ? "deal-left" : "deal-right"}`}
@@ -123,8 +123,6 @@ export default async function ForClinicsPage({
                   Icon={card.Icon}
                   title={t(card.titleKey as "why1Title")}
                   body={t(card.bodyKey as "why1Body")}
-                  index={idx}
-                  total={arr.length}
                 />
               </div>
             ))}
@@ -297,14 +295,10 @@ function WhyStackedCard({
   Icon,
   title,
   body,
-  index,
-  total,
 }: {
   Icon: typeof CalendarSync;
   title: string;
   body: string;
-  index: number;
-  total: number;
 }) {
   return (
     <article className="relative mx-auto max-w-[860px] rounded-3xl border border-ink-100 bg-white shadow-card-hover overflow-hidden">
@@ -315,11 +309,6 @@ function WhyStackedCard({
       />
 
       <div className="relative p-7 md:p-10 lg:p-12">
-        {/* index in corner */}
-        <span className="absolute top-5 end-6 small-caps text-ink-300 tabular-nums">
-          {String(index + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
-        </span>
-
         <span className="inline-flex w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-teal-gradient text-white items-center justify-center mb-5 md:mb-7 shadow-teal-glow">
           <Icon className="w-6 h-6 md:w-7 md:h-7" aria-hidden />
         </span>

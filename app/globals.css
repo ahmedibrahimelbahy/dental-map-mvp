@@ -309,40 +309,37 @@
 
 /* ── scroll-driven "playing card" deal-in animation ────────────────────
    Each stacked card slides into its sticky position from one side as it
-   enters the viewport, then settles flat once the next card stacks on
-   top. Falls back to no animation on browsers without scroll-driven
-   timelines (Firefox stable, older Safari) — cards just appear normally.
+   enters the viewport. No opacity fade — sticky pinning can freeze the
+   timeline before it reaches 100%, which would leave the card looking
+   semi-transparent. Translate + tilt only keeps the surface opaque so
+   stacked cards never bleed through one another.
 */
 @keyframes deal-from-right {
   from {
-    transform: translateX(40%) rotate(5deg);
-    opacity: 0;
+    transform: translateX(30%) rotate(4deg);
   }
   to {
     transform: translateX(0) rotate(0);
-    opacity: 1;
   }
 }
 @keyframes deal-from-left {
   from {
-    transform: translateX(-40%) rotate(-5deg);
-    opacity: 0;
+    transform: translateX(-30%) rotate(-4deg);
   }
   to {
     transform: translateX(0) rotate(0);
-    opacity: 1;
   }
 }
 @supports (animation-timeline: view()) {
   .deal-right {
     animation: deal-from-right linear both;
     animation-timeline: view();
-    animation-range: entry 0% cover 30%;
+    animation-range: entry 0% entry 80%;
   }
   .deal-left {
     animation: deal-from-left linear both;
     animation-timeline: view();
-    animation-range: entry 0% cover 30%;
+    animation-range: entry 0% entry 80%;
   }
 }
 @media (prefers-reduced-motion: reduce) {
