@@ -29,13 +29,16 @@ export type OnboardInput = {
     googleMapsUrl?: string;
     logoUrl?: string;
     heroImageUrl?: string;
+    // Single consultation fee for the whole clinic. We apply it to every
+    // dentist's clinic_dentists.fee_egp row so existing read sites (search,
+    // booking, dashboard) keep working without a schema change.
+    consultationFeeEgp: number;
   };
   dentists: Array<{
     nameEn: string;
     nameAr: string;
     title: "professor" | "consultant" | "specialist" | "resident";
     yearsExp: number | null;
-    feeEgp: number;
     specialties: string[]; // slugs
     bioEn?: string;
     bioAr?: string;
@@ -134,15 +137,18 @@ export async function onboardClinicAction(
   ) {
     return { ok: false, error: "invalid", message: "Pin your clinic on the map." };
   }
+  if (
+    !Number.isFinite(input.clinic.consultationFeeEgp) ||
+    input.clinic.consultationFeeEgp <= 0
+  ) {
+    return { ok: false, error: "invalid", message: "Set a consultation fee in EGP." };
+  }
   if (input.dentists.length === 0) {
     return { ok: false, error: "invalid", message: "Add at least one dentist." };
   }
   for (const d of input.dentists) {
     if (!d.nameEn?.trim() || !d.nameAr?.trim()) {
       return { ok: false, error: "invalid", message: "Each dentist needs a name in both languages." };
-    }
-    if (!Number.isFinite(d.feeEgp) || d.feeEgp <= 0) {
-      return { ok: false, error: "invalid", message: "Each dentist needs a fee in EGP." };
     }
   }
   if (
@@ -286,7 +292,10 @@ export async function onboardClinicAction(
       .insert({
         clinic_id: clinicRow.id,
         dentist_id: dentistRow.id,
-        fee_egp: d.feeEgp,
+        // Fee is set once per clinic and applied to every dentist's row,
+        // so admins manage a single price (e.g. "Smile Plus is 500 EGP")
+        // instead of editing each doctor.
+        fee_egp: input.clinic.consultationFeeEgp,
         slot_minutes: 30,
         working_hours: DEFAULT_WORKING_HOURS,
         is_active: true,
@@ -373,6 +382,7 @@ export async function onboardClinicAction(
         lat: input.clinic.lat,
         lng: input.clinic.lng,
         acceptedInsurance: input.acceptedInsurance ?? [],
+        consultationFeeEgp: input.clinic.consultationFeeEgp,
       },
       subscription: {
         tier: input.subscription.tier,
@@ -385,7 +395,6 @@ export async function onboardClinicAction(
         nameAr: d.nameAr.trim(),
         title: d.title,
         yearsExp: d.yearsExp,
-        feeEgp: d.feeEgp,
         specialties: d.specialties,
       })),
     });

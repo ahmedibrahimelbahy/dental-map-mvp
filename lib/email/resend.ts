@@ -251,6 +251,7 @@ export function clinicOnboardOpsEmail({
     lat: number;
     lng: number;
     acceptedInsurance: string[];
+    consultationFeeEgp: number;
   };
   subscription: {
     tier: number;
@@ -263,7 +264,6 @@ export function clinicOnboardOpsEmail({
     nameAr: string;
     title: string;
     yearsExp: number | null;
-    feeEgp: number;
     specialties: string[];
   }>;
 }): { subject: string; html: string; text: string } {
@@ -272,7 +272,6 @@ export function clinicOnboardOpsEmail({
       (d, i) =>
         `  ${i + 1}. ${d.nameEn} / ${d.nameAr} · ${d.title}` +
         (d.yearsExp != null ? ` · ${d.yearsExp}y exp` : "") +
-        ` · ${d.feeEgp} EGP` +
         (d.specialties.length ? ` · [${d.specialties.join(", ")}]` : "")
     )
     .join("\n");
@@ -291,6 +290,7 @@ export function clinicOnboardOpsEmail({
     (clinic.whatsapp ? `  WhatsApp:  ${clinic.whatsapp}\n` : "") +
     `  Pin:       ${clinic.lat.toFixed(6)}, ${clinic.lng.toFixed(6)}\n` +
     `  Map:       ${mapsLink}\n` +
+    `  Fee:       ${clinic.consultationFeeEgp} EGP / consultation\n` +
     (clinic.acceptedInsurance.length
       ? `  Insurance: ${clinic.acceptedInsurance.join(", ")}\n`
       : "") +

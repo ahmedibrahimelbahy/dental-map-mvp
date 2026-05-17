@@ -52,7 +52,6 @@ type Dentist = {
   nameAr: string;
   title: Title;
   yearsExp: string;
-  feeEgp: string;
   specialties: string[];
   photoUrl: string | null;
 };
@@ -62,7 +61,6 @@ const blankDentist = (): Dentist => ({
   nameAr: "",
   title: "specialist",
   yearsExp: "",
-  feeEgp: "",
   specialties: [],
   photoUrl: null,
 });
@@ -97,7 +95,8 @@ export type OnboardFormProps = {
     title: string;
     titles: Record<Title, string>;
     yearsExp: string;
-    feeEgp: string;
+    consultationFee: string;
+    consultationFeeHint: string;
     specialties: string;
     submit: string;
     submitting: string;
@@ -173,6 +172,10 @@ export function OnboardForm({
     whatsapp: "",
     logoUrl: null as string | null,
     heroImageUrl: null as string | null,
+    // Single consultation fee for the whole clinic (replaces per-dentist
+    // fees). Same fee gets written to every linked dentist's
+    // clinic_dentists.fee_egp row server-side.
+    consultationFeeEgp: "",
   });
   const [dentists, setDentists] = useState<Dentist[]>([blankDentist()]);
 
@@ -224,10 +227,10 @@ export function OnboardForm({
     if (!clinic.nameEn.trim() || !clinic.nameAr.trim()) return false;
     if (!clinic.phone.trim()) return false;
     if (location.lat == null || location.lng == null) return false;
+    const clinicFee = parseInt(clinic.consultationFeeEgp, 10);
+    if (!Number.isFinite(clinicFee) || clinicFee <= 0) return false;
     for (const d of dentists) {
       if (!d.nameEn.trim() || !d.nameAr.trim()) return false;
-      const fee = parseInt(d.feeEgp, 10);
-      if (!Number.isFinite(fee) || fee <= 0) return false;
     }
     return true;
   }
@@ -275,13 +278,13 @@ export function OnboardForm({
           googleMapsUrl: location.googleMapsUrl ?? undefined,
           logoUrl: clinic.logoUrl ?? undefined,
           heroImageUrl: clinic.heroImageUrl ?? undefined,
+          consultationFeeEgp: parseInt(clinic.consultationFeeEgp, 10) || 0,
         },
         dentists: dentists.map((d) => ({
           nameEn: d.nameEn,
           nameAr: d.nameAr,
           title: d.title,
           yearsExp: d.yearsExp ? parseInt(d.yearsExp, 10) : null,
-          feeEgp: d.feeEgp ? parseInt(d.feeEgp, 10) : 0,
           specialties: d.specialties,
           photoUrl: d.photoUrl ?? undefined,
         })),
@@ -514,6 +517,7 @@ function ClinicSection({
     whatsapp: string;
     logoUrl: string | null;
     heroImageUrl: string | null;
+    consultationFeeEgp: string;
   };
   setClinic: React.Dispatch<React.SetStateAction<typeof clinic>>;
   pickedArea: Area | null;
@@ -628,6 +632,25 @@ function ClinicSection({
             placeholder="+20 10 1234 5678"
             className="field-input"
             dir="ltr"
+          />
+        </Field>
+        <Field
+          label={labels.consultationFee}
+          required
+          hint={labels.consultationFeeHint}
+        >
+          <input
+            type="number"
+            inputMode="numeric"
+            min={1}
+            step={50}
+            value={clinic.consultationFeeEgp}
+            onChange={(e) =>
+              setClinic({ ...clinic, consultationFeeEgp: e.target.value })
+            }
+            required
+            placeholder="600"
+            className="field-input"
           />
         </Field>
       </div>
@@ -761,19 +784,6 @@ function DentistsSection({
                   value={d.yearsExp}
                   onChange={(e) => updateDentist(idx, { yearsExp: e.target.value })}
                   placeholder="8"
-                  className="field-input"
-                />
-              </Field>
-              <Field label={labels.feeEgp} required>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  min={1}
-                  step={50}
-                  value={d.feeEgp}
-                  onChange={(e) => updateDentist(idx, { feeEgp: e.target.value })}
-                  required
-                  placeholder="600"
                   className="field-input"
                 />
               </Field>
